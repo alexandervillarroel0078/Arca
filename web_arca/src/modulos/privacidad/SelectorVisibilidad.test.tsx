@@ -75,6 +75,34 @@ describe("SelectorVisibilidad", () => {
     expect(screen.queryByRole("dialog", { name: "Elegir personas" })).not.toBeInTheDocument();
   });
 
+  it("accesible: el foco entra a Volver, Tab no sale de la pantalla, Escape vuelve sin cambiar nada y el foco regresa a quien la abrio", async () => {
+    const u = userEvent.setup();
+    const { alCambiar } = abrir();
+    const personas = screen.getByRole("radio", { name: /Personas/ });
+    await u.click(personas);
+    const dialogo = await screen.findByRole("dialog", { name: "Elegir personas" });
+    expect(dialogo.className).toContain("!m-0"); // sin el margen de 8 px que le ponia `space-y-2` del selector
+    const volver = screen.getByRole("button", { name: "Volver" });
+    await waitFor(() => expect(volver).toHaveFocus());
+
+    // Tab recorre Volver, las personas y el boton de abajo, y despues vuelve a Volver (no sale hacia el fondo)
+    await screen.findByRole("checkbox", { name: "Ana Admin" });
+    await u.tab();
+    expect(screen.getByRole("checkbox", { name: "Ana Admin" })).toHaveFocus();
+    await u.tab();
+    expect(screen.getByRole("checkbox", { name: "Carla" })).toHaveFocus();
+    await u.tab({ shift: true });
+    await u.tab({ shift: true });
+    expect(volver).toHaveFocus();
+    await u.tab({ shift: true }); // desde el primero, hacia atras: da la vuelta al ultimo de la pantalla
+    expect(dialogo).toContainElement(document.activeElement as HTMLElement);
+
+    await u.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Elegir personas" })).not.toBeInTheDocument();
+    expect(alCambiar).not.toHaveBeenCalled();
+    expect(personas).toHaveFocus();
+  });
+
   it("volver sin elegir no cambia nada", async () => {
     const u = userEvent.setup();
     const { alCambiar } = abrir();

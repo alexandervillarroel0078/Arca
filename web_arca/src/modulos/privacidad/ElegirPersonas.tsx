@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Boton, Cargando, ErrorCaja, Vacio, useCarga } from "../../core/ui";
+import { useDialogo } from "../../core/useDialogo";
 import { listarMiembros } from "../familia/api";
 import { useUsuarioOpcional } from "../auth/AuthContext";
 
@@ -13,6 +14,8 @@ export default function ElegirPersonas({
   alListo: (ids: number[]) => void;
   alCancelar: () => void;
 }) {
+  // Escape cierra (= Volver), el foco entra al abrir y vuelve a quien abrio, Tab no sale de la pantalla.
+  const ref = useDialogo<HTMLDivElement>({ alCerrar: alCancelar });
   const usuario = useUsuarioOpcional();
   const { datos, error, cargando } = useCarga(() => listarMiembros(), []);
   const [sel, setSel] = useState<number[]>(elegidas);
@@ -20,7 +23,7 @@ export default function ElegirPersonas({
   const alternar = (id: number) => setSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Elegir personas" className="fixed inset-0 z-[60] bg-stone-50 overflow-y-auto">
+    <div ref={ref} role="dialog" aria-modal="true" aria-label="Elegir personas" className="fixed inset-0 !m-0 z-[60] bg-stone-50 overflow-y-auto">
       <div className="max-w-[480px] mx-auto px-4 pt-4 pb-32 space-y-4">
         <div className="flex items-center gap-2">
           <button type="button" aria-label="Volver" onClick={alCancelar} className="min-h-[44px] min-w-[44px] text-2xl text-arca">‹</button>
