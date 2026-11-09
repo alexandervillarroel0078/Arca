@@ -235,7 +235,7 @@ describe("Lista completa: anular", () => {
 
   it("si el servidor rechaza (403), el dialogo muestra el error y no anula", async () => {
     const u = userEvent.setup();
-    vi.mocked(mov.anularMovimiento).mockRejectedValue(new Error("Solo puedes modificar lo que registraste tu"));
+    vi.mocked(mov.anularMovimiento).mockRejectedValue(new Error("Solo puedes modificar lo que registraste tú"));
     abrir(admin);
     await opciones(u, "Almuerzo");
     await u.click(screen.getByRole("menuitem", { name: "Anular" }));

@@ -37,7 +37,7 @@ def registrar(db: Session, datos: RegistroIn) -> TokenOut:
     if not settings.registro_esta_abierto and (db.scalar(select(func.count()).select_from(Usuario)) or 0) > 0:
         raise HTTPException(
             status_code=403,
-            detail="El registro esta cerrado. Pide al administrador de tu familia que cree tu cuenta.",
+            detail="El registro está cerrado. Pide al administrador de tu familia que cree tu cuenta.",
         )
     email = datos.email.lower()
     if db.scalar(select(Usuario.id).where(Usuario.email == email)):
@@ -94,7 +94,7 @@ def ingresar(db: Session, datos: LoginIn, ip: str = "desconocida") -> TokenOut:
             usuario_id=usuario.id if usuario else None, correo=email,
             detalle={"motivo": "usuario_inexistente" if usuario is None else "clave_incorrecta"},
         )
-        raise HTTPException(status_code=401, detail="Correo o contrasena incorrectos")
+        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
     limite.limpiar(ip, datos.email)
     if origen:
         origen.usuario_id, origen.familia_id = usuario.id, (miembro.familia_id if miembro else None)
@@ -108,7 +108,7 @@ def ingresar(db: Session, datos: LoginIn, ip: str = "desconocida") -> TokenOut:
             detalle={"motivo": "usuario_desactivado", "ruta": "/api/auth/login", "metodo": "POST", "status": 403},
         )
         raise HTTPException(
-            status_code=403, detail="Tu cuenta esta desactivada. Habla con el administrador de tu familia"
+            status_code=403, detail="Tu cuenta está desactivada. Habla con el administrador de tu familia"
         )
     bitacora.aparte(
         db, "login_ok", resultado="ok", familia_id=miembro.familia_id, usuario_id=usuario.id, correo=email

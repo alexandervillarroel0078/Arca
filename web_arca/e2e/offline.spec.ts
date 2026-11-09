@@ -143,7 +143,7 @@ test.describe("Registro sin internet y sincronizacion", () => {
     await page.getByTestId("aviso-rechazos").click();
     const rechazo = page.getByTestId("rechazo");
     await expect(rechazo).toContainText("Gasto nuevo de Bs 20.00 · Categoria que se desactiva");
-    await expect(rechazo).toContainText("La categoria esta desactivada");
+    await expect(rechazo).toContainText("La categoría está desactivada");
   });
 
   test("al salir con registros sin enviar pide confirmar: si se cancela no se pierde nada; si se acepta se descartan", async ({ page, request }) => {

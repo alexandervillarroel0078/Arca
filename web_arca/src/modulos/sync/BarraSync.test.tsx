@@ -155,7 +155,7 @@ describe("No se pudo sincronizar", () => {
   it("un rechazo del servidor aparece en la lista con su motivo hasta que el usuario lo marca como visto", async () => {
     const u = userEvent.setup();
     await gasto(10, "Mi gasto");
-    sv.responder = () => ({ estado: 403, cuerpo: { detail: "Solo puedes modificar lo que registraste tu" } });
+    sv.responder = () => ({ estado: 403, cuerpo: { detail: "Solo puedes modificar lo que registraste tú" } });
     await sincronizar();
     pantalla();
     const aviso = await screen.findByTestId("aviso-rechazos");
@@ -163,7 +163,7 @@ describe("No se pudo sincronizar", () => {
     await u.click(aviso);
     const r = await screen.findByTestId("rechazo");
     expect(r).toHaveTextContent("Gasto nuevo de Bs 10.00 · Mi gasto");
-    expect(r).toHaveTextContent("Solo puedes modificar lo que registraste tu");
+    expect(r).toHaveTextContent("Solo puedes modificar lo que registraste tú");
     expect(await listarRechazos()).toHaveLength(1); // sigue guardado hasta que lo confirme
     await u.click(within(r).getByRole("button", { name: "Entendido" }));
     await waitFor(async () => expect(await listarRechazos()).toHaveLength(0));

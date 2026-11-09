@@ -43,7 +43,7 @@ def hoy_la_paz() -> date:
 
 def _exigir_dia_inicio(dia_inicio_mes: int) -> None:
     if not isinstance(dia_inicio_mes, int) or isinstance(dia_inicio_mes, bool) or not 1 <= dia_inicio_mes <= 28:
-        raise PeriodoInvalido("El dia de inicio del mes debe ser un numero de 1 a 28")
+        raise PeriodoInvalido("El día de inicio del mes debe ser un numero de 1 a 28")
 
 
 def _inicio_de_mes_contable(ref: date, dia_inicio_mes: int) -> date:

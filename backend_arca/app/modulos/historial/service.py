@@ -125,10 +125,10 @@ def _etiquetas(db: Session, filas: list[Historial]) -> dict[tuple[str, int], str
             select(Devolucion, Apoyo).join(Apoyo, Apoyo.id == Devolucion.apoyo_id).where(Devolucion.id.in_(ids["devolucion"]))
         ).all()
         for d, a in filas_d:
-            out[("devolucion", d.id)] = f"Devolucion de {a.beneficiario} (Bs {d.monto:.2f})"
+            out[("devolucion", d.id)] = f"Devolución de {a.beneficiario} (Bs {d.monto:.2f})"
     if ids.get("categoria"):
         for c in db.scalars(select(Categoria).where(Categoria.id.in_(ids["categoria"]))):
-            out[("categoria", c.id)] = f"Categoria {c.nombre}"
+            out[("categoria", c.id)] = f"Categoría {c.nombre}"
     if ids.get("familia"):
         for f in db.scalars(select(Familia).where(Familia.id.in_(ids["familia"]))):
             out[("familia", f.id)] = f"Familia {f.nombre}"

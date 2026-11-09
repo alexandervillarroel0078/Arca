@@ -75,7 +75,7 @@ def test_registro_deja_usuario_miembro_y_categorias(client):
     assert f[0]["cambios"]["email"] == {"antes": None, "despues": "ana@t.com"}
     assert f[1]["cambios"]["rol"]["despues"] == "admin"
     cats = [x for x in f if x["entidad"] == "categoria"]
-    assert len(cats) == 6 and all(c["accion"] == "crear" and c["motivo"] == "Categoria inicial" for c in cats)
+    assert len(cats) == 6 and all(c["accion"] == "crear" and c["motivo"] == "Categoría inicial" for c in cats)
     assert {c["usuario_id"] for c in f} == {f[0]["usuario_id"]}  # los hizo el propio usuario
 
 
@@ -143,7 +143,7 @@ def test_devolucion_cadena_completa(client, admin):
     assert [i["accion"] for i in items] == ["crear", "editar", "anular", "reactivar"]
     assert items[1]["cambios"]["monto"] == {"antes": "100.00", "despues": "120.00"}
     assert items[2]["motivo"] == "mal monto"
-    assert items[0]["etiqueta"].startswith("Devolucion de Tia Rosa")
+    assert items[0]["etiqueta"].startswith("Devolución de Tia Rosa")
 
 
 def test_cascada_deja_una_entrada_por_devolucion_afectada(client, admin):

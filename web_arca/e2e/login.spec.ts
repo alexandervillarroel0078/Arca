@@ -33,7 +33,7 @@ test.describe("Login y registro", () => {
     await page.getByLabel("Correo").fill(admin.email);
     await page.getByLabel("Contraseña").fill("clave-equivocada");
     await page.getByRole("button", { name: "Entrar" }).click();
-    await expect(page.getByRole("alert")).toHaveText("Correo o contrasena incorrectos");
+    await expect(page.getByRole("alert")).toHaveText("Correo o contraseña incorrectos");
     await expect(saldo(page)).toHaveCount(0);
 
     await page.getByLabel("Contraseña").fill(admin.clave);

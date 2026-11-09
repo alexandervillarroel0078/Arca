@@ -24,14 +24,14 @@ const F = vi.mocked(familia);
 
 const fecha = new Date(2026, 10, 3, 14, 5).toISOString();
 const entrada = (n: number, c: Partial<api.EntradaBitacora> = {}): api.EntradaBitacora => ({
-  clave: `acceso-${n}`, origen: "acceso", evento: "login_ok", etiqueta: "Entrada", titulo: "Ana Admin inicio sesion", resultado: "ok",
+  clave: `acceso-${n}`, origen: "acceso", evento: "login_ok", etiqueta: "Entrada", titulo: "Ana Admin inició sesión", resultado: "ok",
   fecha, fecha_real: fecha, fecha_sincronizacion: null, usuario_id: 1, usuario_nombre: "Ana Admin", correo_intentado: "ana@t.com",
   ip: "190.1.2.3", dispositivo: "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/120.0 Safari/537.36", detalle: [], motivo: null,
   entidad: null, entidad_id: null, ...c,
 });
 const datos = (n: number, c: Partial<api.EntradaBitacora> = {}) =>
   entrada(n, {
-    clave: `datos-${n}`, origen: "datos", evento: "editar", etiqueta: "Editado", titulo: "Edito gasto Comida Bs 60.00", ip: null,
+    clave: `datos-${n}`, origen: "datos", evento: "editar", etiqueta: "Editado", titulo: "Editó gasto Comida Bs 60.00", ip: null,
     dispositivo: null, correo_intentado: null, detalle: ["Monto: Bs 45.00 -> Bs 60.00"], entidad: "movimiento", entidad_id: 7, ...c,
   });
 const pagina = (items: api.EntradaBitacora[], hay_mas = false, siguiente: string | null = null): api.PaginaBitacora => ({ items, hay_mas, siguiente });
@@ -121,10 +121,10 @@ describe("Bitacora: lista", () => {
     const filas = await screen.findAllByTestId("entrada-bitacora");
     expect(filas.map((f) => f.getAttribute("data-origen"))).toEqual(["acceso", "datos"]);
     expect(filas[0]).toHaveTextContent("Acceso · Entrada");
-    expect(filas[0]).toHaveTextContent("Ana Admin inicio sesion");
+    expect(filas[0]).toHaveTextContent("Ana Admin inició sesión");
     expect(within(filas[0]).getByTestId("origen-acceso")).toHaveTextContent("IP 190.1.2.3 · Chrome en Windows");
     expect(filas[1]).toHaveTextContent("Datos · Editado");
-    expect(filas[1]).toHaveTextContent("Edito gasto Comida Bs 60.00");
+    expect(filas[1]).toHaveTextContent("Editó gasto Comida Bs 60.00");
     expect(filas[1]).toHaveTextContent("Monto: Bs 45.00 -> Bs 60.00");
     expect(within(filas[1]).queryByTestId("origen-acceso")).not.toBeInTheDocument(); // los datos no tienen IP
   });
@@ -144,7 +144,7 @@ describe("Bitacora: lista", () => {
     render(
       <ul>
         <EntradaBitacoraVista
-          e={datos(4, { evento: "anular", etiqueta: "Anulado", titulo: "Anulo gasto Transporte Bs 50.00", motivo: "Se pago dos veces", detalle: [], fecha: sync, fecha_real: fecha, fecha_sincronizacion: sync })}
+          e={datos(4, { evento: "anular", etiqueta: "Anulado", titulo: "Anuló gasto Transporte Bs 50.00", motivo: "Se pago dos veces", detalle: [], fecha: sync, fecha_real: fecha, fecha_sincronizacion: sync })}
         />
       </ul>,
     );

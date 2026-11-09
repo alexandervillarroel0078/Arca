@@ -42,7 +42,7 @@ ETIQUETA_ACCESO = {
     "logout": "Salida", "registro": "Registro", "cambio_clave_ok": "Clave cambiada",
     "cambio_clave_fallido": "Cambio de clave fallido", "restablecer_clave": "Clave restablecida",
     "usuario_desactivado": "Usuario desactivado", "usuario_reactivado": "Usuario reactivado", "cambio_rol": "Cambio de rol",
-    "acceso_denegado": "Acceso denegado", "token_invalido": "Sesion invalida", "sincronizacion_rechazada": "Sincronizacion rechazada",
+    "acceso_denegado": "Acceso denegado", "token_invalido": "Sesión inválida", "sincronizacion_rechazada": "Sincronización rechazada",
 }
 ETIQUETA_DATOS = {
     "crear": "Creado", "editar": "Editado", "anular": "Anulado", "reactivar": "Reactivado", "consumir": "Consumido",
@@ -50,24 +50,24 @@ ETIQUETA_DATOS = {
     "restablecer_clave": "Clave restablecida", "cambiar_clave": "Clave cambiada", "cambiar_visibilidad": "Visibilidad",
 }
 VERBO = {
-    "crear": "Creo", "editar": "Edito", "anular": "Anulo", "reactivar": "Reactivo", "consumir": "Marco como consumido",
-    "reabrir": "Reabrio", "desactivar": "Desactivo", "cambiar_rol": "Cambio el rol de",
-    "restablecer_clave": "Restablecio la clave de", "cambiar_visibilidad": "Cambio quien puede ver",
+    "crear": "Creó", "editar": "Editó", "anular": "Anuló", "reactivar": "Reactivó", "consumir": "Marcó como consumido",
+    "reabrir": "Reabrió", "desactivar": "Desactivó", "cambiar_rol": "Cambió el rol de",
+    "restablecer_clave": "Restableció la clave de", "cambiar_visibilidad": "Cambió quién puede ver",
 }
 NOMBRE_VISIBILIDAD = {"solo_yo": "Solo yo", "familia": "Familia", "elegidas": "Personas elegidas"}
 CAMPOS = {
-    "monto": "Monto", "fecha": "Fecha", "categoria": "Categoria", "nota": "Nota", "tipo": "Tipo",
+    "monto": "Monto", "fecha": "Fecha", "categoria": "Categoría", "nota": "Nota", "tipo": "Tipo",
     "beneficiario": "Beneficiario", "monto_consumido": "Consumido", "nombre": "Nombre", "email": "Correo",
-    "dia_inicio_mes": "Dia de inicio del mes", "visibilidad": "Quien lo ve", "compartido_con": "Compartido con", "rol": "Rol", "activo": "Activo", "activa": "Activa", "icono": "Icono", "anulado": "Anulado", "clave": "Clave",
+    "dia_inicio_mes": "Día de inicio del mes", "visibilidad": "Quién lo ve", "compartido_con": "Compartido con", "rol": "Rol", "activo": "Activo", "activa": "Activa", "icono": "Ícono", "anulado": "Anulado", "clave": "Clave",
 }
 CAMPOS_DINERO = {"monto", "monto_consumido"}
 
 
 def _valor(campo: str, v: Any) -> str:
     if v is None or v == "":
-        return "(vacio)"
+        return "(vacío)"
     if isinstance(v, bool):
-        return "si" if v else "no"
+        return "sí" if v else "no"
     if isinstance(v, list):
         return ", ".join(str(x) for x in v) or "(nadie)"
     if campo == "visibilidad":
@@ -100,15 +100,15 @@ def lineas_de_cambios(accion: str, cambios: dict, entidad: str = "") -> list[str
 def _titulo_datos(accion: str, entidad: str, descr: str) -> str:
     if entidad == "usuario":
         if accion == "crear":
-            return f"Creo la cuenta de {descr}"
+            return f"Creó la cuenta de {descr}"
         if accion == "cambiar_clave":
-            return f"{descr} cambio su clave"
-        return f"Edito el perfil de {descr}"
+            return f"{descr} cambió su clave"
+        return f"Editó el perfil de {descr}"
     if entidad == "miembro":
         if accion == "crear":
             return f"Agrego a {descr} a la familia"
         if accion in ("desactivar", "reactivar"):
-            return f"{VERBO.get(accion, 'Reactivo')} a {descr}"
+            return f"{VERBO.get(accion, 'Reactivó')} a {descr}"
         return f"{VERBO.get(accion, accion)} {descr}"
     return f"{VERBO.get(accion, accion.replace('_', ' ').capitalize())} {descr}".strip()
 
@@ -119,33 +119,33 @@ def _titulo_acceso(f: Bitacora, persona: str) -> str:
     correo = f.correo_intentado or "un correo"
     match f.evento:
         case "login_ok":
-            return f"{persona} inicio sesion"
+            return f"{persona} inició sesión"
         case "login_fallido":
             motivo = "el correo no existe" if d.get("motivo") == "usuario_inexistente" else "clave incorrecta"
             return f"Intento fallido de entrada con {correo} ({motivo})"
         case "login_bloqueado":
             return f"Entrada bloqueada por demasiados intentos con {correo}"
         case "logout":
-            return f"{persona} cerro sesion"
+            return f"{persona} cerró sesión"
         case "registro":
-            return f"{persona} creo su cuenta y su familia"
+            return f"{persona} creó su cuenta y su familia"
         case "cambio_clave_ok":
-            return f"{persona} cambio su clave"
+            return f"{persona} cambió su clave"
         case "cambio_clave_fallido":
             return f"{persona} puso mal su clave actual al intentar cambiarla"
         case "restablecer_clave":
-            return f"{persona} restablecio la clave de {objetivo}"
+            return f"{persona} restableció la clave de {objetivo}"
         case "usuario_desactivado":
-            return f"{persona} desactivo a {objetivo}"
+            return f"{persona} desactivó a {objetivo}"
         case "usuario_reactivado":
-            return f"{persona} reactivo a {objetivo}"
+            return f"{persona} reactivó a {objetivo}"
         case "cambio_rol":
-            return f"{persona} cambio el rol de {objetivo}: {d.get('rol_antes')} -> {d.get('rol_despues')}"
+            return f"{persona} cambió el rol de {objetivo}: {d.get('rol_antes')} -> {d.get('rol_despues')}"
         case "acceso_denegado":
             motivo = "usuario desactivado" if d.get("motivo") == "usuario_desactivado" else "sin permisos"
             return f"Acceso denegado a {persona} ({motivo})" if f.usuario_id else f"Acceso denegado ({motivo})"
         case "token_invalido":
-            return "Sesion invalida o vencida"
+            return "Sesión inválida o vencida"
         case "sincronizacion_rechazada":
             return f"Cambio de {persona} rechazado al sincronizar" if f.usuario_id else "Cambio rechazado al sincronizar"
     return f.evento
@@ -190,7 +190,7 @@ def parsear_fecha(texto: str | None, fin: bool = False) -> datetime | None:
             dt = dt.replace(tzinfo=UTC)
         return dt + timedelta(microseconds=1) if fin else dt
     except ValueError:
-        raise HTTPException(status_code=422, detail="Fecha invalida: usa AAAA-MM-DD o una fecha-hora ISO")
+        raise HTTPException(status_code=422, detail="Fecha inválida: usa AAAA-MM-DD o una fecha-hora ISO")
 
 
 def codificar_cursor(fecha: datetime, rango: int, id_: int) -> str:
@@ -204,7 +204,7 @@ def decodificar_cursor(cursor: str | None) -> tuple[datetime, int, int] | None:
         f, r, i = base64.urlsafe_b64decode(cursor.encode()).decode().split("|")
         return datetime.fromisoformat(f), int(r), int(i)
     except Exception:
-        raise HTTPException(status_code=422, detail="Cursor invalido")
+        raise HTTPException(status_code=422, detail="Cursor inválido")
 
 
 def _despues_del_cursor(col_fecha, col_id, rango: int, cur):
@@ -282,10 +282,10 @@ def _descripciones(db: Session, filas: list[Historial]) -> dict[tuple[str, int],
         for d, a in db.execute(
             select(Devolucion, Apoyo).join(Apoyo, Apoyo.id == Devolucion.apoyo_id).where(Devolucion.id.in_(ids["devolucion"]))
         ).all():
-            out[("devolucion", d.id)] = f"devolucion de {a.beneficiario} Bs {d.monto:.2f}"
+            out[("devolucion", d.id)] = f"devolución de {a.beneficiario} Bs {d.monto:.2f}"
     if ids.get("categoria"):
         for c in db.scalars(select(Categoria).where(Categoria.id.in_(ids["categoria"]))):
-            out[("categoria", c.id)] = f"categoria {c.nombre}"
+            out[("categoria", c.id)] = f"categoría {c.nombre}"
     if ids.get("familia"):
         out.update({("familia", i): "los periodos de la familia" for i in ids["familia"]})
     personas = ids.get("miembro", set()) | ids.get("usuario", set())

@@ -65,13 +65,13 @@ describe("BarraSync compacta", () => {
   it("con rechazos el aviso rojo se ve de inmediato (sin abrir nada) y abre la lista", async () => {
     const u = userEvent.setup();
     await gasto(10);
-    sv.responder = () => ({ estado: 403, cuerpo: { detail: "Solo puedes modificar lo que registraste tu" } });
+    sv.responder = () => ({ estado: 403, cuerpo: { detail: "Solo puedes modificar lo que registraste tú" } });
     await sincronizar();
     pantalla();
     const aviso = await screen.findByTestId("aviso-rechazos");
     expect(aviso).toHaveTextContent("No se pudo sincronizar 1 cambio");
     await u.click(aviso);
-    expect(await screen.findByTestId("rechazo")).toHaveTextContent("Solo puedes modificar lo que registraste tu");
+    expect(await screen.findByTestId("rechazo")).toHaveTextContent("Solo puedes modificar lo que registraste tú");
   });
 
   it("sin nada pendiente y con conexion no ocupa nada", async () => {

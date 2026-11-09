@@ -396,7 +396,7 @@ test.describe("Rechazos del servidor", () => {
     await aviso.click();
     const r = page.getByTestId("rechazo");
     await expect(r).toContainText("Devolución nueva de Bs 250.00");
-    await expect(r).toContainText("La devolucion supera lo pendiente (Bs 100.00)");
+    await expect(r).toContainText("La devolución supera lo pendiente (Bs 100.00)");
     expect((await bsApi(request, admin, `/apoyos/${ap.id}`)).devoluciones).toHaveLength(1); // solo la de 200
 
     // el aviso queda hasta que el usuario lo marca como visto; nunca se descarta solo

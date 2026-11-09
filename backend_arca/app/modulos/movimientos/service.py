@@ -138,12 +138,12 @@ def crear(db: Session, ctx: Contexto, datos: MovimientoCrear) -> tuple[Movimient
 
     if datos.tipo == "gasto":
         if datos.categoria_id is None:
-            raise HTTPException(status_code=422, detail="El gasto necesita una categoria")
+            raise HTTPException(status_code=422, detail="El gasto necesita una categoría")
         cat = obtener_de_familia(db, ctx.familia_id, datos.categoria_id)
         if not cat.activa:
-            raise HTTPException(status_code=422, detail="La categoria esta desactivada")
+            raise HTTPException(status_code=422, detail="La categoría está desactivada")
     elif datos.categoria_id is not None:
-        raise HTTPException(status_code=422, detail="El ingreso no lleva categoria")
+        raise HTTPException(status_code=422, detail="El ingreso no lleva categoría")
     visibilidad, personas = visib.preparar_creacion(db, ctx, datos)
     m = Movimiento(
         visibilidad=visibilidad,
@@ -198,15 +198,15 @@ def editar(db: Session, ctx: Contexto, movimiento_id: int, datos: MovimientoEdit
     if tipo == "ingreso":
         # al pasar a ingreso la categoria se limpia sola; pedirla explicitamente es un error
         if cambios.get("categoria_id") is not None:
-            raise HTTPException(status_code=422, detail="El ingreso no lleva categoria")
+            raise HTTPException(status_code=422, detail="El ingreso no lleva categoría")
         categoria_id = None
     else:
         if categoria_id is None:
-            raise HTTPException(status_code=422, detail="El gasto necesita una categoria")
+            raise HTTPException(status_code=422, detail="El gasto necesita una categoría")
         cat = obtener_de_familia(db, ctx.familia_id, categoria_id)
         # se permite conservar una categoria desactivada (historial), pero no elegirla de nuevo
         if not cat.activa and categoria_id != m.categoria_id:
-            raise HTTPException(status_code=422, detail="La categoria esta desactivada")
+            raise HTTPException(status_code=422, detail="La categoría está desactivada")
 
     m.tipo = tipo
     m.categoria_id = categoria_id
@@ -233,7 +233,7 @@ def anular(
         return armar(db, [m], ctx)[0]
     exigir_version(m, version_base, lambda: armar(db, [m], ctx)[0], "El movimiento")
     if m.anulado:
-        raise HTTPException(status_code=400, detail="El movimiento ya esta anulado")
+        raise HTTPException(status_code=400, detail="El movimiento ya está anulado")
     marcar_anulacion(m, ctx.usuario.id, motivo)
     historial.registrar(
         db, ctx.familia_id, ctx.usuario.id, "movimiento", m.id, "anular",
@@ -249,7 +249,7 @@ def reactivar(db: Session, ctx: Contexto, movimiento_id: int, version_base: int 
         return armar(db, [m], ctx)[0]
     exigir_version(m, version_base, lambda: armar(db, [m], ctx)[0], "El movimiento")
     if not m.anulado:
-        raise HTTPException(status_code=400, detail="El movimiento no esta anulado")
+        raise HTTPException(status_code=400, detail="El movimiento no está anulado")
     limpiar_anulacion(m)
     marcar_edicion(m, ctx.usuario.id)
     historial.registrar(
@@ -263,7 +263,7 @@ def cambiar_visibilidad(db: Session, ctx: Contexto, movimiento_id: int, datos: v
     """Solo el dueno cambia quien lo ve (no el admin: lo privado de otros ni siquiera lo ve)."""
     m = _obtener(db, ctx, movimiento_id, bloquear=True)
     if m.usuario_id != ctx.usuario.id:
-        raise HTTPException(status_code=403, detail="Solo quien lo registro puede cambiar quien lo ve")
+        raise HTTPException(status_code=403, detail="Solo quien lo registró puede cambiar quién lo ve")
     if _ya_aplicada(db, ctx, m):
         return armar(db, [m], ctx)[0]
     exigir_version(m, datos.version_base, lambda: armar(db, [m], ctx)[0], "El movimiento")

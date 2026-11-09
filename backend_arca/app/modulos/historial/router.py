@@ -30,7 +30,7 @@ def listar(
     """Con `entidad` y `entidad_id`: cadena de un registro (cualquier miembro, en orden cronologico).
     Sin `entidad_id`: actividad global de la familia (solo admin, mas reciente primero)."""
     if entidad_id is not None and entidad is None:
-        raise HTTPException(status_code=422, detail="Indica tambien la entidad")
+        raise HTTPException(status_code=422, detail="Indica también la entidad")
     cadena = entidad is not None and entidad_id is not None
     if not cadena and not ctx.es_admin:
         raise HTTPException(status_code=403, detail="Solo un administrador puede ver la actividad de la familia")

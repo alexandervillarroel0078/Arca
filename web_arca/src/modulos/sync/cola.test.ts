@@ -378,12 +378,12 @@ describe("rechazos (403, 422...)", () => {
     await encolar(gasto(10));
     await encolar(gasto(20));
     let n = 0;
-    servidor = () => (++n === 1 ? { estado: 403, cuerpo: { detail: "Solo puedes modificar lo que registraste tu" } } : { estado: 201, cuerpo: movServidor(2) });
+    servidor = () => (++n === 1 ? { estado: 403, cuerpo: { detail: "Solo puedes modificar lo que registraste tú" } } : { estado: 201, cuerpo: movServidor(2) });
     const r = await sincronizar();
     expect(r).toMatchObject({ enviados: 1, rechazados: 1, quedan: 0 });
     const rechazos = await listarRechazos();
     expect(rechazos).toHaveLength(1);
-    expect(rechazos[0]).toMatchObject({ motivo: "Solo puedes modificar lo que registraste tu", estado: 403 });
+    expect(rechazos[0]).toMatchObject({ motivo: "Solo puedes modificar lo que registraste tú", estado: 403 });
     expect(rechazos[0].operacion.datos.monto).toBe(10); // nada se descarta en silencio: queda lo que el usuario hizo
     expect(await cantidadEnCola()).toBe(0);
   });
@@ -418,9 +418,9 @@ describe("rechazos (403, 422...)", () => {
   });
 
   it("si el usuario esta esperando la respuesta, el rechazo se le muestra a el (error) y no va a la lista", async () => {
-    servidor = () => ({ estado: 422, cuerpo: { detail: "La categoria esta desactivada" } });
+    servidor = () => ({ estado: 422, cuerpo: { detail: "La categoría está desactivada" } });
     const { resultado } = await ejecutar(gasto(10));
-    expect(resultado).toEqual({ tipo: "rechazada", estado: 422, motivo: "La categoria esta desactivada" });
+    expect(resultado).toEqual({ tipo: "rechazada", estado: 422, motivo: "La categoría está desactivada" });
     expect(await listarRechazos()).toHaveLength(0);
     expect(await cantidadEnCola()).toBe(0);
   });

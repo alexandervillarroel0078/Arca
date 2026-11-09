@@ -194,12 +194,12 @@ describe("Nuevo movimiento: guardar", () => {
 
   it("si el servidor rechaza, muestra el motivo y no sale de la pantalla", async () => {
     const u = userEvent.setup();
-    vi.mocked(registrar).mockRejectedValue(new ErrorApi(422, "La categoria esta desactivada"));
+    vi.mocked(registrar).mockRejectedValue(new ErrorApi(422, "La categoría está desactivada"));
     abrirNuevo();
     await u.type(monto(), "10");
     await u.click(await screen.findByRole("radio", { name: /Comida/ }));
     await u.click(guardar());
-    expect(await screen.findByRole("alert")).toHaveTextContent("La categoria esta desactivada");
+    expect(await screen.findByRole("alert")).toHaveTextContent("La categoría está desactivada");
     expect(screen.queryByTestId("otra-pantalla")).not.toBeInTheDocument();
     expect(guardar()).toBeEnabled();
   });

@@ -138,7 +138,7 @@ test.describe("Apoyos y devoluciones: editar, anular y reactivar", () => {
     const ed = page.getByRole("dialog", { name: "Editar devolución" });
     await ed.getByLabel("Monto (Bs)").fill("300.01");
     await ed.getByRole("button", { name: "Guardar" }).click();
-    await expect(ed.getByRole("alert")).toContainText("no pueden superar el apoyo (maximo Bs 300.00)");
+    await expect(ed.getByRole("alert")).toContainText("no pueden superar el apoyo (máximo Bs 300.00)");
   });
 
   test("anular un apoyo avisa de sus devoluciones, no cuenta en nada y al reactivarlo vuelve con su devolucion", async ({ page, request }) => {

@@ -272,7 +272,7 @@ def anular(db: Session, ctx: Contexto, apoyo_id: int, motivo: str | None, versio
         return _armar(db, [a], ctx)[0]
     exigir_version(a, version_base, _actual_apoyo(db, a, ctx), "El apoyo")
     if a.anulado:
-        raise HTTPException(status_code=400, detail="El apoyo ya esta anulado")
+        raise HTTPException(status_code=400, detail="El apoyo ya está anulado")
     for d in db.scalars(select(Devolucion).where(Devolucion.apoyo_id == a.id, Devolucion.anulado.is_(False))):
         marcar_anulacion(d, ctx.usuario.id, MOTIVO_CASCADA)
         d.anulada_con_apoyo = True
@@ -290,7 +290,7 @@ def reactivar(db: Session, ctx: Contexto, apoyo_id: int, version_base: int | Non
         return _armar(db, [a], ctx)[0]
     exigir_version(a, version_base, _actual_apoyo(db, a, ctx), "El apoyo")
     if not a.anulado:
-        raise HTTPException(status_code=400, detail="El apoyo no esta anulado")
+        raise HTTPException(status_code=400, detail="El apoyo no está anulado")
     limpiar_anulacion(a)
     for d in db.scalars(select(Devolucion).where(Devolucion.apoyo_id == a.id, Devolucion.anulada_con_apoyo.is_(True))):
         limpiar_anulacion(d)
@@ -305,7 +305,7 @@ def reactivar(db: Session, ctx: Contexto, apoyo_id: int, version_base: int | Non
 def _exigir_puede_devolver(ctx: Contexto, a: Apoyo) -> None:
     if not vis.puede_registrar_devolucion(ctx, a):
         raise HTTPException(
-            status_code=403, detail="Esto fue compartido contigo: solo lo puede modificar quien lo registro"
+            status_code=403, detail="Esto fue compartido contigo: solo lo puede modificar quien lo registró"
         )
 
 
@@ -328,7 +328,7 @@ def devolver(db: Session, ctx: Contexto, apoyo_id: int, datos: DevolucionCrear) 
     exigir_activo(a, "El apoyo")
     pendiente = _pendiente(db, a)
     if datos.monto > pendiente:
-        raise HTTPException(status_code=400, detail=f"La devolucion supera lo pendiente (Bs {pendiente:.2f})")
+        raise HTTPException(status_code=400, detail=f"La devolución supera lo pendiente (Bs {pendiente:.2f})")
     d = Devolucion(
         apoyo_id=a.id, usuario_id=ctx.usuario.id, monto=datos.monto, fecha=datos.fecha,
         nota=datos.nota, uuid_cliente=uuid_txt,
@@ -350,7 +350,7 @@ def _obtener_devolucion(db: Session, ctx: Contexto, apoyo_id: int, devolucion_id
     a = _obtener(db, ctx, apoyo_id)
     d = db.get(Devolucion, devolucion_id, with_for_update=True)
     if d is None or d.apoyo_id != a.id:
-        raise HTTPException(status_code=404, detail="Devolucion no encontrada")
+        raise HTTPException(status_code=404, detail="Devolución no encontrada")
     if a.visibilidad != "familia":
         _exigir_puede_devolver(ctx, a)  # en un apoyo privado o compartido solo su dueno toca las devoluciones
         return a, d
@@ -373,7 +373,7 @@ def editar_devolucion(db: Session, ctx: Contexto, apoyo_id: int, devolucion_id: 
         maximo = a.monto - a.monto_consumido - otras
         if cambios["monto"] > maximo:
             raise HTTPException(
-                status_code=400, detail=f"Las devoluciones y lo consumido no pueden superar el apoyo (maximo Bs {maximo:.2f})"
+                status_code=400, detail=f"Las devoluciones y lo consumido no pueden superar el apoyo (máximo Bs {maximo:.2f})"
             )
         d.monto = cambios["monto"]
     if cambios.get("fecha") is not None:
@@ -394,7 +394,7 @@ def anular_devolucion(
         return _armar(db, [a], ctx)[0]
     exigir_version(d, version_base, _actual_dev(db, a, d, ctx), "La devolucion")
     if d.anulado:
-        raise HTTPException(status_code=400, detail="La devolucion ya esta anulada")
+        raise HTTPException(status_code=400, detail="La devolución ya está anulada")
     marcar_anulacion(d, ctx.usuario.id, motivo)
     d.anulada_con_apoyo = False
     _log(db, ctx, "devolucion", d.id, "anular", {"anulado": historial.cambio(False, True)}, d.motivo_anulacion)
@@ -410,13 +410,13 @@ def reactivar_devolucion(
         return _armar(db, [a], ctx)[0]
     exigir_version(d, version_base, _actual_dev(db, a, d, ctx), "La devolucion")
     if not d.anulado:
-        raise HTTPException(status_code=400, detail="La devolucion no esta anulada")
+        raise HTTPException(status_code=400, detail="La devolución no está anulada")
     exigir_activo(a, "El apoyo")
     total = _devuelto_activo(db, [a.id]).get(a.id, CERO) + d.monto + a.monto_consumido
     if total > a.monto:
         raise HTTPException(
             status_code=400,
-            detail="No se puede reactivar: lo devuelto y consumido superaria el monto del apoyo",
+            detail="No se puede reactivar: lo devuelto y consumido superaría el monto del apoyo",
         )
     limpiar_anulacion(d)
     d.anulada_con_apoyo = False
@@ -522,7 +522,7 @@ def cambiar_visibilidad(db: Session, ctx: Contexto, apoyo_id: int, datos: visib.
     """Solo el dueno cambia quien lo ve (el admin no ve lo privado de otros). Las devoluciones lo heredan."""
     a = _obtener(db, ctx, apoyo_id, bloquear=True)
     if a.usuario_id != ctx.usuario.id:
-        raise HTTPException(status_code=403, detail="Solo quien lo registro puede cambiar quien lo ve")
+        raise HTTPException(status_code=403, detail="Solo quien lo registró puede cambiar quién lo ve")
     if _ya_aplicada(db, ctx, "apoyo", a.id):
         return _armar(db, [a], ctx)[0]
     exigir_version(a, datos.version_base, _actual_apoyo(db, a, ctx), "El apoyo")

@@ -20,12 +20,12 @@ describe("PaginaLogin", () => {
 
   it("muestra el error del servidor (credenciales incorrectas)", async () => {
     const u = userEvent.setup();
-    auth.entrar.mockRejectedValue(new Error("Correo o contrasena incorrectos"));
+    auth.entrar.mockRejectedValue(new Error("Correo o contraseña incorrectos"));
     render(<PaginaLogin />);
     await u.type(screen.getByLabelText("Correo"), "ana@t.com");
     await u.type(screen.getByLabelText("Contraseña"), "mala");
     await u.click(screen.getByRole("button", { name: "Entrar" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Correo o contrasena incorrectos");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Correo o contraseña incorrectos");
     expect(screen.getByRole("button", { name: "Entrar" })).toBeEnabled();
   });
 

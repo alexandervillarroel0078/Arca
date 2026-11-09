@@ -226,7 +226,7 @@ def test_reactivar_devolucion_no_puede_superar_el_monto(client, admin):
     anular(client, admin, f"/api/apoyos/{a['id']}/devoluciones/{d1}")
     dev(client, admin, a["id"], 60)  # ahora hay 60 activos
     r = reactivar(client, admin, f"/api/apoyos/{a['id']}/devoluciones/{d1}")
-    assert r.status_code == 400 and "superaria" in r.json()["detail"]
+    assert r.status_code == 400 and "superaría" in r.json()["detail"]
     # con consumido tambien: se anula la segunda, se consume todo y no hay espacio
     ap = apoyo_por_id(client, admin, a["id"])
     d2 = ap["devoluciones"][1]["id"]

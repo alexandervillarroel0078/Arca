@@ -193,7 +193,7 @@ class TestRegistroCerrado:
         # ya hay un usuario: se cierra solo
         segundo = client.post("/api/auth/registro", json={"nombre": "Beto", "email": "beto@t.com", "password": "secreto12"})
         assert segundo.status_code == 403
-        assert "registro esta cerrado" in segundo.json()["detail"]
+        assert "registro está cerrado" in segundo.json()["detail"]
 
     def test_cerrado_no_crea_nada_al_rechazar(self, client, monkeypatch):
         registrar(client)  # un usuario ya existe (registro abierto en este momento)

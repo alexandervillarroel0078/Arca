@@ -32,7 +32,7 @@ test.describe("Bitacora (Fase 15)", () => {
     await page.getByLabel("Correo").fill(admin.email);
     await page.getByLabel("Contraseña").fill("ClaveEquivocada1");
     await page.getByRole("button", { name: "Entrar" }).click();
-    await expect(page.getByText("Correo o contrasena incorrectos")).toBeVisible();
+    await expect(page.getByText("Correo o contraseña incorrectos")).toBeVisible();
     await page.getByLabel("Contraseña").fill(admin.clave);
     await page.getByRole("button", { name: "Entrar" }).click();
     await expect(page.getByTestId("saldo")).toBeVisible();
@@ -47,9 +47,9 @@ test.describe("Bitacora (Fase 15)", () => {
     await expect(filas(page).first()).toBeVisible();
     const textos = await filas(page).allTextContents();
     const posicion = (t: string) => textos.findIndex((x) => x.includes(t));
-    const anulo = posicion("Anulo gasto Transporte Bs 50.00");
-    const creo = posicion("Creo gasto Transporte Bs 50.00");
-    const entro = posicion("Ana Admin inicio sesion");
+    const anulo = posicion("Anuló gasto Transporte Bs 50.00");
+    const creo = posicion("Creó gasto Transporte Bs 50.00");
+    const entro = posicion("Ana Admin inició sesión");
     const fallo = posicion(`Intento fallido de entrada con ${admin.email}`);
     for (const [nombre, i] of Object.entries({ anulo, creo, entro, fallo })) expect(i, `falta en la lista: ${nombre}`).toBeGreaterThanOrEqual(0);
     // orden cronologico, lo mas reciente primero: anular, crear, entrar bien, clave mala
@@ -57,7 +57,7 @@ test.describe("Bitacora (Fase 15)", () => {
     expect(creo).toBeLessThan(entro);
     expect(entro).toBeLessThan(fallo);
     // el anular se muestra como "Anulado" con su motivo (nada se borra)
-    const filaAnulado = filas(page).filter({ hasText: "Anulo gasto Transporte Bs 50.00" });
+    const filaAnulado = filas(page).filter({ hasText: "Anuló gasto Transporte Bs 50.00" });
     await expect(filaAnulado).toContainText("Datos · Anulado");
     await expect(filaAnulado).toContainText("Motivo: Se pago dos veces");
     // el fallo y la entrada traen texto, IP y dispositivo en la linea secundaria
@@ -95,7 +95,7 @@ test.describe("Bitacora (Fase 15)", () => {
     await page.getByRole("button", { name: /^Evento:/ }).click();
     await page.getByRole("dialog", { name: "Evento" }).getByRole("radio", { name: "Datos · Anulado" }).click();
     await expect(filas(page)).toHaveCount(1);
-    await expect(filas(page)).toContainText("Anulo gasto Transporte Bs 50.00");
+    await expect(filas(page)).toContainText("Anuló gasto Transporte Bs 50.00");
     // chip Persona
     await page.getByRole("button", { name: /^Evento:/ }).click();
     await page.getByRole("dialog", { name: "Evento" }).getByRole("radio", { name: "Todos los eventos" }).click();

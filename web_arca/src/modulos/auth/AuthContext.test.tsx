@@ -44,9 +44,9 @@ describe("AuthProvider (sesion)", () => {
   });
 
   it("un login rechazado no deja sesion a medias", async () => {
-    A.login.mockRejectedValue(new ErrorApi(401, "Correo o contrasena incorrectos"));
+    A.login.mockRejectedValue(new ErrorApi(401, "Correo o contraseña incorrectos"));
     montar();
-    await expect(act(async () => { await auth.entrar("a@t.com", "mala"); })).rejects.toThrow("Correo o contrasena incorrectos");
+    await expect(act(async () => { await auth.entrar("a@t.com", "mala"); })).rejects.toThrow("Correo o contraseña incorrectos");
     expect(token.leer()).toBeNull();
     expect(screen.getByTestId("estado")).toHaveTextContent("fuera");
   });
@@ -63,7 +63,7 @@ describe("AuthProvider (sesion)", () => {
   it("si el servidor dice 401 (token vencido o cuenta desactivada) cierra la sesion", async () => {
     token.guardar("vencido");
     localStorage.setItem("arca-usuario", JSON.stringify(ana));
-    A.yo.mockRejectedValue(new ErrorApi(401, "Tu cuenta esta desactivada"));
+    A.yo.mockRejectedValue(new ErrorApi(401, "Tu cuenta está desactivada"));
     montar();
     await waitFor(() => expect(screen.getByTestId("estado")).toHaveTextContent("fuera"));
     expect(token.leer()).toBeNull();

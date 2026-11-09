@@ -82,7 +82,7 @@ def obtener_contexto(
                 db, "acceso_denegado", familia_id=miembro.familia_id, usuario_id=usuario.id,
                 detalle={"motivo": "usuario_desactivado"},
             )
-        raise HTTPException(status_code=401, detail="Tu cuenta esta desactivada")
+        raise HTTPException(status_code=401, detail="Tu cuenta está desactivada")
     uuid_operacion = None
     if x_operacion_id:
         try:

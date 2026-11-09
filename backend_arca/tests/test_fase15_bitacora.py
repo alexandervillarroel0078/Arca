@@ -467,14 +467,14 @@ def test_eventos_de_datos_legibles_con_quien_y_fecha_real(client, admin, miembro
     client.patch(f"/api/movimientos/{m['id']}", headers=miembro, json={"monto": 60, "version_base": m["version"]})
     client.post(f"/api/movimientos/{m['id']}/anular", headers=admin, json={"motivo": "Se pago dos veces"})
     items = {i["evento"]: i for i in bit(client, admin, origen="datos", limite=100)["items"] if i["entidad"] == "movimiento"}
-    assert items["crear"]["titulo"] == "Creo gasto Transporte Bs 60.00" and items["crear"]["usuario_nombre"] == "Miembro"
+    assert items["crear"]["titulo"] == "Creó gasto Transporte Bs 60.00" and items["crear"]["usuario_nombre"] == "Miembro"
     assert "Monto: Bs 45.00 -> Bs 60.00" in items["editar"]["detalle"]
     anul = items["anular"]
     assert anul["etiqueta"] == "Anulado" and anul["motivo"] == "Se pago dos veces"
-    assert anul["titulo"] == "Anulo gasto Transporte Bs 60.00" and anul["usuario_nombre"] == "Admin"
+    assert anul["titulo"] == "Anuló gasto Transporte Bs 60.00" and anul["usuario_nombre"] == "Admin"
     # al crear una categoria el titulo ya lo dice todo: sin lineas de ruido (icono, activa...)
     cat = next(i for i in bit(client, admin, origen="datos", limite=100)["items"] if i["entidad"] == "categoria")
-    assert cat["titulo"].startswith("Creo categoria ") and cat["detalle"] == [] and cat["motivo"] == "Categoria inicial"
+    assert cat["titulo"].startswith("Creó categoría ") and cat["detalle"] == [] and cat["motivo"] == "Categoría inicial"
     assert "borr" not in json.dumps(anul).lower() and "elimin" not in json.dumps(anul).lower()  # nada se borra
 
 
@@ -500,7 +500,7 @@ def test_los_eventos_de_acceso_tienen_titulo_legible(client, admin):
     login(client, "admin@t.com")
     login(client, "nadie@x.com", "mala")
     t = {i["evento"]: i["titulo"] for i in bit(client, admin, origen="acceso", limite=100)["items"]}
-    assert t["login_ok"] == "Admin inicio sesion" and t["registro"].startswith("Admin creo")
+    assert t["login_ok"] == "Admin inició sesión" and t["registro"].startswith("Admin creó")
     # el login fallido de un correo inexistente no es visible; el de uno existente si
     login(client, "admin@t.com", "mala")
     fallido = next(i for i in bit(client, admin, evento="login_fallido")["items"])

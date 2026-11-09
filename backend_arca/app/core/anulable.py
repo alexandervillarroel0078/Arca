@@ -111,12 +111,12 @@ def auditoria(obj: Anulable, nombres: dict[int, str]) -> dict:
 def exigir_dueno_o_admin(es_admin: bool, usuario_actual: int, dueno_id: int | None) -> None:
     """El miembro solo toca lo suyo; el admin todo. Se valida siempre en el backend."""
     if not es_admin and dueno_id != usuario_actual:
-        raise HTTPException(status_code=403, detail="Solo puedes modificar lo que registraste tu")
+        raise HTTPException(status_code=403, detail="Solo puedes modificar lo que registraste tú")
 
 
 def exigir_activo(obj: Anulable, que: str) -> None:
     if obj.anulado:
-        raise HTTPException(status_code=400, detail=f"{que} esta anulado: reactivalo antes de modificarlo")
+        raise HTTPException(status_code=400, detail=f"{que} está anulado: reactívalo antes de modificarlo")
 
 
 def exigir_version(obj: Anulable, version_base: int | None, actual, que: str) -> None:
@@ -131,7 +131,7 @@ def exigir_version(obj: Anulable, version_base: int | None, actual, que: str) ->
         status_code=409,
         detail={
             "codigo": "conflicto_version",
-            "mensaje": f"{que} cambio en el servidor mientras tanto",
+            "mensaje": f"{que} cambió en el servidor mientras tanto",
             "version_actual": obj.version or 1,
             "version_base": version_base,
             "actual": jsonable_encoder(actual()),

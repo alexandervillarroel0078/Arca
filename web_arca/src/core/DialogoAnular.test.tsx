@@ -53,9 +53,9 @@ describe("DialogoAnular", () => {
   it("si el servidor rechaza, muestra el error y NO se cierra", async () => {
     const u = userEvent.setup();
     const cerrar = vi.fn();
-    render(<DialogoAnular pedido={pedido(vi.fn().mockRejectedValue(new Error("Solo puedes modificar lo que registraste tu")))} alCerrar={cerrar} />);
+    render(<DialogoAnular pedido={pedido(vi.fn().mockRejectedValue(new Error("Solo puedes modificar lo que registraste tú")))} alCerrar={cerrar} />);
     await u.click(screen.getByRole("button", { name: "Anular" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Solo puedes modificar lo que registraste tu");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Solo puedes modificar lo que registraste tú");
     expect(cerrar).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Anular" })).toBeEnabled(); // se puede reintentar o cancelar
   });

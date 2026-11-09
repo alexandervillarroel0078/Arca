@@ -106,7 +106,7 @@ def editar_miembro(usuario_id: int, datos: MiembroEditar, db: DbSession, ctx: Ct
         )
         if not otros:
             raise HTTPException(
-                status_code=400, detail="No puedes desactivar ni degradar al ultimo administrador"
+                status_code=400, detail="No puedes desactivar ni degradar al último administrador"
             )
     if nuevo_rol != miembro.rol:
         historial.registrar(

@@ -72,7 +72,7 @@ describe("cola y arranque en frio", () => {
   });
 
   it("un rechazo REAL (422) si se rechaza, para distinguirlo de un servidor dormido", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json({ detail: "La categoria esta desactivada" }, 422)));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json({ detail: "La categoría está desactivada" }, 422)));
     await encolar(gasto);
     expect(await sincronizar()).toMatchObject({ rechazados: 1, quedan: 0 });
     expect(await listarRechazos()).toHaveLength(1);

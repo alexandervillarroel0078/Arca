@@ -73,7 +73,7 @@ def aplicar_defecto(datos: AplicarIn, db: DbSession, ctx: Ctx):
         registros += list(db.scalars(_propios_distintos(db, ctx, modelo).with_for_update()))
     if datos.cantidad is not None and datos.cantidad != len(registros):
         raise HTTPException(
-            status_code=409, detail=f"Ahora se afectarian {len(registros)} registros y no {datos.cantidad}: revisa y confirma de nuevo"
+            status_code=409, detail=f"Ahora se afectarían {len(registros)} registros y no {datos.cantidad}: revisa y confirma de nuevo"
         )
     for obj in registros:
         cambios.aplicar(db, ctx, obj, ctx.visibilidad_defecto, None)

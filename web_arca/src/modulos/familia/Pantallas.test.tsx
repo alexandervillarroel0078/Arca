@@ -117,11 +117,11 @@ describe("Miembros", () => {
 
   it("si el servidor impide desactivar al ultimo admin, lo muestra", async () => {
     const u = userEvent.setup();
-    A.editarMiembro.mockRejectedValue(new Error("No puedes desactivar ni degradar al ultimo administrador"));
+    A.editarMiembro.mockRejectedValue(new Error("No puedes desactivar ni degradar al último administrador"));
     abrirMiembros();
     await opciones(u, "Acciones de Ana Admin");
     await u.click(screen.getByRole("menuitem", { name: "Desactivar" }));
-    expect(await screen.findByText("No puedes desactivar ni degradar al ultimo administrador")).toBeInTheDocument();
+    expect(await screen.findByText("No puedes desactivar ni degradar al último administrador")).toBeInTheDocument();
   });
 
   it("restablecer clave pide confirmacion y muestra la temporal una sola vez", async () => {
@@ -281,13 +281,13 @@ describe("Agregar categoria", () => {
 
   it("manda nombre e icono; un nombre repetido muestra el error DEBAJO del campo y reintentar funciona", async () => {
     const u = userEvent.setup();
-    A.crearCategoria.mockRejectedValueOnce(new Error("Ya existe una categoria con ese nombre")).mockResolvedValueOnce(CATEGORIAS[0]);
+    A.crearCategoria.mockRejectedValueOnce(new Error("Ya existe una categoría con ese nombre")).mockResolvedValueOnce(CATEGORIAS[0]);
     abrirNueva();
     await u.type(screen.getByLabelText("Nombre"), "Ropa");
     await u.click(screen.getByRole("radio", { name: "shirt" }));
     await u.click(screen.getByRole("button", { name: "Agregar categoría" }));
     const alerta = await screen.findByRole("alert");
-    expect(alerta).toHaveTextContent("Ya existe una categoria con ese nombre");
+    expect(alerta).toHaveTextContent("Ya existe una categoría con ese nombre");
     expect(alerta.className).toContain("before:content-['⚠']"); // icono + texto, nunca solo color
     expect(screen.getByLabelText("Nombre")).toHaveAttribute("aria-invalid", "true");
     expect(A.crearCategoria).toHaveBeenCalledWith("Ropa", "shirt");

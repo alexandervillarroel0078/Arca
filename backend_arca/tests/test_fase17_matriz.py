@@ -192,7 +192,7 @@ def test_matriz_endpoints_de_un_registro(client, metodo, ruta, i, v, quien):
     assert r.status_code in esperado, f"{metodo} {ruta} {quien}/{v}: {r.status_code} {r.text[:300]}"
     if r.status_code == 404:
         assert "SECRETO" not in r.text
-        assert r.json()["detail"] in ("Movimiento no encontrado", "Apoyo no encontrado", "Devolucion no encontrado", "Devolucion no encontrada")
+        assert r.json()["detail"] in ("Movimiento no encontrado", "Apoyo no encontrado", "Devolución no encontrado", "Devolución no encontrada")
     sin_fuga(r, quien, v)
 
 

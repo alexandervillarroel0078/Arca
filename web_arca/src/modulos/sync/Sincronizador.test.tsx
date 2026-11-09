@@ -109,7 +109,7 @@ describe("Sincronizador", () => {
 
   it("avisa cuando el servidor rechaza", async () => {
     await gasto(10);
-    sv.responder = () => ({ estado: 422, cuerpo: { detail: "La categoria esta desactivada" } });
+    sv.responder = () => ({ estado: 422, cuerpo: { detail: "La categoría está desactivada" } });
     pantalla();
     expect(await screen.findByText("1 registro(s) fueron rechazados por el servidor")).toBeInTheDocument();
   });

@@ -87,11 +87,11 @@ describe("Privacidad: aplicar a mis registros anteriores", () => {
     const u = userEvent.setup();
     A.obtenerPrivacidad.mockResolvedValueOnce({ visibilidad_defecto: "solo_yo", registros_distintos: 2 });
     A.obtenerPrivacidad.mockResolvedValue({ visibilidad_defecto: "solo_yo", registros_distintos: 3 });
-    A.aplicarPreferencia.mockRejectedValue(new ErrorApi(409, "Ahora se afectarian 3 registros y no 2: revisa y confirma de nuevo"));
+    A.aplicarPreferencia.mockRejectedValue(new ErrorApi(409, "Ahora se afectarían 3 registros y no 2: revisa y confirma de nuevo"));
     abrir();
     await u.click(await screen.findByRole("button", { name: "Aplicar a mis registros anteriores" }));
     await u.click(await screen.findByRole("button", { name: "Cambiar 2" }));
-    expect(await screen.findByText(/Ahora se afectarian 3 registros/)).toBeInTheDocument();
+    expect(await screen.findByText(/Ahora se afectarían 3 registros/)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByTestId("cuantos-afecta")).toHaveTextContent("cambiaría 3 registros tuyos"));
   });
 });

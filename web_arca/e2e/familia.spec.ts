@@ -120,7 +120,7 @@ test.describe("Familia: categorias", () => {
     await page.getByLabel("Nombre", { exact: true }).fill("ropa");
     await page.getByRole("button", { name: "Agregar categoría" }).click();
     const error = page.getByRole("alert");
-    await expect(error).toContainText("Ya existe una categoria con ese nombre");
+    await expect(error).toContainText("Ya existe una categoría con ese nombre");
     await expect(error).toHaveClass(/before:content/); // icono + texto
     expect(rutaActual(page)).toBe("/familia/categorias/nueva");
     await volver(page);
@@ -267,13 +267,13 @@ test.describe("Familia: miembros", () => {
     await expect(page.getByText(/Ingreso · Hijo Gasto/)).toBeVisible();
   });
 
-  test("nunca se desactiva ni se degrada al ultimo administrador", async ({ page, request }) => {
+  test("nunca se desactiva ni se degrada al último administrador", async ({ page, request }) => {
     const admin = await crearAdmin(request, { nombre: "Ana Admin" });
     await entrarRapido(page, admin);
     await irAOpcionFamilia(page, "Miembros");
     for (const accion of ["Desactivar", "Pasar a miembro"]) {
       await menu(page, "Acciones de Ana Admin", accion);
-      await expect(page.getByText("No puedes desactivar ni degradar al ultimo administrador")).toBeVisible();
+      await expect(page.getByText("No puedes desactivar ni degradar al último administrador")).toBeVisible();
       await expect(filaMiembro(page, "Ana Admin")).toHaveAttribute("data-activo", "true");
       await expect(filaMiembro(page, "Ana Admin")).toContainText("Admin");
     }
@@ -301,7 +301,7 @@ test.describe("Familia: miembros", () => {
     await otro.getByLabel("Correo").fill(hijo.email);
     await otro.getByLabel("Contraseña").fill(hijo.clave);
     await otro.getByRole("button", { name: "Entrar" }).click();
-    await expect(otro.getByRole("alert")).toContainText("Correo o contrasena incorrectos");
+    await expect(otro.getByRole("alert")).toContainText("Correo o contraseña incorrectos");
     await otro.getByLabel("Contraseña").fill(temporal);
     await otro.getByRole("button", { name: "Entrar" }).click();
     await expect(saldo(otro)).toBeVisible();
@@ -351,7 +351,7 @@ test.describe("Familia: mi perfil", () => {
     await page.getByLabel("Correo").fill(admin.email);
     await page.getByLabel("Contraseña").fill(admin.clave);
     await page.getByRole("button", { name: "Entrar" }).click();
-    await expect(page.getByRole("alert")).toContainText("Correo o contrasena incorrectos");
+    await expect(page.getByRole("alert")).toContainText("Correo o contraseña incorrectos");
     await page.getByLabel("Contraseña").fill("NuevaClave456");
     await page.getByRole("button", { name: "Entrar" }).click();
     await expect(saldo(page)).toBeVisible();

@@ -112,8 +112,8 @@ def exigir_editar(ctx: Contexto, obj) -> None:
     """Se llama SIEMPRE despues de `exigir_ver` (lo que no ves es 404, lo que ves pero no es tuyo es 403)."""
     if not puede_editar(ctx, obj):
         if obj.visibilidad == "familia":
-            raise HTTPException(status_code=403, detail="Solo puedes modificar lo que registraste tu")
-        raise HTTPException(status_code=403, detail="Esto fue compartido contigo: solo lo puede modificar quien lo registro")
+            raise HTTPException(status_code=403, detail="Solo puedes modificar lo que registraste tú")
+        raise HTTPException(status_code=403, detail="Esto fue compartido contigo: solo lo puede modificar quien lo registró")
 
 
 def puede_registrar_devolucion(ctx: Contexto, apoyo: Apoyo) -> bool:
@@ -135,4 +135,4 @@ def exigir_ver_entidad(db: Session, ctx: Contexto, entidad: str, entidad_id: int
         exigir_ver(db, ctx, db.get(Apoyo, entidad_id), "Apoyo")
     elif entidad == "devolucion":
         d = db.get(Devolucion, entidad_id)
-        exigir_ver(db, ctx, db.get(Apoyo, d.apoyo_id) if d is not None else None, "Devolucion")
+        exigir_ver(db, ctx, db.get(Apoyo, d.apoyo_id) if d is not None else None, "Devolución")

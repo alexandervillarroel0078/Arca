@@ -301,7 +301,7 @@ def test_el_cambio_aparece_en_la_bitacora_con_titulo_legible(client, admin):
     b = client.get("/api/bitacora?origen=datos", headers=admin).json()
     textos = [str(i) for i in b["items"] if "periodos" in str(i)]
     assert len(textos) == 2
-    assert any("Dia de inicio del mes: 15 -> 28" in t for t in textos)
+    assert any("Día de inicio del mes: 15 -> 28" in t for t in textos)
 
 
 def test_un_cambio_rechazado_no_deja_historial(client, admin, miembro):

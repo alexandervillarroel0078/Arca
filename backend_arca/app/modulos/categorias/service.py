@@ -27,7 +27,7 @@ def crear_iniciales(db: Session, familia_id: int, usuario_id: int) -> None:
     db.flush()
     for c in nuevas:
         historial.registrar(
-            db, familia_id, usuario_id, "categoria", c.id, "crear", historial.creacion(_datos(c)), "Categoria inicial"
+            db, familia_id, usuario_id, "categoria", c.id, "crear", historial.creacion(_datos(c)), "Categoría inicial"
         )
 
 
@@ -45,7 +45,7 @@ def _existe_nombre(db: Session, familia_id: int, nombre: str, excepto_id: int | 
 def crear(db: Session, familia_id: int, datos: CategoriaCrear, usuario_id: int) -> Categoria:
     nombre = datos.nombre.strip()
     if _existe_nombre(db, familia_id, nombre):
-        raise HTTPException(status_code=409, detail="Ya existe una categoria con ese nombre")
+        raise HTTPException(status_code=409, detail="Ya existe una categoría con ese nombre")
     cat = Categoria(familia_id=familia_id, nombre=nombre, icono=datos.icono, activa=True)
     db.add(cat)
     db.flush()
@@ -57,12 +57,12 @@ def crear(db: Session, familia_id: int, datos: CategoriaCrear, usuario_id: int) 
 def editar(db: Session, familia_id: int, categoria_id: int, datos: CategoriaEditar, usuario_id: int) -> Categoria:
     cat = db.get(Categoria, categoria_id)
     if cat is None or cat.familia_id != familia_id:
-        raise HTTPException(status_code=404, detail="Categoria no encontrada")
+        raise HTTPException(status_code=404, detail="Categoría no encontrada")
     cambios = datos.model_dump(exclude_unset=True)
     if "nombre" in cambios and cambios["nombre"] is not None:
         cambios["nombre"] = cambios["nombre"].strip()
         if _existe_nombre(db, familia_id, cambios["nombre"], categoria_id):
-            raise HTTPException(status_code=409, detail="Ya existe una categoria con ese nombre")
+            raise HTTPException(status_code=409, detail="Ya existe una categoría con ese nombre")
     antes = _datos(cat)
     for campo, valor in cambios.items():
         if valor is not None:
@@ -80,5 +80,5 @@ def editar(db: Session, familia_id: int, categoria_id: int, datos: CategoriaEdit
 def obtener_de_familia(db: Session, familia_id: int, categoria_id: int) -> Categoria:
     cat = db.get(Categoria, categoria_id)
     if cat is None or cat.familia_id != familia_id:
-        raise HTTPException(status_code=422, detail="La categoria no existe en tu familia")
+        raise HTTPException(status_code=422, detail="La categoría no existe en tu familia")
     return cat
