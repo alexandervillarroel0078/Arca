@@ -1,0 +1,32 @@
+# Secretos y entornos: NUNCA se versionan
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Entornos virtuales y dependencias
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Compilados y resultados de pruebas
+dist/
+dist-*/
+test-results/
+playwright-report/
+
+# Respaldos de la base (contienen todos los datos y hashes de clave)
+*.dump
+*.sql.gz
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Capturas de la prueba visual (Fase 14)
+capturas/

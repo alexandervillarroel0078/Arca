@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-test
+test-results
+playwright-report
+.env
+.env.*
+!.env.example
+dist-pwa
+capturas

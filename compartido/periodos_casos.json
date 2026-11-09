@@ -1,0 +1,8906 @@
+[
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2025-12-31",
+"desde": "2025-12-31",
+"hasta": "2025-12-31",
+"etiqueta": "31 dic 2025",
+"anterior": [
+"2025-12-30",
+"2025-12-30"
+],
+"siguiente": [
+"2026-01-01",
+"2026-01-01"
+],
+"comparacion": [
+"2025-12-30",
+"2025-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2025"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-01-01",
+"etiqueta": "1 ene 2026",
+"anterior": [
+"2025-12-31",
+"2025-12-31"
+],
+"siguiente": [
+"2026-01-02",
+"2026-01-02"
+],
+"comparacion": [
+"2025-12-31",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 31 dic 2025"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-10",
+"desde": "2026-01-10",
+"hasta": "2026-01-10",
+"etiqueta": "10 ene 2026",
+"anterior": [
+"2026-01-09",
+"2026-01-09"
+],
+"siguiente": [
+"2026-01-11",
+"2026-01-11"
+],
+"comparacion": [
+"2026-01-09",
+"2026-01-09"
+],
+"comparacion_etiqueta": "vs 9 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-27",
+"desde": "2026-01-27",
+"hasta": "2026-01-27",
+"etiqueta": "27 ene 2026",
+"anterior": [
+"2026-01-26",
+"2026-01-26"
+],
+"siguiente": [
+"2026-01-28",
+"2026-01-28"
+],
+"comparacion": [
+"2026-01-26",
+"2026-01-26"
+],
+"comparacion_etiqueta": "vs 26 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-28",
+"desde": "2026-01-28",
+"hasta": "2026-01-28",
+"etiqueta": "28 ene 2026",
+"anterior": [
+"2026-01-27",
+"2026-01-27"
+],
+"siguiente": [
+"2026-01-29",
+"2026-01-29"
+],
+"comparacion": [
+"2026-01-27",
+"2026-01-27"
+],
+"comparacion_etiqueta": "vs 27 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-14",
+"desde": "2026-02-14",
+"hasta": "2026-02-14",
+"etiqueta": "14 feb 2026",
+"anterior": [
+"2026-02-13",
+"2026-02-13"
+],
+"siguiente": [
+"2026-02-15",
+"2026-02-15"
+],
+"comparacion": [
+"2026-02-13",
+"2026-02-13"
+],
+"comparacion_etiqueta": "vs 13 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-27",
+"desde": "2026-02-27",
+"hasta": "2026-02-27",
+"etiqueta": "27 feb 2026",
+"anterior": [
+"2026-02-26",
+"2026-02-26"
+],
+"siguiente": [
+"2026-02-28",
+"2026-02-28"
+],
+"comparacion": [
+"2026-02-26",
+"2026-02-26"
+],
+"comparacion_etiqueta": "vs 26 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-28",
+"desde": "2026-02-28",
+"hasta": "2026-02-28",
+"etiqueta": "28 feb 2026",
+"anterior": [
+"2026-02-27",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-01",
+"2026-03-01"
+],
+"comparacion": [
+"2026-02-27",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-01",
+"desde": "2026-03-01",
+"hasta": "2026-03-01",
+"etiqueta": "1 mar 2026",
+"anterior": [
+"2026-02-28",
+"2026-02-28"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-02"
+],
+"comparacion": [
+"2026-02-28",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-14",
+"desde": "2026-03-14",
+"hasta": "2026-03-14",
+"etiqueta": "14 mar 2026",
+"anterior": [
+"2026-03-13",
+"2026-03-13"
+],
+"siguiente": [
+"2026-03-15",
+"2026-03-15"
+],
+"comparacion": [
+"2026-03-13",
+"2026-03-13"
+],
+"comparacion_etiqueta": "vs 13 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-15",
+"desde": "2026-03-15",
+"hasta": "2026-03-15",
+"etiqueta": "15 mar 2026",
+"anterior": [
+"2026-03-14",
+"2026-03-14"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-16"
+],
+"comparacion": [
+"2026-03-14",
+"2026-03-14"
+],
+"comparacion_etiqueta": "vs 14 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-27",
+"desde": "2026-03-27",
+"hasta": "2026-03-27",
+"etiqueta": "27 mar 2026",
+"anterior": [
+"2026-03-26",
+"2026-03-26"
+],
+"siguiente": [
+"2026-03-28",
+"2026-03-28"
+],
+"comparacion": [
+"2026-03-26",
+"2026-03-26"
+],
+"comparacion_etiqueta": "vs 26 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-28",
+"desde": "2026-03-28",
+"hasta": "2026-03-28",
+"etiqueta": "28 mar 2026",
+"anterior": [
+"2026-03-27",
+"2026-03-27"
+],
+"siguiente": [
+"2026-03-29",
+"2026-03-29"
+],
+"comparacion": [
+"2026-03-27",
+"2026-03-27"
+],
+"comparacion_etiqueta": "vs 27 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-10-29",
+"desde": "2026-10-29",
+"hasta": "2026-10-29",
+"etiqueta": "29 oct 2026",
+"anterior": [
+"2026-10-28",
+"2026-10-28"
+],
+"siguiente": [
+"2026-10-30",
+"2026-10-30"
+],
+"comparacion": [
+"2026-10-28",
+"2026-10-28"
+],
+"comparacion_etiqueta": "vs 28 oct 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-01",
+"desde": "2026-11-01",
+"hasta": "2026-11-01",
+"etiqueta": "1 nov 2026",
+"anterior": [
+"2026-10-31",
+"2026-10-31"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-02"
+],
+"comparacion": [
+"2026-10-31",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs 31 oct 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-08",
+"desde": "2026-11-08",
+"hasta": "2026-11-08",
+"etiqueta": "8 nov 2026",
+"anterior": [
+"2026-11-07",
+"2026-11-07"
+],
+"siguiente": [
+"2026-11-09",
+"2026-11-09"
+],
+"comparacion": [
+"2026-11-07",
+"2026-11-07"
+],
+"comparacion_etiqueta": "vs 7 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-14",
+"desde": "2026-11-14",
+"hasta": "2026-11-14",
+"etiqueta": "14 nov 2026",
+"anterior": [
+"2026-11-13",
+"2026-11-13"
+],
+"siguiente": [
+"2026-11-15",
+"2026-11-15"
+],
+"comparacion": [
+"2026-11-13",
+"2026-11-13"
+],
+"comparacion_etiqueta": "vs 13 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-15",
+"desde": "2026-11-15",
+"hasta": "2026-11-15",
+"etiqueta": "15 nov 2026",
+"anterior": [
+"2026-11-14",
+"2026-11-14"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-16"
+],
+"comparacion": [
+"2026-11-14",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 14 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-27",
+"desde": "2026-11-27",
+"hasta": "2026-11-27",
+"etiqueta": "27 nov 2026",
+"anterior": [
+"2026-11-26",
+"2026-11-26"
+],
+"siguiente": [
+"2026-11-28",
+"2026-11-28"
+],
+"comparacion": [
+"2026-11-26",
+"2026-11-26"
+],
+"comparacion_etiqueta": "vs 26 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-28",
+"desde": "2026-11-28",
+"hasta": "2026-11-28",
+"etiqueta": "28 nov 2026",
+"anterior": [
+"2026-11-27",
+"2026-11-27"
+],
+"siguiente": [
+"2026-11-29",
+"2026-11-29"
+],
+"comparacion": [
+"2026-11-27",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 27 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-30",
+"desde": "2026-11-30",
+"hasta": "2026-11-30",
+"etiqueta": "30 nov 2026",
+"anterior": [
+"2026-11-29",
+"2026-11-29"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-01"
+],
+"comparacion": [
+"2026-11-29",
+"2026-11-29"
+],
+"comparacion_etiqueta": "vs 29 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-14",
+"desde": "2026-12-14",
+"hasta": "2026-12-14",
+"etiqueta": "14 dic 2026",
+"anterior": [
+"2026-12-13",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-15",
+"2026-12-15"
+],
+"comparacion": [
+"2026-12-13",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 13 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-15",
+"desde": "2026-12-15",
+"hasta": "2026-12-15",
+"etiqueta": "15 dic 2026",
+"anterior": [
+"2026-12-14",
+"2026-12-14"
+],
+"siguiente": [
+"2026-12-16",
+"2026-12-16"
+],
+"comparacion": [
+"2026-12-14",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 14 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-27",
+"desde": "2026-12-27",
+"hasta": "2026-12-27",
+"etiqueta": "27 dic 2026",
+"anterior": [
+"2026-12-26",
+"2026-12-26"
+],
+"siguiente": [
+"2026-12-28",
+"2026-12-28"
+],
+"comparacion": [
+"2026-12-26",
+"2026-12-26"
+],
+"comparacion_etiqueta": "vs 26 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2026-12-28",
+"etiqueta": "28 dic 2026",
+"anterior": [
+"2026-12-27",
+"2026-12-27"
+],
+"siguiente": [
+"2026-12-29",
+"2026-12-29"
+],
+"comparacion": [
+"2026-12-27",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 27 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-31",
+"desde": "2026-12-31",
+"hasta": "2026-12-31",
+"etiqueta": "31 dic 2026",
+"anterior": [
+"2026-12-30",
+"2026-12-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-01"
+],
+"comparacion": [
+"2026-12-30",
+"2026-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-01-01",
+"etiqueta": "1 ene 2027",
+"anterior": [
+"2026-12-31",
+"2026-12-31"
+],
+"siguiente": [
+"2027-01-02",
+"2027-01-02"
+],
+"comparacion": [
+"2026-12-31",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 31 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-14",
+"desde": "2027-01-14",
+"hasta": "2027-01-14",
+"etiqueta": "14 ene 2027",
+"anterior": [
+"2027-01-13",
+"2027-01-13"
+],
+"siguiente": [
+"2027-01-15",
+"2027-01-15"
+],
+"comparacion": [
+"2027-01-13",
+"2027-01-13"
+],
+"comparacion_etiqueta": "vs 13 ene 2027"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-27",
+"desde": "2027-01-27",
+"hasta": "2027-01-27",
+"etiqueta": "27 ene 2027",
+"anterior": [
+"2027-01-26",
+"2027-01-26"
+],
+"siguiente": [
+"2027-01-28",
+"2027-01-28"
+],
+"comparacion": [
+"2027-01-26",
+"2027-01-26"
+],
+"comparacion_etiqueta": "vs 26 ene 2027"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-02-28",
+"etiqueta": "28 feb 2028",
+"anterior": [
+"2028-02-27",
+"2028-02-27"
+],
+"siguiente": [
+"2028-02-29",
+"2028-02-29"
+],
+"comparacion": [
+"2028-02-27",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-29",
+"desde": "2028-02-29",
+"hasta": "2028-02-29",
+"etiqueta": "29 feb 2028",
+"anterior": [
+"2028-02-28",
+"2028-02-28"
+],
+"siguiente": [
+"2028-03-01",
+"2028-03-01"
+],
+"comparacion": [
+"2028-02-28",
+"2028-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2028-03-01",
+"desde": "2028-03-01",
+"hasta": "2028-03-01",
+"etiqueta": "1 mar 2028",
+"anterior": [
+"2028-02-29",
+"2028-02-29"
+],
+"siguiente": [
+"2028-03-02",
+"2028-03-02"
+],
+"comparacion": [
+"2028-02-29",
+"2028-02-29"
+],
+"comparacion_etiqueta": "vs 29 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2028-12-31",
+"desde": "2028-12-31",
+"hasta": "2028-12-31",
+"etiqueta": "31 dic 2028",
+"anterior": [
+"2028-12-30",
+"2028-12-30"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-01"
+],
+"comparacion": [
+"2028-12-30",
+"2028-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2100-02-28",
+"desde": "2100-02-28",
+"hasta": "2100-02-28",
+"etiqueta": "28 feb 2100",
+"anterior": [
+"2100-02-27",
+"2100-02-27"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-01"
+],
+"comparacion": [
+"2100-02-27",
+"2100-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2100"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 1,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-01",
+"etiqueta": "1 mar 2100",
+"anterior": [
+"2100-02-28",
+"2100-02-28"
+],
+"siguiente": [
+"2100-03-02",
+"2100-03-02"
+],
+"comparacion": [
+"2100-02-28",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2100"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2025-12-31",
+"desde": "2025-12-29",
+"hasta": "2026-01-04",
+"etiqueta": "29 dic 2025 - 4 ene 2026",
+"anterior": [
+"2025-12-22",
+"2025-12-28"
+],
+"siguiente": [
+"2026-01-05",
+"2026-01-11"
+],
+"comparacion": [
+"2025-12-22",
+"2025-12-28"
+],
+"comparacion_etiqueta": "vs 22 dic - 28 dic 2025"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-01",
+"desde": "2025-12-29",
+"hasta": "2026-01-04",
+"etiqueta": "29 dic 2025 - 4 ene 2026",
+"anterior": [
+"2025-12-22",
+"2025-12-28"
+],
+"siguiente": [
+"2026-01-05",
+"2026-01-11"
+],
+"comparacion": [
+"2025-12-22",
+"2025-12-28"
+],
+"comparacion_etiqueta": "vs 22 dic - 28 dic 2025"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-10",
+"desde": "2026-01-05",
+"hasta": "2026-01-11",
+"etiqueta": "5 ene - 11 ene 2026",
+"anterior": [
+"2025-12-29",
+"2026-01-04"
+],
+"siguiente": [
+"2026-01-12",
+"2026-01-18"
+],
+"comparacion": [
+"2025-12-29",
+"2026-01-04"
+],
+"comparacion_etiqueta": "vs 29 dic 2025 - 4 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-27",
+"desde": "2026-01-26",
+"hasta": "2026-02-01",
+"etiqueta": "26 ene - 1 feb 2026",
+"anterior": [
+"2026-01-19",
+"2026-01-25"
+],
+"siguiente": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion": [
+"2026-01-19",
+"2026-01-25"
+],
+"comparacion_etiqueta": "vs 19 ene - 25 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-28",
+"desde": "2026-01-26",
+"hasta": "2026-02-01",
+"etiqueta": "26 ene - 1 feb 2026",
+"anterior": [
+"2026-01-19",
+"2026-01-25"
+],
+"siguiente": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion": [
+"2026-01-19",
+"2026-01-25"
+],
+"comparacion_etiqueta": "vs 19 ene - 25 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-14",
+"desde": "2026-02-09",
+"hasta": "2026-02-15",
+"etiqueta": "9 feb - 15 feb 2026",
+"anterior": [
+"2026-02-02",
+"2026-02-08"
+],
+"siguiente": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion_etiqueta": "vs 2 feb - 8 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-27",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-28",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-01",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-14",
+"desde": "2026-03-09",
+"hasta": "2026-03-15",
+"etiqueta": "9 mar - 15 mar 2026",
+"anterior": [
+"2026-03-02",
+"2026-03-08"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion_etiqueta": "vs 2 mar - 8 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-15",
+"desde": "2026-03-09",
+"hasta": "2026-03-15",
+"etiqueta": "9 mar - 15 mar 2026",
+"anterior": [
+"2026-03-02",
+"2026-03-08"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion_etiqueta": "vs 2 mar - 8 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-27",
+"desde": "2026-03-23",
+"hasta": "2026-03-29",
+"etiqueta": "23 mar - 29 mar 2026",
+"anterior": [
+"2026-03-16",
+"2026-03-22"
+],
+"siguiente": [
+"2026-03-30",
+"2026-04-05"
+],
+"comparacion": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion_etiqueta": "vs 16 mar - 22 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-28",
+"desde": "2026-03-23",
+"hasta": "2026-03-29",
+"etiqueta": "23 mar - 29 mar 2026",
+"anterior": [
+"2026-03-16",
+"2026-03-22"
+],
+"siguiente": [
+"2026-03-30",
+"2026-04-05"
+],
+"comparacion": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion_etiqueta": "vs 16 mar - 22 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-10-29",
+"desde": "2026-10-26",
+"hasta": "2026-11-01",
+"etiqueta": "26 oct - 1 nov 2026",
+"anterior": [
+"2026-10-19",
+"2026-10-25"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion": [
+"2026-10-19",
+"2026-10-25"
+],
+"comparacion_etiqueta": "vs 19 oct - 25 oct 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-01",
+"desde": "2026-10-26",
+"hasta": "2026-11-01",
+"etiqueta": "26 oct - 1 nov 2026",
+"anterior": [
+"2026-10-19",
+"2026-10-25"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion": [
+"2026-10-19",
+"2026-10-25"
+],
+"comparacion_etiqueta": "vs 19 oct - 25 oct 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-08",
+"desde": "2026-11-02",
+"hasta": "2026-11-08",
+"etiqueta": "2 nov - 8 nov 2026",
+"anterior": [
+"2026-10-26",
+"2026-11-01"
+],
+"siguiente": [
+"2026-11-09",
+"2026-11-15"
+],
+"comparacion": [
+"2026-10-26",
+"2026-11-01"
+],
+"comparacion_etiqueta": "vs 26 oct - 1 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-14",
+"desde": "2026-11-09",
+"hasta": "2026-11-15",
+"etiqueta": "9 nov - 15 nov 2026",
+"anterior": [
+"2026-11-02",
+"2026-11-08"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion_etiqueta": "vs 2 nov - 8 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-15",
+"desde": "2026-11-09",
+"hasta": "2026-11-15",
+"etiqueta": "9 nov - 15 nov 2026",
+"anterior": [
+"2026-11-02",
+"2026-11-08"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion_etiqueta": "vs 2 nov - 8 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-27",
+"desde": "2026-11-23",
+"hasta": "2026-11-29",
+"etiqueta": "23 nov - 29 nov 2026",
+"anterior": [
+"2026-11-16",
+"2026-11-22"
+],
+"siguiente": [
+"2026-11-30",
+"2026-12-06"
+],
+"comparacion": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion_etiqueta": "vs 16 nov - 22 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-28",
+"desde": "2026-11-23",
+"hasta": "2026-11-29",
+"etiqueta": "23 nov - 29 nov 2026",
+"anterior": [
+"2026-11-16",
+"2026-11-22"
+],
+"siguiente": [
+"2026-11-30",
+"2026-12-06"
+],
+"comparacion": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion_etiqueta": "vs 16 nov - 22 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-30",
+"desde": "2026-11-30",
+"hasta": "2026-12-06",
+"etiqueta": "30 nov - 6 dic 2026",
+"anterior": [
+"2026-11-23",
+"2026-11-29"
+],
+"siguiente": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion": [
+"2026-11-23",
+"2026-11-29"
+],
+"comparacion_etiqueta": "vs 23 nov - 29 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-14",
+"desde": "2026-12-14",
+"hasta": "2026-12-20",
+"etiqueta": "14 dic - 20 dic 2026",
+"anterior": [
+"2026-12-07",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 7 dic - 13 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-15",
+"desde": "2026-12-14",
+"hasta": "2026-12-20",
+"etiqueta": "14 dic - 20 dic 2026",
+"anterior": [
+"2026-12-07",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 7 dic - 13 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-27",
+"desde": "2026-12-21",
+"hasta": "2026-12-27",
+"etiqueta": "21 dic - 27 dic 2026",
+"anterior": [
+"2026-12-14",
+"2026-12-20"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-03"
+],
+"comparacion": [
+"2026-12-14",
+"2026-12-20"
+],
+"comparacion_etiqueta": "vs 14 dic - 20 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-31",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-01",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-14",
+"desde": "2027-01-11",
+"hasta": "2027-01-17",
+"etiqueta": "11 ene - 17 ene 2027",
+"anterior": [
+"2027-01-04",
+"2027-01-10"
+],
+"siguiente": [
+"2027-01-18",
+"2027-01-24"
+],
+"comparacion": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion_etiqueta": "vs 4 ene - 10 ene 2027"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-27",
+"desde": "2027-01-25",
+"hasta": "2027-01-31",
+"etiqueta": "25 ene - 31 ene 2027",
+"anterior": [
+"2027-01-18",
+"2027-01-24"
+],
+"siguiente": [
+"2027-02-01",
+"2027-02-07"
+],
+"comparacion": [
+"2027-01-18",
+"2027-01-24"
+],
+"comparacion_etiqueta": "vs 18 ene - 24 ene 2027"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-29",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2028-03-01",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2028-12-31",
+"desde": "2028-12-25",
+"hasta": "2028-12-31",
+"etiqueta": "25 dic - 31 dic 2028",
+"anterior": [
+"2028-12-18",
+"2028-12-24"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-07"
+],
+"comparacion": [
+"2028-12-18",
+"2028-12-24"
+],
+"comparacion_etiqueta": "vs 18 dic - 24 dic 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2100-02-28",
+"desde": "2100-02-22",
+"hasta": "2100-02-28",
+"etiqueta": "22 feb - 28 feb 2100",
+"anterior": [
+"2100-02-15",
+"2100-02-21"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-07"
+],
+"comparacion": [
+"2100-02-15",
+"2100-02-21"
+],
+"comparacion_etiqueta": "vs 15 feb - 21 feb 2100"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 1,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-07",
+"etiqueta": "1 mar - 7 mar 2100",
+"anterior": [
+"2100-02-22",
+"2100-02-28"
+],
+"siguiente": [
+"2100-03-08",
+"2100-03-14"
+],
+"comparacion": [
+"2100-02-22",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs 22 feb - 28 feb 2100"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2025-12-31",
+"desde": "2025-12-01",
+"hasta": "2025-12-31",
+"etiqueta": "Diciembre 2025",
+"anterior": [
+"2025-11-01",
+"2025-11-30"
+],
+"siguiente": [
+"2026-01-01",
+"2026-01-31"
+],
+"comparacion": [
+"2025-11-01",
+"2025-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2025"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-01-31",
+"etiqueta": "Enero 2026",
+"anterior": [
+"2025-12-01",
+"2025-12-31"
+],
+"siguiente": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion": [
+"2025-12-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2025"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-10",
+"desde": "2026-01-01",
+"hasta": "2026-01-31",
+"etiqueta": "Enero 2026",
+"anterior": [
+"2025-12-01",
+"2025-12-31"
+],
+"siguiente": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion": [
+"2025-12-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2025"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-27",
+"desde": "2026-01-01",
+"hasta": "2026-01-31",
+"etiqueta": "Enero 2026",
+"anterior": [
+"2025-12-01",
+"2025-12-31"
+],
+"siguiente": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion": [
+"2025-12-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2025"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-28",
+"desde": "2026-01-01",
+"hasta": "2026-01-31",
+"etiqueta": "Enero 2026",
+"anterior": [
+"2025-12-01",
+"2025-12-31"
+],
+"siguiente": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion": [
+"2025-12-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2025"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-14",
+"desde": "2026-02-01",
+"hasta": "2026-02-28",
+"etiqueta": "Febrero 2026",
+"anterior": [
+"2026-01-01",
+"2026-01-31"
+],
+"siguiente": [
+"2026-03-01",
+"2026-03-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-01-31"
+],
+"comparacion_etiqueta": "vs enero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-27",
+"desde": "2026-02-01",
+"hasta": "2026-02-28",
+"etiqueta": "Febrero 2026",
+"anterior": [
+"2026-01-01",
+"2026-01-31"
+],
+"siguiente": [
+"2026-03-01",
+"2026-03-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-01-31"
+],
+"comparacion_etiqueta": "vs enero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-28",
+"desde": "2026-02-01",
+"hasta": "2026-02-28",
+"etiqueta": "Febrero 2026",
+"anterior": [
+"2026-01-01",
+"2026-01-31"
+],
+"siguiente": [
+"2026-03-01",
+"2026-03-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-01-31"
+],
+"comparacion_etiqueta": "vs enero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-01",
+"desde": "2026-03-01",
+"hasta": "2026-03-31",
+"etiqueta": "Marzo 2026",
+"anterior": [
+"2026-02-01",
+"2026-02-28"
+],
+"siguiente": [
+"2026-04-01",
+"2026-04-30"
+],
+"comparacion": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs febrero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-14",
+"desde": "2026-03-01",
+"hasta": "2026-03-31",
+"etiqueta": "Marzo 2026",
+"anterior": [
+"2026-02-01",
+"2026-02-28"
+],
+"siguiente": [
+"2026-04-01",
+"2026-04-30"
+],
+"comparacion": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs febrero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-15",
+"desde": "2026-03-01",
+"hasta": "2026-03-31",
+"etiqueta": "Marzo 2026",
+"anterior": [
+"2026-02-01",
+"2026-02-28"
+],
+"siguiente": [
+"2026-04-01",
+"2026-04-30"
+],
+"comparacion": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs febrero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-27",
+"desde": "2026-03-01",
+"hasta": "2026-03-31",
+"etiqueta": "Marzo 2026",
+"anterior": [
+"2026-02-01",
+"2026-02-28"
+],
+"siguiente": [
+"2026-04-01",
+"2026-04-30"
+],
+"comparacion": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs febrero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-28",
+"desde": "2026-03-01",
+"hasta": "2026-03-31",
+"etiqueta": "Marzo 2026",
+"anterior": [
+"2026-02-01",
+"2026-02-28"
+],
+"siguiente": [
+"2026-04-01",
+"2026-04-30"
+],
+"comparacion": [
+"2026-02-01",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs febrero 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-10-29",
+"desde": "2026-10-01",
+"hasta": "2026-10-31",
+"etiqueta": "Octubre 2026",
+"anterior": [
+"2026-09-01",
+"2026-09-30"
+],
+"siguiente": [
+"2026-11-01",
+"2026-11-30"
+],
+"comparacion": [
+"2026-09-01",
+"2026-09-30"
+],
+"comparacion_etiqueta": "vs septiembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-01",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-08",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-14",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-15",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-27",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-28",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-30",
+"desde": "2026-11-01",
+"hasta": "2026-11-30",
+"etiqueta": "Noviembre 2026",
+"anterior": [
+"2026-10-01",
+"2026-10-31"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion": [
+"2026-10-01",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs octubre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-14",
+"desde": "2026-12-01",
+"hasta": "2026-12-31",
+"etiqueta": "Diciembre 2026",
+"anterior": [
+"2026-11-01",
+"2026-11-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-31"
+],
+"comparacion": [
+"2026-11-01",
+"2026-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-15",
+"desde": "2026-12-01",
+"hasta": "2026-12-31",
+"etiqueta": "Diciembre 2026",
+"anterior": [
+"2026-11-01",
+"2026-11-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-31"
+],
+"comparacion": [
+"2026-11-01",
+"2026-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-27",
+"desde": "2026-12-01",
+"hasta": "2026-12-31",
+"etiqueta": "Diciembre 2026",
+"anterior": [
+"2026-11-01",
+"2026-11-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-31"
+],
+"comparacion": [
+"2026-11-01",
+"2026-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-28",
+"desde": "2026-12-01",
+"hasta": "2026-12-31",
+"etiqueta": "Diciembre 2026",
+"anterior": [
+"2026-11-01",
+"2026-11-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-31"
+],
+"comparacion": [
+"2026-11-01",
+"2026-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-31",
+"desde": "2026-12-01",
+"hasta": "2026-12-31",
+"etiqueta": "Diciembre 2026",
+"anterior": [
+"2026-11-01",
+"2026-11-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-31"
+],
+"comparacion": [
+"2026-11-01",
+"2026-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-01-31",
+"etiqueta": "Enero 2027",
+"anterior": [
+"2026-12-01",
+"2026-12-31"
+],
+"siguiente": [
+"2027-02-01",
+"2027-02-28"
+],
+"comparacion": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-14",
+"desde": "2027-01-01",
+"hasta": "2027-01-31",
+"etiqueta": "Enero 2027",
+"anterior": [
+"2026-12-01",
+"2026-12-31"
+],
+"siguiente": [
+"2027-02-01",
+"2027-02-28"
+],
+"comparacion": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-27",
+"desde": "2027-01-01",
+"hasta": "2027-01-31",
+"etiqueta": "Enero 2027",
+"anterior": [
+"2026-12-01",
+"2026-12-31"
+],
+"siguiente": [
+"2027-02-01",
+"2027-02-28"
+],
+"comparacion": [
+"2026-12-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs diciembre 2026"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-28",
+"desde": "2028-02-01",
+"hasta": "2028-02-29",
+"etiqueta": "Febrero 2028",
+"anterior": [
+"2028-01-01",
+"2028-01-31"
+],
+"siguiente": [
+"2028-03-01",
+"2028-03-31"
+],
+"comparacion": [
+"2028-01-01",
+"2028-01-31"
+],
+"comparacion_etiqueta": "vs enero 2028"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-29",
+"desde": "2028-02-01",
+"hasta": "2028-02-29",
+"etiqueta": "Febrero 2028",
+"anterior": [
+"2028-01-01",
+"2028-01-31"
+],
+"siguiente": [
+"2028-03-01",
+"2028-03-31"
+],
+"comparacion": [
+"2028-01-01",
+"2028-01-31"
+],
+"comparacion_etiqueta": "vs enero 2028"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2028-03-01",
+"desde": "2028-03-01",
+"hasta": "2028-03-31",
+"etiqueta": "Marzo 2028",
+"anterior": [
+"2028-02-01",
+"2028-02-29"
+],
+"siguiente": [
+"2028-04-01",
+"2028-04-30"
+],
+"comparacion": [
+"2028-02-01",
+"2028-02-29"
+],
+"comparacion_etiqueta": "vs febrero 2028"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2028-12-31",
+"desde": "2028-12-01",
+"hasta": "2028-12-31",
+"etiqueta": "Diciembre 2028",
+"anterior": [
+"2028-11-01",
+"2028-11-30"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-31"
+],
+"comparacion": [
+"2028-11-01",
+"2028-11-30"
+],
+"comparacion_etiqueta": "vs noviembre 2028"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2100-02-28",
+"desde": "2100-02-01",
+"hasta": "2100-02-28",
+"etiqueta": "Febrero 2100",
+"anterior": [
+"2100-01-01",
+"2100-01-31"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-31"
+],
+"comparacion": [
+"2100-01-01",
+"2100-01-31"
+],
+"comparacion_etiqueta": "vs enero 2100"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 1,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-31",
+"etiqueta": "Marzo 2100",
+"anterior": [
+"2100-02-01",
+"2100-02-28"
+],
+"siguiente": [
+"2100-04-01",
+"2100-04-30"
+],
+"comparacion": [
+"2100-02-01",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs febrero 2100"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2025-12-31",
+"desde": "2025-01-01",
+"hasta": "2025-12-31",
+"etiqueta": "2025",
+"anterior": [
+"2024-01-01",
+"2024-12-31"
+],
+"siguiente": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion": [
+"2024-01-01",
+"2024-12-31"
+],
+"comparacion_etiqueta": "vs 2024"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-10",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-01-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-02-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-03-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-10-29",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-08",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-30",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-31",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-14",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2027-01-27",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-28",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-29",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2028-03-01",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2028-12-31",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2100-02-28",
+"desde": "2100-01-01",
+"hasta": "2100-12-31",
+"etiqueta": "2100",
+"anterior": [
+"2099-01-01",
+"2099-12-31"
+],
+"siguiente": [
+"2101-01-01",
+"2101-12-31"
+],
+"comparacion": [
+"2099-01-01",
+"2099-12-31"
+],
+"comparacion_etiqueta": "vs 2099"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 1,
+"referencia": "2100-03-01",
+"desde": "2100-01-01",
+"hasta": "2100-12-31",
+"etiqueta": "2100",
+"anterior": [
+"2099-01-01",
+"2099-12-31"
+],
+"siguiente": [
+"2101-01-01",
+"2101-12-31"
+],
+"comparacion": [
+"2099-01-01",
+"2099-12-31"
+],
+"comparacion_etiqueta": "vs 2099"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2025-12-31",
+"desde": "2025-12-31",
+"hasta": "2025-12-31",
+"etiqueta": "31 dic 2025",
+"anterior": [
+"2025-12-30",
+"2025-12-30"
+],
+"siguiente": [
+"2026-01-01",
+"2026-01-01"
+],
+"comparacion": [
+"2025-12-30",
+"2025-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2025"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-01-01",
+"etiqueta": "1 ene 2026",
+"anterior": [
+"2025-12-31",
+"2025-12-31"
+],
+"siguiente": [
+"2026-01-02",
+"2026-01-02"
+],
+"comparacion": [
+"2025-12-31",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 31 dic 2025"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-10",
+"desde": "2026-01-10",
+"hasta": "2026-01-10",
+"etiqueta": "10 ene 2026",
+"anterior": [
+"2026-01-09",
+"2026-01-09"
+],
+"siguiente": [
+"2026-01-11",
+"2026-01-11"
+],
+"comparacion": [
+"2026-01-09",
+"2026-01-09"
+],
+"comparacion_etiqueta": "vs 9 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-27",
+"desde": "2026-01-27",
+"hasta": "2026-01-27",
+"etiqueta": "27 ene 2026",
+"anterior": [
+"2026-01-26",
+"2026-01-26"
+],
+"siguiente": [
+"2026-01-28",
+"2026-01-28"
+],
+"comparacion": [
+"2026-01-26",
+"2026-01-26"
+],
+"comparacion_etiqueta": "vs 26 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-28",
+"desde": "2026-01-28",
+"hasta": "2026-01-28",
+"etiqueta": "28 ene 2026",
+"anterior": [
+"2026-01-27",
+"2026-01-27"
+],
+"siguiente": [
+"2026-01-29",
+"2026-01-29"
+],
+"comparacion": [
+"2026-01-27",
+"2026-01-27"
+],
+"comparacion_etiqueta": "vs 27 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-14",
+"desde": "2026-02-14",
+"hasta": "2026-02-14",
+"etiqueta": "14 feb 2026",
+"anterior": [
+"2026-02-13",
+"2026-02-13"
+],
+"siguiente": [
+"2026-02-15",
+"2026-02-15"
+],
+"comparacion": [
+"2026-02-13",
+"2026-02-13"
+],
+"comparacion_etiqueta": "vs 13 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-27",
+"desde": "2026-02-27",
+"hasta": "2026-02-27",
+"etiqueta": "27 feb 2026",
+"anterior": [
+"2026-02-26",
+"2026-02-26"
+],
+"siguiente": [
+"2026-02-28",
+"2026-02-28"
+],
+"comparacion": [
+"2026-02-26",
+"2026-02-26"
+],
+"comparacion_etiqueta": "vs 26 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-28",
+"desde": "2026-02-28",
+"hasta": "2026-02-28",
+"etiqueta": "28 feb 2026",
+"anterior": [
+"2026-02-27",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-01",
+"2026-03-01"
+],
+"comparacion": [
+"2026-02-27",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-01",
+"desde": "2026-03-01",
+"hasta": "2026-03-01",
+"etiqueta": "1 mar 2026",
+"anterior": [
+"2026-02-28",
+"2026-02-28"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-02"
+],
+"comparacion": [
+"2026-02-28",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-14",
+"desde": "2026-03-14",
+"hasta": "2026-03-14",
+"etiqueta": "14 mar 2026",
+"anterior": [
+"2026-03-13",
+"2026-03-13"
+],
+"siguiente": [
+"2026-03-15",
+"2026-03-15"
+],
+"comparacion": [
+"2026-03-13",
+"2026-03-13"
+],
+"comparacion_etiqueta": "vs 13 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-15",
+"desde": "2026-03-15",
+"hasta": "2026-03-15",
+"etiqueta": "15 mar 2026",
+"anterior": [
+"2026-03-14",
+"2026-03-14"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-16"
+],
+"comparacion": [
+"2026-03-14",
+"2026-03-14"
+],
+"comparacion_etiqueta": "vs 14 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-27",
+"desde": "2026-03-27",
+"hasta": "2026-03-27",
+"etiqueta": "27 mar 2026",
+"anterior": [
+"2026-03-26",
+"2026-03-26"
+],
+"siguiente": [
+"2026-03-28",
+"2026-03-28"
+],
+"comparacion": [
+"2026-03-26",
+"2026-03-26"
+],
+"comparacion_etiqueta": "vs 26 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-28",
+"desde": "2026-03-28",
+"hasta": "2026-03-28",
+"etiqueta": "28 mar 2026",
+"anterior": [
+"2026-03-27",
+"2026-03-27"
+],
+"siguiente": [
+"2026-03-29",
+"2026-03-29"
+],
+"comparacion": [
+"2026-03-27",
+"2026-03-27"
+],
+"comparacion_etiqueta": "vs 27 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-10-29",
+"desde": "2026-10-29",
+"hasta": "2026-10-29",
+"etiqueta": "29 oct 2026",
+"anterior": [
+"2026-10-28",
+"2026-10-28"
+],
+"siguiente": [
+"2026-10-30",
+"2026-10-30"
+],
+"comparacion": [
+"2026-10-28",
+"2026-10-28"
+],
+"comparacion_etiqueta": "vs 28 oct 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-01",
+"desde": "2026-11-01",
+"hasta": "2026-11-01",
+"etiqueta": "1 nov 2026",
+"anterior": [
+"2026-10-31",
+"2026-10-31"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-02"
+],
+"comparacion": [
+"2026-10-31",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs 31 oct 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-08",
+"desde": "2026-11-08",
+"hasta": "2026-11-08",
+"etiqueta": "8 nov 2026",
+"anterior": [
+"2026-11-07",
+"2026-11-07"
+],
+"siguiente": [
+"2026-11-09",
+"2026-11-09"
+],
+"comparacion": [
+"2026-11-07",
+"2026-11-07"
+],
+"comparacion_etiqueta": "vs 7 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-14",
+"desde": "2026-11-14",
+"hasta": "2026-11-14",
+"etiqueta": "14 nov 2026",
+"anterior": [
+"2026-11-13",
+"2026-11-13"
+],
+"siguiente": [
+"2026-11-15",
+"2026-11-15"
+],
+"comparacion": [
+"2026-11-13",
+"2026-11-13"
+],
+"comparacion_etiqueta": "vs 13 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-15",
+"desde": "2026-11-15",
+"hasta": "2026-11-15",
+"etiqueta": "15 nov 2026",
+"anterior": [
+"2026-11-14",
+"2026-11-14"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-16"
+],
+"comparacion": [
+"2026-11-14",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 14 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-27",
+"desde": "2026-11-27",
+"hasta": "2026-11-27",
+"etiqueta": "27 nov 2026",
+"anterior": [
+"2026-11-26",
+"2026-11-26"
+],
+"siguiente": [
+"2026-11-28",
+"2026-11-28"
+],
+"comparacion": [
+"2026-11-26",
+"2026-11-26"
+],
+"comparacion_etiqueta": "vs 26 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-28",
+"desde": "2026-11-28",
+"hasta": "2026-11-28",
+"etiqueta": "28 nov 2026",
+"anterior": [
+"2026-11-27",
+"2026-11-27"
+],
+"siguiente": [
+"2026-11-29",
+"2026-11-29"
+],
+"comparacion": [
+"2026-11-27",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 27 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-30",
+"desde": "2026-11-30",
+"hasta": "2026-11-30",
+"etiqueta": "30 nov 2026",
+"anterior": [
+"2026-11-29",
+"2026-11-29"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-01"
+],
+"comparacion": [
+"2026-11-29",
+"2026-11-29"
+],
+"comparacion_etiqueta": "vs 29 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-14",
+"desde": "2026-12-14",
+"hasta": "2026-12-14",
+"etiqueta": "14 dic 2026",
+"anterior": [
+"2026-12-13",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-15",
+"2026-12-15"
+],
+"comparacion": [
+"2026-12-13",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 13 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-15",
+"desde": "2026-12-15",
+"hasta": "2026-12-15",
+"etiqueta": "15 dic 2026",
+"anterior": [
+"2026-12-14",
+"2026-12-14"
+],
+"siguiente": [
+"2026-12-16",
+"2026-12-16"
+],
+"comparacion": [
+"2026-12-14",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 14 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-27",
+"desde": "2026-12-27",
+"hasta": "2026-12-27",
+"etiqueta": "27 dic 2026",
+"anterior": [
+"2026-12-26",
+"2026-12-26"
+],
+"siguiente": [
+"2026-12-28",
+"2026-12-28"
+],
+"comparacion": [
+"2026-12-26",
+"2026-12-26"
+],
+"comparacion_etiqueta": "vs 26 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2026-12-28",
+"etiqueta": "28 dic 2026",
+"anterior": [
+"2026-12-27",
+"2026-12-27"
+],
+"siguiente": [
+"2026-12-29",
+"2026-12-29"
+],
+"comparacion": [
+"2026-12-27",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 27 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-31",
+"desde": "2026-12-31",
+"hasta": "2026-12-31",
+"etiqueta": "31 dic 2026",
+"anterior": [
+"2026-12-30",
+"2026-12-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-01"
+],
+"comparacion": [
+"2026-12-30",
+"2026-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-01-01",
+"etiqueta": "1 ene 2027",
+"anterior": [
+"2026-12-31",
+"2026-12-31"
+],
+"siguiente": [
+"2027-01-02",
+"2027-01-02"
+],
+"comparacion": [
+"2026-12-31",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 31 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-14",
+"desde": "2027-01-14",
+"hasta": "2027-01-14",
+"etiqueta": "14 ene 2027",
+"anterior": [
+"2027-01-13",
+"2027-01-13"
+],
+"siguiente": [
+"2027-01-15",
+"2027-01-15"
+],
+"comparacion": [
+"2027-01-13",
+"2027-01-13"
+],
+"comparacion_etiqueta": "vs 13 ene 2027"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-27",
+"desde": "2027-01-27",
+"hasta": "2027-01-27",
+"etiqueta": "27 ene 2027",
+"anterior": [
+"2027-01-26",
+"2027-01-26"
+],
+"siguiente": [
+"2027-01-28",
+"2027-01-28"
+],
+"comparacion": [
+"2027-01-26",
+"2027-01-26"
+],
+"comparacion_etiqueta": "vs 26 ene 2027"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-02-28",
+"etiqueta": "28 feb 2028",
+"anterior": [
+"2028-02-27",
+"2028-02-27"
+],
+"siguiente": [
+"2028-02-29",
+"2028-02-29"
+],
+"comparacion": [
+"2028-02-27",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-29",
+"desde": "2028-02-29",
+"hasta": "2028-02-29",
+"etiqueta": "29 feb 2028",
+"anterior": [
+"2028-02-28",
+"2028-02-28"
+],
+"siguiente": [
+"2028-03-01",
+"2028-03-01"
+],
+"comparacion": [
+"2028-02-28",
+"2028-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2028-03-01",
+"desde": "2028-03-01",
+"hasta": "2028-03-01",
+"etiqueta": "1 mar 2028",
+"anterior": [
+"2028-02-29",
+"2028-02-29"
+],
+"siguiente": [
+"2028-03-02",
+"2028-03-02"
+],
+"comparacion": [
+"2028-02-29",
+"2028-02-29"
+],
+"comparacion_etiqueta": "vs 29 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2028-12-31",
+"desde": "2028-12-31",
+"hasta": "2028-12-31",
+"etiqueta": "31 dic 2028",
+"anterior": [
+"2028-12-30",
+"2028-12-30"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-01"
+],
+"comparacion": [
+"2028-12-30",
+"2028-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2100-02-28",
+"desde": "2100-02-28",
+"hasta": "2100-02-28",
+"etiqueta": "28 feb 2100",
+"anterior": [
+"2100-02-27",
+"2100-02-27"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-01"
+],
+"comparacion": [
+"2100-02-27",
+"2100-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2100"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 15,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-01",
+"etiqueta": "1 mar 2100",
+"anterior": [
+"2100-02-28",
+"2100-02-28"
+],
+"siguiente": [
+"2100-03-02",
+"2100-03-02"
+],
+"comparacion": [
+"2100-02-28",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2100"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2025-12-31",
+"desde": "2025-12-29",
+"hasta": "2026-01-04",
+"etiqueta": "29 dic 2025 - 4 ene 2026",
+"anterior": [
+"2025-12-22",
+"2025-12-28"
+],
+"siguiente": [
+"2026-01-05",
+"2026-01-11"
+],
+"comparacion": [
+"2025-12-22",
+"2025-12-28"
+],
+"comparacion_etiqueta": "vs 22 dic - 28 dic 2025"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-01",
+"desde": "2025-12-29",
+"hasta": "2026-01-04",
+"etiqueta": "29 dic 2025 - 4 ene 2026",
+"anterior": [
+"2025-12-22",
+"2025-12-28"
+],
+"siguiente": [
+"2026-01-05",
+"2026-01-11"
+],
+"comparacion": [
+"2025-12-22",
+"2025-12-28"
+],
+"comparacion_etiqueta": "vs 22 dic - 28 dic 2025"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-10",
+"desde": "2026-01-05",
+"hasta": "2026-01-11",
+"etiqueta": "5 ene - 11 ene 2026",
+"anterior": [
+"2025-12-29",
+"2026-01-04"
+],
+"siguiente": [
+"2026-01-12",
+"2026-01-18"
+],
+"comparacion": [
+"2025-12-29",
+"2026-01-04"
+],
+"comparacion_etiqueta": "vs 29 dic 2025 - 4 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-27",
+"desde": "2026-01-26",
+"hasta": "2026-02-01",
+"etiqueta": "26 ene - 1 feb 2026",
+"anterior": [
+"2026-01-19",
+"2026-01-25"
+],
+"siguiente": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion": [
+"2026-01-19",
+"2026-01-25"
+],
+"comparacion_etiqueta": "vs 19 ene - 25 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-28",
+"desde": "2026-01-26",
+"hasta": "2026-02-01",
+"etiqueta": "26 ene - 1 feb 2026",
+"anterior": [
+"2026-01-19",
+"2026-01-25"
+],
+"siguiente": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion": [
+"2026-01-19",
+"2026-01-25"
+],
+"comparacion_etiqueta": "vs 19 ene - 25 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-14",
+"desde": "2026-02-09",
+"hasta": "2026-02-15",
+"etiqueta": "9 feb - 15 feb 2026",
+"anterior": [
+"2026-02-02",
+"2026-02-08"
+],
+"siguiente": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion_etiqueta": "vs 2 feb - 8 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-27",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-28",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-01",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-14",
+"desde": "2026-03-09",
+"hasta": "2026-03-15",
+"etiqueta": "9 mar - 15 mar 2026",
+"anterior": [
+"2026-03-02",
+"2026-03-08"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion_etiqueta": "vs 2 mar - 8 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-15",
+"desde": "2026-03-09",
+"hasta": "2026-03-15",
+"etiqueta": "9 mar - 15 mar 2026",
+"anterior": [
+"2026-03-02",
+"2026-03-08"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion_etiqueta": "vs 2 mar - 8 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-27",
+"desde": "2026-03-23",
+"hasta": "2026-03-29",
+"etiqueta": "23 mar - 29 mar 2026",
+"anterior": [
+"2026-03-16",
+"2026-03-22"
+],
+"siguiente": [
+"2026-03-30",
+"2026-04-05"
+],
+"comparacion": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion_etiqueta": "vs 16 mar - 22 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-28",
+"desde": "2026-03-23",
+"hasta": "2026-03-29",
+"etiqueta": "23 mar - 29 mar 2026",
+"anterior": [
+"2026-03-16",
+"2026-03-22"
+],
+"siguiente": [
+"2026-03-30",
+"2026-04-05"
+],
+"comparacion": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion_etiqueta": "vs 16 mar - 22 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-10-29",
+"desde": "2026-10-26",
+"hasta": "2026-11-01",
+"etiqueta": "26 oct - 1 nov 2026",
+"anterior": [
+"2026-10-19",
+"2026-10-25"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion": [
+"2026-10-19",
+"2026-10-25"
+],
+"comparacion_etiqueta": "vs 19 oct - 25 oct 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-01",
+"desde": "2026-10-26",
+"hasta": "2026-11-01",
+"etiqueta": "26 oct - 1 nov 2026",
+"anterior": [
+"2026-10-19",
+"2026-10-25"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion": [
+"2026-10-19",
+"2026-10-25"
+],
+"comparacion_etiqueta": "vs 19 oct - 25 oct 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-08",
+"desde": "2026-11-02",
+"hasta": "2026-11-08",
+"etiqueta": "2 nov - 8 nov 2026",
+"anterior": [
+"2026-10-26",
+"2026-11-01"
+],
+"siguiente": [
+"2026-11-09",
+"2026-11-15"
+],
+"comparacion": [
+"2026-10-26",
+"2026-11-01"
+],
+"comparacion_etiqueta": "vs 26 oct - 1 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-14",
+"desde": "2026-11-09",
+"hasta": "2026-11-15",
+"etiqueta": "9 nov - 15 nov 2026",
+"anterior": [
+"2026-11-02",
+"2026-11-08"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion_etiqueta": "vs 2 nov - 8 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-15",
+"desde": "2026-11-09",
+"hasta": "2026-11-15",
+"etiqueta": "9 nov - 15 nov 2026",
+"anterior": [
+"2026-11-02",
+"2026-11-08"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion_etiqueta": "vs 2 nov - 8 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-27",
+"desde": "2026-11-23",
+"hasta": "2026-11-29",
+"etiqueta": "23 nov - 29 nov 2026",
+"anterior": [
+"2026-11-16",
+"2026-11-22"
+],
+"siguiente": [
+"2026-11-30",
+"2026-12-06"
+],
+"comparacion": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion_etiqueta": "vs 16 nov - 22 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-28",
+"desde": "2026-11-23",
+"hasta": "2026-11-29",
+"etiqueta": "23 nov - 29 nov 2026",
+"anterior": [
+"2026-11-16",
+"2026-11-22"
+],
+"siguiente": [
+"2026-11-30",
+"2026-12-06"
+],
+"comparacion": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion_etiqueta": "vs 16 nov - 22 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-30",
+"desde": "2026-11-30",
+"hasta": "2026-12-06",
+"etiqueta": "30 nov - 6 dic 2026",
+"anterior": [
+"2026-11-23",
+"2026-11-29"
+],
+"siguiente": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion": [
+"2026-11-23",
+"2026-11-29"
+],
+"comparacion_etiqueta": "vs 23 nov - 29 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-14",
+"desde": "2026-12-14",
+"hasta": "2026-12-20",
+"etiqueta": "14 dic - 20 dic 2026",
+"anterior": [
+"2026-12-07",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 7 dic - 13 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-15",
+"desde": "2026-12-14",
+"hasta": "2026-12-20",
+"etiqueta": "14 dic - 20 dic 2026",
+"anterior": [
+"2026-12-07",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 7 dic - 13 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-27",
+"desde": "2026-12-21",
+"hasta": "2026-12-27",
+"etiqueta": "21 dic - 27 dic 2026",
+"anterior": [
+"2026-12-14",
+"2026-12-20"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-03"
+],
+"comparacion": [
+"2026-12-14",
+"2026-12-20"
+],
+"comparacion_etiqueta": "vs 14 dic - 20 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-31",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-01",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-14",
+"desde": "2027-01-11",
+"hasta": "2027-01-17",
+"etiqueta": "11 ene - 17 ene 2027",
+"anterior": [
+"2027-01-04",
+"2027-01-10"
+],
+"siguiente": [
+"2027-01-18",
+"2027-01-24"
+],
+"comparacion": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion_etiqueta": "vs 4 ene - 10 ene 2027"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-27",
+"desde": "2027-01-25",
+"hasta": "2027-01-31",
+"etiqueta": "25 ene - 31 ene 2027",
+"anterior": [
+"2027-01-18",
+"2027-01-24"
+],
+"siguiente": [
+"2027-02-01",
+"2027-02-07"
+],
+"comparacion": [
+"2027-01-18",
+"2027-01-24"
+],
+"comparacion_etiqueta": "vs 18 ene - 24 ene 2027"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-29",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2028-03-01",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2028-12-31",
+"desde": "2028-12-25",
+"hasta": "2028-12-31",
+"etiqueta": "25 dic - 31 dic 2028",
+"anterior": [
+"2028-12-18",
+"2028-12-24"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-07"
+],
+"comparacion": [
+"2028-12-18",
+"2028-12-24"
+],
+"comparacion_etiqueta": "vs 18 dic - 24 dic 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2100-02-28",
+"desde": "2100-02-22",
+"hasta": "2100-02-28",
+"etiqueta": "22 feb - 28 feb 2100",
+"anterior": [
+"2100-02-15",
+"2100-02-21"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-07"
+],
+"comparacion": [
+"2100-02-15",
+"2100-02-21"
+],
+"comparacion_etiqueta": "vs 15 feb - 21 feb 2100"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 15,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-07",
+"etiqueta": "1 mar - 7 mar 2100",
+"anterior": [
+"2100-02-22",
+"2100-02-28"
+],
+"siguiente": [
+"2100-03-08",
+"2100-03-14"
+],
+"comparacion": [
+"2100-02-22",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs 22 feb - 28 feb 2100"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2025-12-31",
+"desde": "2025-12-15",
+"hasta": "2026-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2025-11-15",
+"2025-12-14"
+],
+"siguiente": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion": [
+"2025-11-15",
+"2025-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-01",
+"desde": "2025-12-15",
+"hasta": "2026-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2025-11-15",
+"2025-12-14"
+],
+"siguiente": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion": [
+"2025-11-15",
+"2025-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-10",
+"desde": "2025-12-15",
+"hasta": "2026-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2025-11-15",
+"2025-12-14"
+],
+"siguiente": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion": [
+"2025-11-15",
+"2025-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-27",
+"desde": "2026-01-15",
+"hasta": "2026-02-14",
+"etiqueta": "15 ene - 14 feb",
+"anterior": [
+"2025-12-15",
+"2026-01-14"
+],
+"siguiente": [
+"2026-02-15",
+"2026-03-14"
+],
+"comparacion": [
+"2025-12-15",
+"2026-01-14"
+],
+"comparacion_etiqueta": "vs 15 dic - 14 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-28",
+"desde": "2026-01-15",
+"hasta": "2026-02-14",
+"etiqueta": "15 ene - 14 feb",
+"anterior": [
+"2025-12-15",
+"2026-01-14"
+],
+"siguiente": [
+"2026-02-15",
+"2026-03-14"
+],
+"comparacion": [
+"2025-12-15",
+"2026-01-14"
+],
+"comparacion_etiqueta": "vs 15 dic - 14 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-14",
+"desde": "2026-01-15",
+"hasta": "2026-02-14",
+"etiqueta": "15 ene - 14 feb",
+"anterior": [
+"2025-12-15",
+"2026-01-14"
+],
+"siguiente": [
+"2026-02-15",
+"2026-03-14"
+],
+"comparacion": [
+"2025-12-15",
+"2026-01-14"
+],
+"comparacion_etiqueta": "vs 15 dic - 14 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-27",
+"desde": "2026-02-15",
+"hasta": "2026-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2026-01-15",
+"2026-02-14"
+],
+"siguiente": [
+"2026-03-15",
+"2026-04-14"
+],
+"comparacion": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-28",
+"desde": "2026-02-15",
+"hasta": "2026-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2026-01-15",
+"2026-02-14"
+],
+"siguiente": [
+"2026-03-15",
+"2026-04-14"
+],
+"comparacion": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-01",
+"desde": "2026-02-15",
+"hasta": "2026-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2026-01-15",
+"2026-02-14"
+],
+"siguiente": [
+"2026-03-15",
+"2026-04-14"
+],
+"comparacion": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-14",
+"desde": "2026-02-15",
+"hasta": "2026-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2026-01-15",
+"2026-02-14"
+],
+"siguiente": [
+"2026-03-15",
+"2026-04-14"
+],
+"comparacion": [
+"2026-01-15",
+"2026-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-15",
+"desde": "2026-03-15",
+"hasta": "2026-04-14",
+"etiqueta": "15 mar - 14 abr",
+"anterior": [
+"2026-02-15",
+"2026-03-14"
+],
+"siguiente": [
+"2026-04-15",
+"2026-05-14"
+],
+"comparacion": [
+"2026-02-15",
+"2026-03-14"
+],
+"comparacion_etiqueta": "vs 15 feb - 14 mar"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-27",
+"desde": "2026-03-15",
+"hasta": "2026-04-14",
+"etiqueta": "15 mar - 14 abr",
+"anterior": [
+"2026-02-15",
+"2026-03-14"
+],
+"siguiente": [
+"2026-04-15",
+"2026-05-14"
+],
+"comparacion": [
+"2026-02-15",
+"2026-03-14"
+],
+"comparacion_etiqueta": "vs 15 feb - 14 mar"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-28",
+"desde": "2026-03-15",
+"hasta": "2026-04-14",
+"etiqueta": "15 mar - 14 abr",
+"anterior": [
+"2026-02-15",
+"2026-03-14"
+],
+"siguiente": [
+"2026-04-15",
+"2026-05-14"
+],
+"comparacion": [
+"2026-02-15",
+"2026-03-14"
+],
+"comparacion_etiqueta": "vs 15 feb - 14 mar"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-10-29",
+"desde": "2026-10-15",
+"hasta": "2026-11-14",
+"etiqueta": "15 oct - 14 nov",
+"anterior": [
+"2026-09-15",
+"2026-10-14"
+],
+"siguiente": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion": [
+"2026-09-15",
+"2026-10-14"
+],
+"comparacion_etiqueta": "vs 15 sep - 14 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-01",
+"desde": "2026-10-15",
+"hasta": "2026-11-14",
+"etiqueta": "15 oct - 14 nov",
+"anterior": [
+"2026-09-15",
+"2026-10-14"
+],
+"siguiente": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion": [
+"2026-09-15",
+"2026-10-14"
+],
+"comparacion_etiqueta": "vs 15 sep - 14 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-08",
+"desde": "2026-10-15",
+"hasta": "2026-11-14",
+"etiqueta": "15 oct - 14 nov",
+"anterior": [
+"2026-09-15",
+"2026-10-14"
+],
+"siguiente": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion": [
+"2026-09-15",
+"2026-10-14"
+],
+"comparacion_etiqueta": "vs 15 sep - 14 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-14",
+"desde": "2026-10-15",
+"hasta": "2026-11-14",
+"etiqueta": "15 oct - 14 nov",
+"anterior": [
+"2026-09-15",
+"2026-10-14"
+],
+"siguiente": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion": [
+"2026-09-15",
+"2026-10-14"
+],
+"comparacion_etiqueta": "vs 15 sep - 14 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-15",
+"desde": "2026-11-15",
+"hasta": "2026-12-14",
+"etiqueta": "15 nov - 14 dic",
+"anterior": [
+"2026-10-15",
+"2026-11-14"
+],
+"siguiente": [
+"2026-12-15",
+"2027-01-14"
+],
+"comparacion": [
+"2026-10-15",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 15 oct - 14 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-27",
+"desde": "2026-11-15",
+"hasta": "2026-12-14",
+"etiqueta": "15 nov - 14 dic",
+"anterior": [
+"2026-10-15",
+"2026-11-14"
+],
+"siguiente": [
+"2026-12-15",
+"2027-01-14"
+],
+"comparacion": [
+"2026-10-15",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 15 oct - 14 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-28",
+"desde": "2026-11-15",
+"hasta": "2026-12-14",
+"etiqueta": "15 nov - 14 dic",
+"anterior": [
+"2026-10-15",
+"2026-11-14"
+],
+"siguiente": [
+"2026-12-15",
+"2027-01-14"
+],
+"comparacion": [
+"2026-10-15",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 15 oct - 14 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-30",
+"desde": "2026-11-15",
+"hasta": "2026-12-14",
+"etiqueta": "15 nov - 14 dic",
+"anterior": [
+"2026-10-15",
+"2026-11-14"
+],
+"siguiente": [
+"2026-12-15",
+"2027-01-14"
+],
+"comparacion": [
+"2026-10-15",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 15 oct - 14 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-14",
+"desde": "2026-11-15",
+"hasta": "2026-12-14",
+"etiqueta": "15 nov - 14 dic",
+"anterior": [
+"2026-10-15",
+"2026-11-14"
+],
+"siguiente": [
+"2026-12-15",
+"2027-01-14"
+],
+"comparacion": [
+"2026-10-15",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 15 oct - 14 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-15",
+"desde": "2026-12-15",
+"hasta": "2027-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2026-11-15",
+"2026-12-14"
+],
+"siguiente": [
+"2027-01-15",
+"2027-02-14"
+],
+"comparacion": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-27",
+"desde": "2026-12-15",
+"hasta": "2027-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2026-11-15",
+"2026-12-14"
+],
+"siguiente": [
+"2027-01-15",
+"2027-02-14"
+],
+"comparacion": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-28",
+"desde": "2026-12-15",
+"hasta": "2027-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2026-11-15",
+"2026-12-14"
+],
+"siguiente": [
+"2027-01-15",
+"2027-02-14"
+],
+"comparacion": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-31",
+"desde": "2026-12-15",
+"hasta": "2027-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2026-11-15",
+"2026-12-14"
+],
+"siguiente": [
+"2027-01-15",
+"2027-02-14"
+],
+"comparacion": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-01",
+"desde": "2026-12-15",
+"hasta": "2027-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2026-11-15",
+"2026-12-14"
+],
+"siguiente": [
+"2027-01-15",
+"2027-02-14"
+],
+"comparacion": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-14",
+"desde": "2026-12-15",
+"hasta": "2027-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2026-11-15",
+"2026-12-14"
+],
+"siguiente": [
+"2027-01-15",
+"2027-02-14"
+],
+"comparacion": [
+"2026-11-15",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-27",
+"desde": "2027-01-15",
+"hasta": "2027-02-14",
+"etiqueta": "15 ene - 14 feb",
+"anterior": [
+"2026-12-15",
+"2027-01-14"
+],
+"siguiente": [
+"2027-02-15",
+"2027-03-14"
+],
+"comparacion": [
+"2026-12-15",
+"2027-01-14"
+],
+"comparacion_etiqueta": "vs 15 dic - 14 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-28",
+"desde": "2028-02-15",
+"hasta": "2028-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2028-01-15",
+"2028-02-14"
+],
+"siguiente": [
+"2028-03-15",
+"2028-04-14"
+],
+"comparacion": [
+"2028-01-15",
+"2028-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-29",
+"desde": "2028-02-15",
+"hasta": "2028-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2028-01-15",
+"2028-02-14"
+],
+"siguiente": [
+"2028-03-15",
+"2028-04-14"
+],
+"comparacion": [
+"2028-01-15",
+"2028-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2028-03-01",
+"desde": "2028-02-15",
+"hasta": "2028-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2028-01-15",
+"2028-02-14"
+],
+"siguiente": [
+"2028-03-15",
+"2028-04-14"
+],
+"comparacion": [
+"2028-01-15",
+"2028-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2028-12-31",
+"desde": "2028-12-15",
+"hasta": "2029-01-14",
+"etiqueta": "15 dic - 14 ene",
+"anterior": [
+"2028-11-15",
+"2028-12-14"
+],
+"siguiente": [
+"2029-01-15",
+"2029-02-14"
+],
+"comparacion": [
+"2028-11-15",
+"2028-12-14"
+],
+"comparacion_etiqueta": "vs 15 nov - 14 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2100-02-28",
+"desde": "2100-02-15",
+"hasta": "2100-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2100-01-15",
+"2100-02-14"
+],
+"siguiente": [
+"2100-03-15",
+"2100-04-14"
+],
+"comparacion": [
+"2100-01-15",
+"2100-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 15,
+"referencia": "2100-03-01",
+"desde": "2100-02-15",
+"hasta": "2100-03-14",
+"etiqueta": "15 feb - 14 mar",
+"anterior": [
+"2100-01-15",
+"2100-02-14"
+],
+"siguiente": [
+"2100-03-15",
+"2100-04-14"
+],
+"comparacion": [
+"2100-01-15",
+"2100-02-14"
+],
+"comparacion_etiqueta": "vs 15 ene - 14 feb"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2025-12-31",
+"desde": "2025-01-01",
+"hasta": "2025-12-31",
+"etiqueta": "2025",
+"anterior": [
+"2024-01-01",
+"2024-12-31"
+],
+"siguiente": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion": [
+"2024-01-01",
+"2024-12-31"
+],
+"comparacion_etiqueta": "vs 2024"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-10",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-01-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-02-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-03-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-10-29",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-08",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-11-30",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2026-12-31",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-14",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2027-01-27",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-28",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2028-02-29",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2028-03-01",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2028-12-31",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2100-02-28",
+"desde": "2100-01-01",
+"hasta": "2100-12-31",
+"etiqueta": "2100",
+"anterior": [
+"2099-01-01",
+"2099-12-31"
+],
+"siguiente": [
+"2101-01-01",
+"2101-12-31"
+],
+"comparacion": [
+"2099-01-01",
+"2099-12-31"
+],
+"comparacion_etiqueta": "vs 2099"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 15,
+"referencia": "2100-03-01",
+"desde": "2100-01-01",
+"hasta": "2100-12-31",
+"etiqueta": "2100",
+"anterior": [
+"2099-01-01",
+"2099-12-31"
+],
+"siguiente": [
+"2101-01-01",
+"2101-12-31"
+],
+"comparacion": [
+"2099-01-01",
+"2099-12-31"
+],
+"comparacion_etiqueta": "vs 2099"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2025-12-31",
+"desde": "2025-12-31",
+"hasta": "2025-12-31",
+"etiqueta": "31 dic 2025",
+"anterior": [
+"2025-12-30",
+"2025-12-30"
+],
+"siguiente": [
+"2026-01-01",
+"2026-01-01"
+],
+"comparacion": [
+"2025-12-30",
+"2025-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2025"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-01-01",
+"etiqueta": "1 ene 2026",
+"anterior": [
+"2025-12-31",
+"2025-12-31"
+],
+"siguiente": [
+"2026-01-02",
+"2026-01-02"
+],
+"comparacion": [
+"2025-12-31",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 31 dic 2025"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-10",
+"desde": "2026-01-10",
+"hasta": "2026-01-10",
+"etiqueta": "10 ene 2026",
+"anterior": [
+"2026-01-09",
+"2026-01-09"
+],
+"siguiente": [
+"2026-01-11",
+"2026-01-11"
+],
+"comparacion": [
+"2026-01-09",
+"2026-01-09"
+],
+"comparacion_etiqueta": "vs 9 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-27",
+"desde": "2026-01-27",
+"hasta": "2026-01-27",
+"etiqueta": "27 ene 2026",
+"anterior": [
+"2026-01-26",
+"2026-01-26"
+],
+"siguiente": [
+"2026-01-28",
+"2026-01-28"
+],
+"comparacion": [
+"2026-01-26",
+"2026-01-26"
+],
+"comparacion_etiqueta": "vs 26 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-28",
+"desde": "2026-01-28",
+"hasta": "2026-01-28",
+"etiqueta": "28 ene 2026",
+"anterior": [
+"2026-01-27",
+"2026-01-27"
+],
+"siguiente": [
+"2026-01-29",
+"2026-01-29"
+],
+"comparacion": [
+"2026-01-27",
+"2026-01-27"
+],
+"comparacion_etiqueta": "vs 27 ene 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-14",
+"desde": "2026-02-14",
+"hasta": "2026-02-14",
+"etiqueta": "14 feb 2026",
+"anterior": [
+"2026-02-13",
+"2026-02-13"
+],
+"siguiente": [
+"2026-02-15",
+"2026-02-15"
+],
+"comparacion": [
+"2026-02-13",
+"2026-02-13"
+],
+"comparacion_etiqueta": "vs 13 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-27",
+"desde": "2026-02-27",
+"hasta": "2026-02-27",
+"etiqueta": "27 feb 2026",
+"anterior": [
+"2026-02-26",
+"2026-02-26"
+],
+"siguiente": [
+"2026-02-28",
+"2026-02-28"
+],
+"comparacion": [
+"2026-02-26",
+"2026-02-26"
+],
+"comparacion_etiqueta": "vs 26 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-28",
+"desde": "2026-02-28",
+"hasta": "2026-02-28",
+"etiqueta": "28 feb 2026",
+"anterior": [
+"2026-02-27",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-01",
+"2026-03-01"
+],
+"comparacion": [
+"2026-02-27",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-01",
+"desde": "2026-03-01",
+"hasta": "2026-03-01",
+"etiqueta": "1 mar 2026",
+"anterior": [
+"2026-02-28",
+"2026-02-28"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-02"
+],
+"comparacion": [
+"2026-02-28",
+"2026-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-14",
+"desde": "2026-03-14",
+"hasta": "2026-03-14",
+"etiqueta": "14 mar 2026",
+"anterior": [
+"2026-03-13",
+"2026-03-13"
+],
+"siguiente": [
+"2026-03-15",
+"2026-03-15"
+],
+"comparacion": [
+"2026-03-13",
+"2026-03-13"
+],
+"comparacion_etiqueta": "vs 13 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-15",
+"desde": "2026-03-15",
+"hasta": "2026-03-15",
+"etiqueta": "15 mar 2026",
+"anterior": [
+"2026-03-14",
+"2026-03-14"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-16"
+],
+"comparacion": [
+"2026-03-14",
+"2026-03-14"
+],
+"comparacion_etiqueta": "vs 14 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-27",
+"desde": "2026-03-27",
+"hasta": "2026-03-27",
+"etiqueta": "27 mar 2026",
+"anterior": [
+"2026-03-26",
+"2026-03-26"
+],
+"siguiente": [
+"2026-03-28",
+"2026-03-28"
+],
+"comparacion": [
+"2026-03-26",
+"2026-03-26"
+],
+"comparacion_etiqueta": "vs 26 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-28",
+"desde": "2026-03-28",
+"hasta": "2026-03-28",
+"etiqueta": "28 mar 2026",
+"anterior": [
+"2026-03-27",
+"2026-03-27"
+],
+"siguiente": [
+"2026-03-29",
+"2026-03-29"
+],
+"comparacion": [
+"2026-03-27",
+"2026-03-27"
+],
+"comparacion_etiqueta": "vs 27 mar 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-10-29",
+"desde": "2026-10-29",
+"hasta": "2026-10-29",
+"etiqueta": "29 oct 2026",
+"anterior": [
+"2026-10-28",
+"2026-10-28"
+],
+"siguiente": [
+"2026-10-30",
+"2026-10-30"
+],
+"comparacion": [
+"2026-10-28",
+"2026-10-28"
+],
+"comparacion_etiqueta": "vs 28 oct 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-01",
+"desde": "2026-11-01",
+"hasta": "2026-11-01",
+"etiqueta": "1 nov 2026",
+"anterior": [
+"2026-10-31",
+"2026-10-31"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-02"
+],
+"comparacion": [
+"2026-10-31",
+"2026-10-31"
+],
+"comparacion_etiqueta": "vs 31 oct 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-08",
+"desde": "2026-11-08",
+"hasta": "2026-11-08",
+"etiqueta": "8 nov 2026",
+"anterior": [
+"2026-11-07",
+"2026-11-07"
+],
+"siguiente": [
+"2026-11-09",
+"2026-11-09"
+],
+"comparacion": [
+"2026-11-07",
+"2026-11-07"
+],
+"comparacion_etiqueta": "vs 7 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-14",
+"desde": "2026-11-14",
+"hasta": "2026-11-14",
+"etiqueta": "14 nov 2026",
+"anterior": [
+"2026-11-13",
+"2026-11-13"
+],
+"siguiente": [
+"2026-11-15",
+"2026-11-15"
+],
+"comparacion": [
+"2026-11-13",
+"2026-11-13"
+],
+"comparacion_etiqueta": "vs 13 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-15",
+"desde": "2026-11-15",
+"hasta": "2026-11-15",
+"etiqueta": "15 nov 2026",
+"anterior": [
+"2026-11-14",
+"2026-11-14"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-16"
+],
+"comparacion": [
+"2026-11-14",
+"2026-11-14"
+],
+"comparacion_etiqueta": "vs 14 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-27",
+"desde": "2026-11-27",
+"hasta": "2026-11-27",
+"etiqueta": "27 nov 2026",
+"anterior": [
+"2026-11-26",
+"2026-11-26"
+],
+"siguiente": [
+"2026-11-28",
+"2026-11-28"
+],
+"comparacion": [
+"2026-11-26",
+"2026-11-26"
+],
+"comparacion_etiqueta": "vs 26 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-28",
+"desde": "2026-11-28",
+"hasta": "2026-11-28",
+"etiqueta": "28 nov 2026",
+"anterior": [
+"2026-11-27",
+"2026-11-27"
+],
+"siguiente": [
+"2026-11-29",
+"2026-11-29"
+],
+"comparacion": [
+"2026-11-27",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 27 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-30",
+"desde": "2026-11-30",
+"hasta": "2026-11-30",
+"etiqueta": "30 nov 2026",
+"anterior": [
+"2026-11-29",
+"2026-11-29"
+],
+"siguiente": [
+"2026-12-01",
+"2026-12-01"
+],
+"comparacion": [
+"2026-11-29",
+"2026-11-29"
+],
+"comparacion_etiqueta": "vs 29 nov 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-14",
+"desde": "2026-12-14",
+"hasta": "2026-12-14",
+"etiqueta": "14 dic 2026",
+"anterior": [
+"2026-12-13",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-15",
+"2026-12-15"
+],
+"comparacion": [
+"2026-12-13",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 13 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-15",
+"desde": "2026-12-15",
+"hasta": "2026-12-15",
+"etiqueta": "15 dic 2026",
+"anterior": [
+"2026-12-14",
+"2026-12-14"
+],
+"siguiente": [
+"2026-12-16",
+"2026-12-16"
+],
+"comparacion": [
+"2026-12-14",
+"2026-12-14"
+],
+"comparacion_etiqueta": "vs 14 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-27",
+"desde": "2026-12-27",
+"hasta": "2026-12-27",
+"etiqueta": "27 dic 2026",
+"anterior": [
+"2026-12-26",
+"2026-12-26"
+],
+"siguiente": [
+"2026-12-28",
+"2026-12-28"
+],
+"comparacion": [
+"2026-12-26",
+"2026-12-26"
+],
+"comparacion_etiqueta": "vs 26 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2026-12-28",
+"etiqueta": "28 dic 2026",
+"anterior": [
+"2026-12-27",
+"2026-12-27"
+],
+"siguiente": [
+"2026-12-29",
+"2026-12-29"
+],
+"comparacion": [
+"2026-12-27",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 27 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-31",
+"desde": "2026-12-31",
+"hasta": "2026-12-31",
+"etiqueta": "31 dic 2026",
+"anterior": [
+"2026-12-30",
+"2026-12-30"
+],
+"siguiente": [
+"2027-01-01",
+"2027-01-01"
+],
+"comparacion": [
+"2026-12-30",
+"2026-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-01-01",
+"etiqueta": "1 ene 2027",
+"anterior": [
+"2026-12-31",
+"2026-12-31"
+],
+"siguiente": [
+"2027-01-02",
+"2027-01-02"
+],
+"comparacion": [
+"2026-12-31",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 31 dic 2026"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-14",
+"desde": "2027-01-14",
+"hasta": "2027-01-14",
+"etiqueta": "14 ene 2027",
+"anterior": [
+"2027-01-13",
+"2027-01-13"
+],
+"siguiente": [
+"2027-01-15",
+"2027-01-15"
+],
+"comparacion": [
+"2027-01-13",
+"2027-01-13"
+],
+"comparacion_etiqueta": "vs 13 ene 2027"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-27",
+"desde": "2027-01-27",
+"hasta": "2027-01-27",
+"etiqueta": "27 ene 2027",
+"anterior": [
+"2027-01-26",
+"2027-01-26"
+],
+"siguiente": [
+"2027-01-28",
+"2027-01-28"
+],
+"comparacion": [
+"2027-01-26",
+"2027-01-26"
+],
+"comparacion_etiqueta": "vs 26 ene 2027"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-02-28",
+"etiqueta": "28 feb 2028",
+"anterior": [
+"2028-02-27",
+"2028-02-27"
+],
+"siguiente": [
+"2028-02-29",
+"2028-02-29"
+],
+"comparacion": [
+"2028-02-27",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-29",
+"desde": "2028-02-29",
+"hasta": "2028-02-29",
+"etiqueta": "29 feb 2028",
+"anterior": [
+"2028-02-28",
+"2028-02-28"
+],
+"siguiente": [
+"2028-03-01",
+"2028-03-01"
+],
+"comparacion": [
+"2028-02-28",
+"2028-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2028-03-01",
+"desde": "2028-03-01",
+"hasta": "2028-03-01",
+"etiqueta": "1 mar 2028",
+"anterior": [
+"2028-02-29",
+"2028-02-29"
+],
+"siguiente": [
+"2028-03-02",
+"2028-03-02"
+],
+"comparacion": [
+"2028-02-29",
+"2028-02-29"
+],
+"comparacion_etiqueta": "vs 29 feb 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2028-12-31",
+"desde": "2028-12-31",
+"hasta": "2028-12-31",
+"etiqueta": "31 dic 2028",
+"anterior": [
+"2028-12-30",
+"2028-12-30"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-01"
+],
+"comparacion": [
+"2028-12-30",
+"2028-12-30"
+],
+"comparacion_etiqueta": "vs 30 dic 2028"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2100-02-28",
+"desde": "2100-02-28",
+"hasta": "2100-02-28",
+"etiqueta": "28 feb 2100",
+"anterior": [
+"2100-02-27",
+"2100-02-27"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-01"
+],
+"comparacion": [
+"2100-02-27",
+"2100-02-27"
+],
+"comparacion_etiqueta": "vs 27 feb 2100"
+},
+{
+"tipo": "dia",
+"dia_inicio_mes": 28,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-01",
+"etiqueta": "1 mar 2100",
+"anterior": [
+"2100-02-28",
+"2100-02-28"
+],
+"siguiente": [
+"2100-03-02",
+"2100-03-02"
+],
+"comparacion": [
+"2100-02-28",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs 28 feb 2100"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2025-12-31",
+"desde": "2025-12-29",
+"hasta": "2026-01-04",
+"etiqueta": "29 dic 2025 - 4 ene 2026",
+"anterior": [
+"2025-12-22",
+"2025-12-28"
+],
+"siguiente": [
+"2026-01-05",
+"2026-01-11"
+],
+"comparacion": [
+"2025-12-22",
+"2025-12-28"
+],
+"comparacion_etiqueta": "vs 22 dic - 28 dic 2025"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-01",
+"desde": "2025-12-29",
+"hasta": "2026-01-04",
+"etiqueta": "29 dic 2025 - 4 ene 2026",
+"anterior": [
+"2025-12-22",
+"2025-12-28"
+],
+"siguiente": [
+"2026-01-05",
+"2026-01-11"
+],
+"comparacion": [
+"2025-12-22",
+"2025-12-28"
+],
+"comparacion_etiqueta": "vs 22 dic - 28 dic 2025"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-10",
+"desde": "2026-01-05",
+"hasta": "2026-01-11",
+"etiqueta": "5 ene - 11 ene 2026",
+"anterior": [
+"2025-12-29",
+"2026-01-04"
+],
+"siguiente": [
+"2026-01-12",
+"2026-01-18"
+],
+"comparacion": [
+"2025-12-29",
+"2026-01-04"
+],
+"comparacion_etiqueta": "vs 29 dic 2025 - 4 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-27",
+"desde": "2026-01-26",
+"hasta": "2026-02-01",
+"etiqueta": "26 ene - 1 feb 2026",
+"anterior": [
+"2026-01-19",
+"2026-01-25"
+],
+"siguiente": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion": [
+"2026-01-19",
+"2026-01-25"
+],
+"comparacion_etiqueta": "vs 19 ene - 25 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-28",
+"desde": "2026-01-26",
+"hasta": "2026-02-01",
+"etiqueta": "26 ene - 1 feb 2026",
+"anterior": [
+"2026-01-19",
+"2026-01-25"
+],
+"siguiente": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion": [
+"2026-01-19",
+"2026-01-25"
+],
+"comparacion_etiqueta": "vs 19 ene - 25 ene 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-14",
+"desde": "2026-02-09",
+"hasta": "2026-02-15",
+"etiqueta": "9 feb - 15 feb 2026",
+"anterior": [
+"2026-02-02",
+"2026-02-08"
+],
+"siguiente": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion": [
+"2026-02-02",
+"2026-02-08"
+],
+"comparacion_etiqueta": "vs 2 feb - 8 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-27",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-28",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-01",
+"desde": "2026-02-23",
+"hasta": "2026-03-01",
+"etiqueta": "23 feb - 1 mar 2026",
+"anterior": [
+"2026-02-16",
+"2026-02-22"
+],
+"siguiente": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion": [
+"2026-02-16",
+"2026-02-22"
+],
+"comparacion_etiqueta": "vs 16 feb - 22 feb 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-14",
+"desde": "2026-03-09",
+"hasta": "2026-03-15",
+"etiqueta": "9 mar - 15 mar 2026",
+"anterior": [
+"2026-03-02",
+"2026-03-08"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion_etiqueta": "vs 2 mar - 8 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-15",
+"desde": "2026-03-09",
+"hasta": "2026-03-15",
+"etiqueta": "9 mar - 15 mar 2026",
+"anterior": [
+"2026-03-02",
+"2026-03-08"
+],
+"siguiente": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion": [
+"2026-03-02",
+"2026-03-08"
+],
+"comparacion_etiqueta": "vs 2 mar - 8 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-27",
+"desde": "2026-03-23",
+"hasta": "2026-03-29",
+"etiqueta": "23 mar - 29 mar 2026",
+"anterior": [
+"2026-03-16",
+"2026-03-22"
+],
+"siguiente": [
+"2026-03-30",
+"2026-04-05"
+],
+"comparacion": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion_etiqueta": "vs 16 mar - 22 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-28",
+"desde": "2026-03-23",
+"hasta": "2026-03-29",
+"etiqueta": "23 mar - 29 mar 2026",
+"anterior": [
+"2026-03-16",
+"2026-03-22"
+],
+"siguiente": [
+"2026-03-30",
+"2026-04-05"
+],
+"comparacion": [
+"2026-03-16",
+"2026-03-22"
+],
+"comparacion_etiqueta": "vs 16 mar - 22 mar 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-10-29",
+"desde": "2026-10-26",
+"hasta": "2026-11-01",
+"etiqueta": "26 oct - 1 nov 2026",
+"anterior": [
+"2026-10-19",
+"2026-10-25"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion": [
+"2026-10-19",
+"2026-10-25"
+],
+"comparacion_etiqueta": "vs 19 oct - 25 oct 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-01",
+"desde": "2026-10-26",
+"hasta": "2026-11-01",
+"etiqueta": "26 oct - 1 nov 2026",
+"anterior": [
+"2026-10-19",
+"2026-10-25"
+],
+"siguiente": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion": [
+"2026-10-19",
+"2026-10-25"
+],
+"comparacion_etiqueta": "vs 19 oct - 25 oct 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-08",
+"desde": "2026-11-02",
+"hasta": "2026-11-08",
+"etiqueta": "2 nov - 8 nov 2026",
+"anterior": [
+"2026-10-26",
+"2026-11-01"
+],
+"siguiente": [
+"2026-11-09",
+"2026-11-15"
+],
+"comparacion": [
+"2026-10-26",
+"2026-11-01"
+],
+"comparacion_etiqueta": "vs 26 oct - 1 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-14",
+"desde": "2026-11-09",
+"hasta": "2026-11-15",
+"etiqueta": "9 nov - 15 nov 2026",
+"anterior": [
+"2026-11-02",
+"2026-11-08"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion_etiqueta": "vs 2 nov - 8 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-15",
+"desde": "2026-11-09",
+"hasta": "2026-11-15",
+"etiqueta": "9 nov - 15 nov 2026",
+"anterior": [
+"2026-11-02",
+"2026-11-08"
+],
+"siguiente": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion": [
+"2026-11-02",
+"2026-11-08"
+],
+"comparacion_etiqueta": "vs 2 nov - 8 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-27",
+"desde": "2026-11-23",
+"hasta": "2026-11-29",
+"etiqueta": "23 nov - 29 nov 2026",
+"anterior": [
+"2026-11-16",
+"2026-11-22"
+],
+"siguiente": [
+"2026-11-30",
+"2026-12-06"
+],
+"comparacion": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion_etiqueta": "vs 16 nov - 22 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-28",
+"desde": "2026-11-23",
+"hasta": "2026-11-29",
+"etiqueta": "23 nov - 29 nov 2026",
+"anterior": [
+"2026-11-16",
+"2026-11-22"
+],
+"siguiente": [
+"2026-11-30",
+"2026-12-06"
+],
+"comparacion": [
+"2026-11-16",
+"2026-11-22"
+],
+"comparacion_etiqueta": "vs 16 nov - 22 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-30",
+"desde": "2026-11-30",
+"hasta": "2026-12-06",
+"etiqueta": "30 nov - 6 dic 2026",
+"anterior": [
+"2026-11-23",
+"2026-11-29"
+],
+"siguiente": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion": [
+"2026-11-23",
+"2026-11-29"
+],
+"comparacion_etiqueta": "vs 23 nov - 29 nov 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-14",
+"desde": "2026-12-14",
+"hasta": "2026-12-20",
+"etiqueta": "14 dic - 20 dic 2026",
+"anterior": [
+"2026-12-07",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 7 dic - 13 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-15",
+"desde": "2026-12-14",
+"hasta": "2026-12-20",
+"etiqueta": "14 dic - 20 dic 2026",
+"anterior": [
+"2026-12-07",
+"2026-12-13"
+],
+"siguiente": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion": [
+"2026-12-07",
+"2026-12-13"
+],
+"comparacion_etiqueta": "vs 7 dic - 13 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-27",
+"desde": "2026-12-21",
+"hasta": "2026-12-27",
+"etiqueta": "21 dic - 27 dic 2026",
+"anterior": [
+"2026-12-14",
+"2026-12-20"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-03"
+],
+"comparacion": [
+"2026-12-14",
+"2026-12-20"
+],
+"comparacion_etiqueta": "vs 14 dic - 20 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-31",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-01",
+"desde": "2026-12-28",
+"hasta": "2027-01-03",
+"etiqueta": "28 dic 2026 - 3 ene 2027",
+"anterior": [
+"2026-12-21",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion": [
+"2026-12-21",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 21 dic - 27 dic 2026"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-14",
+"desde": "2027-01-11",
+"hasta": "2027-01-17",
+"etiqueta": "11 ene - 17 ene 2027",
+"anterior": [
+"2027-01-04",
+"2027-01-10"
+],
+"siguiente": [
+"2027-01-18",
+"2027-01-24"
+],
+"comparacion": [
+"2027-01-04",
+"2027-01-10"
+],
+"comparacion_etiqueta": "vs 4 ene - 10 ene 2027"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-27",
+"desde": "2027-01-25",
+"hasta": "2027-01-31",
+"etiqueta": "25 ene - 31 ene 2027",
+"anterior": [
+"2027-01-18",
+"2027-01-24"
+],
+"siguiente": [
+"2027-02-01",
+"2027-02-07"
+],
+"comparacion": [
+"2027-01-18",
+"2027-01-24"
+],
+"comparacion_etiqueta": "vs 18 ene - 24 ene 2027"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-29",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2028-03-01",
+"desde": "2028-02-28",
+"hasta": "2028-03-05",
+"etiqueta": "28 feb - 5 mar 2028",
+"anterior": [
+"2028-02-21",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-12"
+],
+"comparacion": [
+"2028-02-21",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 21 feb - 27 feb 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2028-12-31",
+"desde": "2028-12-25",
+"hasta": "2028-12-31",
+"etiqueta": "25 dic - 31 dic 2028",
+"anterior": [
+"2028-12-18",
+"2028-12-24"
+],
+"siguiente": [
+"2029-01-01",
+"2029-01-07"
+],
+"comparacion": [
+"2028-12-18",
+"2028-12-24"
+],
+"comparacion_etiqueta": "vs 18 dic - 24 dic 2028"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2100-02-28",
+"desde": "2100-02-22",
+"hasta": "2100-02-28",
+"etiqueta": "22 feb - 28 feb 2100",
+"anterior": [
+"2100-02-15",
+"2100-02-21"
+],
+"siguiente": [
+"2100-03-01",
+"2100-03-07"
+],
+"comparacion": [
+"2100-02-15",
+"2100-02-21"
+],
+"comparacion_etiqueta": "vs 15 feb - 21 feb 2100"
+},
+{
+"tipo": "semana",
+"dia_inicio_mes": 28,
+"referencia": "2100-03-01",
+"desde": "2100-03-01",
+"hasta": "2100-03-07",
+"etiqueta": "1 mar - 7 mar 2100",
+"anterior": [
+"2100-02-22",
+"2100-02-28"
+],
+"siguiente": [
+"2100-03-08",
+"2100-03-14"
+],
+"comparacion": [
+"2100-02-22",
+"2100-02-28"
+],
+"comparacion_etiqueta": "vs 22 feb - 28 feb 2100"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2025-12-31",
+"desde": "2025-12-28",
+"hasta": "2026-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2025-11-28",
+"2025-12-27"
+],
+"siguiente": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion": [
+"2025-11-28",
+"2025-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-01",
+"desde": "2025-12-28",
+"hasta": "2026-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2025-11-28",
+"2025-12-27"
+],
+"siguiente": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion": [
+"2025-11-28",
+"2025-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-10",
+"desde": "2025-12-28",
+"hasta": "2026-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2025-11-28",
+"2025-12-27"
+],
+"siguiente": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion": [
+"2025-11-28",
+"2025-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-27",
+"desde": "2025-12-28",
+"hasta": "2026-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2025-11-28",
+"2025-12-27"
+],
+"siguiente": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion": [
+"2025-11-28",
+"2025-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-28",
+"desde": "2026-01-28",
+"hasta": "2026-02-27",
+"etiqueta": "28 ene - 27 feb",
+"anterior": [
+"2025-12-28",
+"2026-01-27"
+],
+"siguiente": [
+"2026-02-28",
+"2026-03-27"
+],
+"comparacion": [
+"2025-12-28",
+"2026-01-27"
+],
+"comparacion_etiqueta": "vs 28 dic - 27 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-14",
+"desde": "2026-01-28",
+"hasta": "2026-02-27",
+"etiqueta": "28 ene - 27 feb",
+"anterior": [
+"2025-12-28",
+"2026-01-27"
+],
+"siguiente": [
+"2026-02-28",
+"2026-03-27"
+],
+"comparacion": [
+"2025-12-28",
+"2026-01-27"
+],
+"comparacion_etiqueta": "vs 28 dic - 27 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-27",
+"desde": "2026-01-28",
+"hasta": "2026-02-27",
+"etiqueta": "28 ene - 27 feb",
+"anterior": [
+"2025-12-28",
+"2026-01-27"
+],
+"siguiente": [
+"2026-02-28",
+"2026-03-27"
+],
+"comparacion": [
+"2025-12-28",
+"2026-01-27"
+],
+"comparacion_etiqueta": "vs 28 dic - 27 ene"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-28",
+"desde": "2026-02-28",
+"hasta": "2026-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2026-01-28",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-28",
+"2026-04-27"
+],
+"comparacion": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-01",
+"desde": "2026-02-28",
+"hasta": "2026-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2026-01-28",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-28",
+"2026-04-27"
+],
+"comparacion": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-14",
+"desde": "2026-02-28",
+"hasta": "2026-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2026-01-28",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-28",
+"2026-04-27"
+],
+"comparacion": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-15",
+"desde": "2026-02-28",
+"hasta": "2026-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2026-01-28",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-28",
+"2026-04-27"
+],
+"comparacion": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-27",
+"desde": "2026-02-28",
+"hasta": "2026-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2026-01-28",
+"2026-02-27"
+],
+"siguiente": [
+"2026-03-28",
+"2026-04-27"
+],
+"comparacion": [
+"2026-01-28",
+"2026-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-28",
+"desde": "2026-03-28",
+"hasta": "2026-04-27",
+"etiqueta": "28 mar - 27 abr",
+"anterior": [
+"2026-02-28",
+"2026-03-27"
+],
+"siguiente": [
+"2026-04-28",
+"2026-05-27"
+],
+"comparacion": [
+"2026-02-28",
+"2026-03-27"
+],
+"comparacion_etiqueta": "vs 28 feb - 27 mar"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-10-29",
+"desde": "2026-10-28",
+"hasta": "2026-11-27",
+"etiqueta": "28 oct - 27 nov",
+"anterior": [
+"2026-09-28",
+"2026-10-27"
+],
+"siguiente": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion": [
+"2026-09-28",
+"2026-10-27"
+],
+"comparacion_etiqueta": "vs 28 sep - 27 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-01",
+"desde": "2026-10-28",
+"hasta": "2026-11-27",
+"etiqueta": "28 oct - 27 nov",
+"anterior": [
+"2026-09-28",
+"2026-10-27"
+],
+"siguiente": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion": [
+"2026-09-28",
+"2026-10-27"
+],
+"comparacion_etiqueta": "vs 28 sep - 27 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-08",
+"desde": "2026-10-28",
+"hasta": "2026-11-27",
+"etiqueta": "28 oct - 27 nov",
+"anterior": [
+"2026-09-28",
+"2026-10-27"
+],
+"siguiente": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion": [
+"2026-09-28",
+"2026-10-27"
+],
+"comparacion_etiqueta": "vs 28 sep - 27 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-14",
+"desde": "2026-10-28",
+"hasta": "2026-11-27",
+"etiqueta": "28 oct - 27 nov",
+"anterior": [
+"2026-09-28",
+"2026-10-27"
+],
+"siguiente": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion": [
+"2026-09-28",
+"2026-10-27"
+],
+"comparacion_etiqueta": "vs 28 sep - 27 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-15",
+"desde": "2026-10-28",
+"hasta": "2026-11-27",
+"etiqueta": "28 oct - 27 nov",
+"anterior": [
+"2026-09-28",
+"2026-10-27"
+],
+"siguiente": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion": [
+"2026-09-28",
+"2026-10-27"
+],
+"comparacion_etiqueta": "vs 28 sep - 27 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-27",
+"desde": "2026-10-28",
+"hasta": "2026-11-27",
+"etiqueta": "28 oct - 27 nov",
+"anterior": [
+"2026-09-28",
+"2026-10-27"
+],
+"siguiente": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion": [
+"2026-09-28",
+"2026-10-27"
+],
+"comparacion_etiqueta": "vs 28 sep - 27 oct"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-28",
+"desde": "2026-11-28",
+"hasta": "2026-12-27",
+"etiqueta": "28 nov - 27 dic",
+"anterior": [
+"2026-10-28",
+"2026-11-27"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-27"
+],
+"comparacion": [
+"2026-10-28",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 28 oct - 27 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-30",
+"desde": "2026-11-28",
+"hasta": "2026-12-27",
+"etiqueta": "28 nov - 27 dic",
+"anterior": [
+"2026-10-28",
+"2026-11-27"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-27"
+],
+"comparacion": [
+"2026-10-28",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 28 oct - 27 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-14",
+"desde": "2026-11-28",
+"hasta": "2026-12-27",
+"etiqueta": "28 nov - 27 dic",
+"anterior": [
+"2026-10-28",
+"2026-11-27"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-27"
+],
+"comparacion": [
+"2026-10-28",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 28 oct - 27 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-15",
+"desde": "2026-11-28",
+"hasta": "2026-12-27",
+"etiqueta": "28 nov - 27 dic",
+"anterior": [
+"2026-10-28",
+"2026-11-27"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-27"
+],
+"comparacion": [
+"2026-10-28",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 28 oct - 27 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-27",
+"desde": "2026-11-28",
+"hasta": "2026-12-27",
+"etiqueta": "28 nov - 27 dic",
+"anterior": [
+"2026-10-28",
+"2026-11-27"
+],
+"siguiente": [
+"2026-12-28",
+"2027-01-27"
+],
+"comparacion": [
+"2026-10-28",
+"2026-11-27"
+],
+"comparacion_etiqueta": "vs 28 oct - 27 nov"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-28",
+"desde": "2026-12-28",
+"hasta": "2027-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2026-11-28",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-28",
+"2027-02-27"
+],
+"comparacion": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-31",
+"desde": "2026-12-28",
+"hasta": "2027-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2026-11-28",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-28",
+"2027-02-27"
+],
+"comparacion": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-01",
+"desde": "2026-12-28",
+"hasta": "2027-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2026-11-28",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-28",
+"2027-02-27"
+],
+"comparacion": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-14",
+"desde": "2026-12-28",
+"hasta": "2027-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2026-11-28",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-28",
+"2027-02-27"
+],
+"comparacion": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-27",
+"desde": "2026-12-28",
+"hasta": "2027-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2026-11-28",
+"2026-12-27"
+],
+"siguiente": [
+"2027-01-28",
+"2027-02-27"
+],
+"comparacion": [
+"2026-11-28",
+"2026-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-28",
+"desde": "2028-02-28",
+"hasta": "2028-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2028-01-28",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-28",
+"2028-04-27"
+],
+"comparacion": [
+"2028-01-28",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-29",
+"desde": "2028-02-28",
+"hasta": "2028-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2028-01-28",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-28",
+"2028-04-27"
+],
+"comparacion": [
+"2028-01-28",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2028-03-01",
+"desde": "2028-02-28",
+"hasta": "2028-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2028-01-28",
+"2028-02-27"
+],
+"siguiente": [
+"2028-03-28",
+"2028-04-27"
+],
+"comparacion": [
+"2028-01-28",
+"2028-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2028-12-31",
+"desde": "2028-12-28",
+"hasta": "2029-01-27",
+"etiqueta": "28 dic - 27 ene",
+"anterior": [
+"2028-11-28",
+"2028-12-27"
+],
+"siguiente": [
+"2029-01-28",
+"2029-02-27"
+],
+"comparacion": [
+"2028-11-28",
+"2028-12-27"
+],
+"comparacion_etiqueta": "vs 28 nov - 27 dic"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2100-02-28",
+"desde": "2100-02-28",
+"hasta": "2100-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2100-01-28",
+"2100-02-27"
+],
+"siguiente": [
+"2100-03-28",
+"2100-04-27"
+],
+"comparacion": [
+"2100-01-28",
+"2100-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "mes",
+"dia_inicio_mes": 28,
+"referencia": "2100-03-01",
+"desde": "2100-02-28",
+"hasta": "2100-03-27",
+"etiqueta": "28 feb - 27 mar",
+"anterior": [
+"2100-01-28",
+"2100-02-27"
+],
+"siguiente": [
+"2100-03-28",
+"2100-04-27"
+],
+"comparacion": [
+"2100-01-28",
+"2100-02-27"
+],
+"comparacion_etiqueta": "vs 28 ene - 27 feb"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2025-12-31",
+"desde": "2025-01-01",
+"hasta": "2025-12-31",
+"etiqueta": "2025",
+"anterior": [
+"2024-01-01",
+"2024-12-31"
+],
+"siguiente": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion": [
+"2024-01-01",
+"2024-12-31"
+],
+"comparacion_etiqueta": "vs 2024"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-10",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-01-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-02-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-03-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-10-29",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-01",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-08",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-11-30",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-14",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-15",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-27",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-28",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2026-12-31",
+"desde": "2026-01-01",
+"hasta": "2026-12-31",
+"etiqueta": "2026",
+"anterior": [
+"2025-01-01",
+"2025-12-31"
+],
+"siguiente": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion": [
+"2025-01-01",
+"2025-12-31"
+],
+"comparacion_etiqueta": "vs 2025"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-01",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-14",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2027-01-27",
+"desde": "2027-01-01",
+"hasta": "2027-12-31",
+"etiqueta": "2027",
+"anterior": [
+"2026-01-01",
+"2026-12-31"
+],
+"siguiente": [
+"2028-01-01",
+"2028-12-31"
+],
+"comparacion": [
+"2026-01-01",
+"2026-12-31"
+],
+"comparacion_etiqueta": "vs 2026"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-28",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2028-02-29",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2028-03-01",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2028-12-31",
+"desde": "2028-01-01",
+"hasta": "2028-12-31",
+"etiqueta": "2028",
+"anterior": [
+"2027-01-01",
+"2027-12-31"
+],
+"siguiente": [
+"2029-01-01",
+"2029-12-31"
+],
+"comparacion": [
+"2027-01-01",
+"2027-12-31"
+],
+"comparacion_etiqueta": "vs 2027"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2100-02-28",
+"desde": "2100-01-01",
+"hasta": "2100-12-31",
+"etiqueta": "2100",
+"anterior": [
+"2099-01-01",
+"2099-12-31"
+],
+"siguiente": [
+"2101-01-01",
+"2101-12-31"
+],
+"comparacion": [
+"2099-01-01",
+"2099-12-31"
+],
+"comparacion_etiqueta": "vs 2099"
+},
+{
+"tipo": "anio",
+"dia_inicio_mes": 28,
+"referencia": "2100-03-01",
+"desde": "2100-01-01",
+"hasta": "2100-12-31",
+"etiqueta": "2100",
+"anterior": [
+"2099-01-01",
+"2099-12-31"
+],
+"siguiente": [
+"2101-01-01",
+"2101-12-31"
+],
+"comparacion": [
+"2099-01-01",
+"2099-12-31"
+],
+"comparacion_etiqueta": "vs 2099"
+},
+{
+"tipo": "rango",
+"dia_inicio_mes": 1,
+"referencia": "2026-10-01",
+"desde": "2026-10-01",
+"hasta": "2026-11-15",
+"etiqueta": "1 oct - 15 nov 2026",
+"anterior": [
+"2026-08-16",
+"2026-09-30"
+],
+"siguiente": [
+"2026-11-16",
+"2026-12-31"
+],
+"comparacion": [
+"2026-08-16",
+"2026-09-30"
+],
+"comparacion_etiqueta": "vs 16 ago - 30 sep 2026"
+},
+{
+"tipo": "rango",
+"dia_inicio_mes": 1,
+"referencia": "2026-11-10",
+"desde": "2026-11-10",
+"hasta": "2026-11-10",
+"etiqueta": "10 nov 2026",
+"anterior": [
+"2026-11-09",
+"2026-11-09"
+],
+"siguiente": [
+"2026-11-11",
+"2026-11-11"
+],
+"comparacion": [
+"2026-11-09",
+"2026-11-09"
+],
+"comparacion_etiqueta": "vs 9 nov 2026"
+},
+{
+"tipo": "rango",
+"dia_inicio_mes": 1,
+"referencia": "2026-12-20",
+"desde": "2026-12-20",
+"hasta": "2027-01-05",
+"etiqueta": "20 dic 2026 - 5 ene 2027",
+"anterior": [
+"2026-12-03",
+"2026-12-19"
+],
+"siguiente": [
+"2027-01-06",
+"2027-01-22"
+],
+"comparacion": [
+"2026-12-03",
+"2026-12-19"
+],
+"comparacion_etiqueta": "vs 3 dic - 19 dic 2026"
+},
+{
+"tipo": "rango",
+"dia_inicio_mes": 1,
+"referencia": "2028-02-20",
+"desde": "2028-02-20",
+"hasta": "2028-03-05",
+"etiqueta": "20 feb - 5 mar 2028",
+"anterior": [
+"2028-02-05",
+"2028-02-19"
+],
+"siguiente": [
+"2028-03-06",
+"2028-03-20"
+],
+"comparacion": [
+"2028-02-05",
+"2028-02-19"
+],
+"comparacion_etiqueta": "vs 5 feb - 19 feb 2028"
+}
+]

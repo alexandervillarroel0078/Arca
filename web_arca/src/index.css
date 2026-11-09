@@ -1,0 +1,51 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sistema de diseno (Fase 14). Tailwind usa los mismos valores en tailwind.config.js. */
+:root {
+  --fondo: #F4F6F5;
+  --tarjeta: #FFFFFF;
+  --texto: #12201C;
+  --texto-secundario: #4A5A56;
+  --borde: #E1E7E5;
+  --verde: #0E6B58;
+  --verde-tinte: #E3F1EC;
+  --apoyo: #A8470A;
+  --apoyo-tinte: #FBEBDD;
+  --apoyo-texto: #6E3207;
+  --error: #B42318;
+  --radio-tarjeta: 18px;
+  --radio-campo: 14px;
+  --alto-campo: 52px;
+  --alto-nav: 72px;
+}
+
+html, body, #root { height: 100%; }
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  @apply font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+input, select, textarea, button { font: inherit; }
+
+/* Foco visible en todo lo interactivo (verde, 3px) */
+:where(button, a, input, select, textarea, [role="menuitem"], [role="radio"]):focus-visible {
+  outline: 3px solid var(--verde);
+  outline-offset: 2px;
+}
+
+/* Montos: cifras de ancho fijo para que los numeros se alineen en columnas (Inter y Space Grotesk las tienen) */
+.monto { font-variant-numeric: tabular-nums; }
+
+/* Texto solo para lectores de pantalla (la fecha o el nombre completo que la pantalla ya muestra de otra forma). Como `sr-only` de Tailwind,
+   pero sin `overflow: hidden`: el detector de "texto cortado" de la prueba visual lo tomaria por texto recortado. */
+.solo-lectores { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; white-space: nowrap; clip: rect(0, 0, 0, 0); clip-path: inset(50%); }
+
+/* Esqueletos de carga */
+@keyframes pulso { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+.esqueleto { background: var(--borde); border-radius: 12px; animation: pulso 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .esqueleto { animation: none; } }
