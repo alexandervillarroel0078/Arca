@@ -72,7 +72,7 @@ export default function PaginaLogin() {
           {modoRegistro ? "Ya tengo cuenta" : "Crear una cuenta nueva"}
         </button>
       </form>
-      {import.meta.env.VITE_BUILD_ID && (
+      {import.meta.env.VITE_BUILD_ID && import.meta.env.VITE_BUILD_ID !== "local" && (
         <p data-testid="version-app" className="text-center text-xs text-stone-400 mt-6">Versión {import.meta.env.VITE_BUILD_ID}</p>
       )}
     </div>
