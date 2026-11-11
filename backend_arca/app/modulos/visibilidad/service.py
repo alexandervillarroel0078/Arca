@@ -17,6 +17,10 @@ from app.modulos.visibilidad.models import Compartido
 
 ENTIDAD = {Movimiento: "movimiento", Apoyo: "apoyo"}
 ENTIDADES_CON_VISIBILIDAD = ("movimiento", "apoyo", "devolucion")
+# Lista BLANCA: solo estas entidades del historial no dependen de la visibilidad de un registro. Cualquier otra entidad
+# necesita una rama explicita en `condicion_historial` y en `exigir_ver_entidad`; si no la tiene, queda OCULTA para todos
+# (admin incluido). Una entidad nueva olvidada nunca se vuelve publica.
+ENTIDADES_SIN_VISIBILIDAD = ("categoria", "miembro", "usuario", "familia")
 
 
 # ------------------------------------------------------------------ SQL
@@ -51,12 +55,13 @@ def condicion_historial(ctx: Contexto):
     """Entradas del historial que este usuario puede ver, segun la visibilidad ACTUAL del registro al que se refieren.
 
     Las entradas de categorias, miembros, usuarios y familia no dependen de la visibilidad. 'cambiar_visibilidad' solo
-    la ve quien la hizo (el dueno)."""
+    la ve quien la hizo (el dueno). CERRADO POR DEFECTO: una entidad que no este en la lista blanca ni tenga rama
+    explicita no la ve nadie."""
     ve_mov = select(Movimiento.id).where(condicion(ctx, Movimiento))
     ve_apo = select(Apoyo.id).where(condicion(ctx, Apoyo))
     ve_dev = select(Devolucion.id).where(condicion_devolucion(ctx))
     datos = or_(
-        Historial.entidad.notin_(ENTIDADES_CON_VISIBILIDAD),
+        Historial.entidad.in_(ENTIDADES_SIN_VISIBILIDAD),
         and_(Historial.entidad == "movimiento", Historial.entidad_id.in_(ve_mov)),
         and_(Historial.entidad == "apoyo", Historial.entidad_id.in_(ve_apo)),
         and_(Historial.entidad == "devolucion", Historial.entidad_id.in_(ve_dev)),
@@ -136,3 +141,6 @@ def exigir_ver_entidad(db: Session, ctx: Contexto, entidad: str, entidad_id: int
     elif entidad == "devolucion":
         d = db.get(Devolucion, entidad_id)
         exigir_ver(db, ctx, db.get(Apoyo, d.apoyo_id) if d is not None else None, "Devolución")
+    elif entidad not in ENTIDADES_SIN_VISIBILIDAD:
+        # entidad desconocida: se comporta como si no existiera (mismo 404 que un id inexistente)
+        raise HTTPException(status_code=404, detail="Registro no encontrado")
