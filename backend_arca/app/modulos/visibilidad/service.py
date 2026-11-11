@@ -17,6 +17,7 @@ from app.modulos.movimientos.models import Movimiento
 from app.modulos.visibilidad.models import Compartido
 
 ENTIDAD = {Movimiento: "movimiento", Apoyo: "apoyo", Cuenta: "cuenta"}
+FEMENINOS = ("Cuenta",)
 ENTIDADES_CON_VISIBILIDAD = ("movimiento", "apoyo", "devolucion", "cuenta", "cuenta_mov")
 # Lista BLANCA: solo estas entidades del historial no dependen de la visibilidad de un registro. Cualquier otra entidad
 # necesita una rama explicita en `condicion_historial` y en `exigir_ver_entidad`; si no la tiene, queda OCULTA para todos
@@ -119,7 +120,8 @@ def puede_ver(db: Session, ctx: Contexto, obj: Movimiento | Apoyo | Cuenta) -> b
 def exigir_ver(db: Session, ctx: Contexto, obj, que: str):
     """404 con el mismo cuerpo si no existe, es de otra familia o no puedes verlo."""
     if not puede_ver(db, ctx, obj):
-        raise HTTPException(status_code=404, detail=f"{que} no encontrado")
+        genero = "a" if que in FEMENINOS else "o"  # "Cuenta no encontrada", "Movimiento no encontrado"
+        raise HTTPException(status_code=404, detail=f"{que} no encontrad{genero}")
     return obj
 
 

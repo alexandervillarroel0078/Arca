@@ -223,7 +223,8 @@ function ResumenTarjetas({ r }: { r: ResumenBitacora }) {
 }
 
 // ------------------------------------------------------------------ pantalla
-type Hoja = "evento" | "resultado" | "persona" | "fechas" | null;
+type Hoja = "evento" | "resultado" | "persona" | "fechas" | "entidad" | null;
+const ENTIDADES: Opcion[] = [{ valor: "", texto: "Todo" }, { valor: "cuentas", texto: "Cuentas" }];
 
 /** Bitacora unificada: accesos y seguridad + cambios de datos, en orden cronologico. Solo administradores. */
 export default function PaginaBitacora() {
@@ -330,6 +331,7 @@ export default function PaginaBitacora() {
   const chips: { id: Exclude<Hoja, null>; etiqueta: string; texto: string; activo: boolean }[] = [
     { id: "evento", etiqueta: "Evento", texto: textoDe(eventos, filtros.evento), activo: !!filtros.evento },
     { id: "resultado", etiqueta: "Resultado", texto: textoDe(RESULTADOS, filtros.resultado), activo: !!filtros.resultado },
+    { id: "entidad", etiqueta: "Qué", texto: textoDe(ENTIDADES, filtros.entidad), activo: !!filtros.entidad },
     { id: "persona", etiqueta: "Persona", texto: textoDe(opcionesPersona, filtros.persona), activo: !!filtros.persona },
     { id: "fechas", etiqueta: "Fechas", texto: textoDeRango(rango), activo: rango.clave !== "" },
   ];
@@ -411,6 +413,9 @@ export default function PaginaBitacora() {
       )}
       {hoja === "resultado" && (
         <HojaOpciones titulo="Resultado" opciones={RESULTADOS} valor={filtros.resultado} alElegir={(v) => { cambiar({ resultado: v as FiltrosBitacora["resultado"] }); setHoja(null); }} alCerrar={() => setHoja(null)} />
+      )}
+      {hoja === "entidad" && (
+        <HojaOpciones titulo="Qué" opciones={ENTIDADES} valor={filtros.entidad} alElegir={(v) => { cambiar({ entidad: v as FiltrosBitacora["entidad"] }); setHoja(null); }} alCerrar={() => setHoja(null)} />
       )}
       {hoja === "persona" && (
         <HojaOpciones titulo="Persona" opciones={opcionesPersona} valor={filtros.persona} alElegir={(v) => { cambiar({ persona: v }); setHoja(null); }} alCerrar={() => setHoja(null)} />

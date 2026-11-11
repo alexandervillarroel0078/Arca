@@ -61,7 +61,7 @@ describe("Actividad de la familia: filtros como chips", () => {
     await u.click(screen.getByRole("button", { name: /^Qué:/ }));
     const que = screen.getByRole("dialog", { name: "Qué" });
     expect(within(que).getAllByRole("radio").map((r) => r.textContent?.replace("✓", "").trim())).toEqual([
-      "Todo", "Movimientos", "Apoyos", "Devoluciones", "Categorías", "Miembros", "Usuarios",
+      "Todo", "Movimientos", "Apoyos", "Devoluciones", "Categorías", "Miembros", "Usuarios", "Cuentas",
     ]);
     await u.keyboard("{Escape}");
     await u.click(screen.getByRole("button", { name: /^Quién:/ }));

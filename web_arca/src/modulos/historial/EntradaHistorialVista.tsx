@@ -19,6 +19,15 @@ const CAMPOS: Record<string, string> = {
   tipo: "Tipo", monto: "Monto", fecha: "Fecha", categoria: "Categoría", nota: "Nota", beneficiario: "Beneficiario",
   monto_consumido: "Consumido", anulado: "Anulado", nombre: "Nombre", email: "Correo", icono: "Icono",
   activa: "Activa", rol: "Rol", activo: "Activo", clave: "Clave",
+  // Cuentas: los montos ya llegan con su moneda ("100.00 USD"); los nombres de cuenta los resuelve el servidor para quien lee
+  moneda: "Moneda", banco: "Banco", banco_otro: "Otro banco", saldo_inicial: "Saldo inicial", comision: "Comisión de red",
+  sentido: "Sentido", saldo_previo: "Saldo antes", saldo_declarado: "Saldo contado", cuenta: "Cuenta",
+  cuenta_destino: "Cuenta destino", persona: "Persona", encargado: "Encargado", visibilidad: "Quién lo ve",
+};
+const VALORES: Record<string, string> = {
+  deposito: "Depósito", retiro: "Retiro", traspaso: "Traspaso", ajuste: "Ajuste por conteo", ahorro: "Caja de ahorro",
+  corriente: "Cuenta corriente", cripto: "Cripto", efectivo: "Efectivo", entrada: "Entrada", salida: "Salida",
+  solo_yo: "Solo yo", familia: "Familia", elegidas: "Personas elegidas",
 };
 const CAMPOS_DINERO = new Set(["monto", "monto_consumido"]);
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
@@ -31,7 +40,8 @@ function valorLegible(campo: string, v: unknown): string {
     const [a, m, d] = v.split("-").map(Number);
     return `${d} ${MESES[m - 1]} ${a}`;
   }
-  if (campo === "tipo") return v === "gasto" ? "Gasto" : v === "ingreso" ? "Ingreso" : String(v);
+  if (campo === "tipo") return v === "gasto" ? "Gasto" : v === "ingreso" ? "Ingreso" : VALORES[String(v)] ?? String(v);
+  if ((campo === "sentido" || campo === "visibilidad") && typeof v === "string") return VALORES[v] ?? v;
   if (campo === "rol") return v === "admin" ? "Admin" : v === "miembro" ? "Miembro" : String(v);
   return String(v);
 }

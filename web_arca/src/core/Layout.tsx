@@ -68,7 +68,8 @@ function BotonNuevo() {
  * aria-current es el "+": a lo mas UN elemento con aria-current="page" por pantalla. En /todos Inicio si es la actual.
  */
 export function estadoPestana(ruta: string, pathname: string): { actual: boolean; resaltada: boolean } {
-  const actual = ruta === "/" ? pathname === "/" || pathname === "/todos" : pathname === ruta || pathname.startsWith(`${ruta}/`);
+  // Cuentas se abre desde el menú Familia: en /cuentas/* la pestaña resaltada es Familia
+  const actual = ruta === "/" ? pathname === "/" || pathname === "/todos" : pathname === ruta || pathname.startsWith(`${ruta}/`) || (ruta === "/familia" && (pathname === "/cuentas" || pathname.startsWith("/cuentas/")));
   const enNuevoOEditar = pathname === "/nuevo" || pathname.startsWith("/editar/");
   return { actual, resaltada: actual || (ruta === "/" && enNuevoOEditar) };
 }

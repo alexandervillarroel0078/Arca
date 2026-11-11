@@ -253,7 +253,7 @@ export const cambiosPendientes = (page: Page) => page.getByTestId("cambios-pendi
 export const AVISO_SIN_INTERNET = "Sin internet: se guardó en el teléfono y se enviará luego";
 
 // ------------------------------------------------------------------ Familia como menu (Fase 14)
-export type OpcionFamilia = "Mi familia" | "Miembros" | "Categorías" | "Actividad de la familia" | "Bitácora" | "Mi perfil";
+export type OpcionFamilia = "Mi familia" | "Miembros" | "Cuentas" | "Categorías" | "Actividad de la familia" | "Bitácora" | "Mi perfil";
 
 /** Abre la pestana Familia (el menu de opciones). */
 export async function irAFamilia(page: Page) {

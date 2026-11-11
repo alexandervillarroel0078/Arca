@@ -10,6 +10,10 @@ import PaginaApoyos from "./modulos/apoyos/PaginaApoyos";
 import { AuthProvider, useAuth } from "./modulos/auth/AuthContext";
 import PaginaLogin from "./modulos/auth/PaginaLogin";
 import PaginaBitacora from "./modulos/bitacora/PaginaBitacora";
+import PaginaCuentaDetalle from "./modulos/cuentas/PaginaCuentaDetalle";
+import PaginaCuentaForm from "./modulos/cuentas/PaginaCuentaForm";
+import PaginaCuentas from "./modulos/cuentas/PaginaCuentas";
+import PaginaMovimientoNuevo from "./modulos/cuentas/PaginaMovimientoNuevo";
 import PaginaCategoriaNueva from "./modulos/familia/PaginaCategoriaNueva";
 import PaginaCategorias from "./modulos/familia/PaginaCategorias";
 import PaginaMiFamilia from "./modulos/familia/PaginaMiFamilia";
@@ -52,6 +56,11 @@ function Rutas() {
         <Route path="reportes" element={<PaginaReportes />} />
         <Route path="periodo/rango" element={<PaginaRango />} />
         <Route path="familia" element={<PaginaFamilia />} />
+        <Route path="cuentas" element={<PaginaCuentas />} />
+        <Route path="cuentas/nueva" element={<PaginaCuentaForm />} />
+        <Route path="cuentas/movimiento" element={<PaginaMovimientoNuevo />} />
+        <Route path="cuentas/:id" element={<PaginaCuentaDetalle />} />
+        <Route path="cuentas/:id/editar" element={<PaginaCuentaForm />} />
         <Route path="familia/mi-familia" element={<PaginaMiFamilia />} />
         <Route path="familia/miembros" element={<PaginaMiembros />} />
         <Route path="familia/miembros/nuevo" element={<PaginaMiembroNuevo />} />

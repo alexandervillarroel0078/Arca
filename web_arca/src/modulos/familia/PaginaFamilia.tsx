@@ -81,6 +81,7 @@ export default function PaginaFamilia() {
   const opciones: Opcion[] = [
     { id: "mi-familia", icono: "🏡", titulo: "Mi familia", descripcion: esAdmin ? "Tu familia y el día en que empieza el mes" : "Tu familia y cuándo empieza el mes", a: "/familia/mi-familia" },
     { id: "miembros", icono: "👥", titulo: "Miembros", descripcion: esAdmin ? "Quiénes forman tu familia y sus roles" : "Quiénes forman tu familia", a: "/familia/miembros" },
+    { id: "cuentas", icono: "🏦", titulo: "Cuentas", descripcion: "Bancos, cripto y efectivo de la familia", a: "/cuentas" },
     { id: "categorias", icono: "🏷️", titulo: "Categorías", descripcion: esAdmin ? "En qué se gasta: crea y ordena categorías" : "En qué se gasta", a: "/familia/categorias" },
     ...(esAdmin ? [{ id: "actividad", icono: "🕑", titulo: "Actividad de la familia", descripcion: "Todo lo que se hizo, quién y cuándo", a: "/familia/actividad" }] : []),
     ...(esAdmin ? [{ id: "bitacora", icono: "🛡️", titulo: "Bitácora", descripcion: "Quién entró, intentos fallidos y cambios", a: "/familia/bitacora" }] : []),

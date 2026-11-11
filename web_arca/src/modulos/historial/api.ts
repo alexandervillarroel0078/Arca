@@ -1,6 +1,6 @@
 import { api } from "../../core/api";
 
-export type EntidadHistorial = "movimiento" | "apoyo" | "devolucion" | "categoria" | "miembro" | "usuario";
+export type EntidadHistorial = "movimiento" | "apoyo" | "devolucion" | "categoria" | "miembro" | "usuario" | "cuenta" | "cuenta_mov";
 
 /** campo -> {antes, despues}; en cambios de clave solo {"clave": "clave cambiada"} (texto fijo). */
 export type CambiosHistorial = Record<string, { antes: unknown; despues: unknown } | string>;

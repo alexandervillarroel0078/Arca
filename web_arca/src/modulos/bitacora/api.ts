@@ -37,9 +37,11 @@ export interface FiltrosBitacora {
   persona: string; // id de usuario
   desde: string; // fecha-hora ISO (inicio del dia local) o ""
   hasta: string; // fecha-hora ISO (inicio del dia local siguiente) o ""
+  /** "cuentas" = solo los cambios de Cuentas (filtro de grupo); "" = todo. */
+  entidad: "" | "cuentas";
 }
 
-export const FILTROS_VACIOS: FiltrosBitacora = { origen: "", evento: "", resultado: "", persona: "", desde: "", hasta: "" };
+export const FILTROS_VACIOS: FiltrosBitacora = { origen: "", evento: "", resultado: "", persona: "", desde: "", hasta: "", entidad: "" };
 
 export interface ResumenBitacora {
   ultimos_accesos: {
@@ -65,6 +67,7 @@ function consulta(f: FiltrosBitacora): URLSearchParams {
   if (f.persona) q.set("persona", f.persona);
   if (f.desde) q.set("desde", f.desde);
   if (f.hasta) q.set("hasta", f.hasta);
+  if (f.entidad) q.set("entidad", f.entidad);
   return q;
 }
 

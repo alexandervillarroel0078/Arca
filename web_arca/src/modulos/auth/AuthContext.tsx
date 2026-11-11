@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { useAviso } from "../../core/Aviso";
 import { ErrorApi, token } from "../../core/api";
+import { olvidarUltimo } from "../cuentas/recordar";
 import { borrarTodoLocal, olvidarCacheDeSesionVencida, prepararSesion } from "../sync/sesion";
 import * as authApi from "./api";
 import type { Yo } from "./api";
@@ -57,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       /* nunca impide cerrar la sesion */
     }
     cerrar();
+    olvidarUltimo(); // lo recordado en Cuentas (solo ids) se va con la sesión
     void borrarTodoLocal().catch(() => {});
   }, [cerrar]);
 

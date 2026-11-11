@@ -12,7 +12,7 @@ import EntradaHistorialVista, { ACCIONES } from "./EntradaHistorialVista";
 const TAMANO = 20;
 const ENTIDADES: [string, string][] = [
   ["movimiento", "Movimientos"], ["apoyo", "Apoyos"], ["devolucion", "Devoluciones"],
-  ["categoria", "Categorías"], ["miembro", "Miembros"], ["usuario", "Usuarios"],
+  ["categoria", "Categorías"], ["miembro", "Miembros"], ["usuario", "Usuarios"], ["cuentas", "Cuentas"],
 ];
 
 type Filtro = "entidad" | "accion" | "usuario";

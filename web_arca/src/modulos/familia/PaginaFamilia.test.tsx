@@ -21,11 +21,11 @@ const pendiente = () =>
 beforeEach(() => sesion.salir.mockReset());
 
 describe("Familia: menu de opciones", () => {
-  it("el admin ve las 7 opciones, cada una con icono, titulo, descripcion y flecha", async () => {
+  it("el admin ve las 8 opciones, cada una con icono, titulo, descripcion y flecha", async () => {
     abrir(admin);
     const menu = screen.getByRole("navigation", { name: "Opciones de Familia" });
     const ids = within(menu).getAllByTestId(/^opcion-familia-/).map((e) => e.getAttribute("data-testid"));
-    expect(ids).toEqual(["opcion-familia-mi-familia", "opcion-familia-miembros", "opcion-familia-categorias", "opcion-familia-actividad", "opcion-familia-bitacora", "opcion-familia-perfil", "opcion-familia-salir"]);
+    expect(ids).toEqual(["opcion-familia-mi-familia", "opcion-familia-miembros", "opcion-familia-cuentas", "opcion-familia-categorias", "opcion-familia-actividad", "opcion-familia-bitacora", "opcion-familia-perfil", "opcion-familia-salir"]);
     const miembros = screen.getByTestId("opcion-familia-miembros");
     expect(miembros).toHaveTextContent("Miembros");
     expect(miembros).toHaveTextContent("Quiénes forman tu familia");
@@ -37,6 +37,7 @@ describe("Familia: menu de opciones", () => {
     abrir(admin);
     expect(screen.getByTestId("opcion-familia-mi-familia")).toHaveAttribute("href", "/familia/mi-familia");
     expect(screen.getByTestId("opcion-familia-miembros")).toHaveAttribute("href", "/familia/miembros");
+    expect(screen.getByTestId("opcion-familia-cuentas")).toHaveAttribute("href", "/cuentas");
     expect(screen.getByTestId("opcion-familia-categorias")).toHaveAttribute("href", "/familia/categorias");
     expect(screen.getByTestId("opcion-familia-actividad")).toHaveAttribute("href", "/familia/actividad");
     expect(screen.getByTestId("opcion-familia-bitacora")).toHaveAttribute("href", "/familia/bitacora");
@@ -53,7 +54,7 @@ describe("Familia: menu de opciones", () => {
     abrir(miembro);
     expect(screen.queryByTestId("opcion-familia-actividad")).not.toBeInTheDocument();
     expect(screen.queryByText("Actividad de la familia")).not.toBeInTheDocument();
-    expect(screen.getAllByTestId(/^opcion-familia-/)).toHaveLength(5);
+    expect(screen.getAllByTestId(/^opcion-familia-/)).toHaveLength(6); // (Cuentas: + una opcion para todos)
     expect(screen.getByText(/solo un administrador puede cambiar categorías y miembros/)).toBeInTheDocument();
   });
 

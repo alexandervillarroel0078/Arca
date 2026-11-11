@@ -14,7 +14,7 @@ test.describe("Familia: menu de opciones y navegacion", () => {
     await entrarRapido(page, admin);
     await irAFamilia(page);
     const tarjetas = page.getByTestId(/^opcion-familia-/);
-    await expect(tarjetas).toHaveCount(7); // (Fase 15: + Bitacora, solo admin; Fase 16: + Mi familia)
+    await expect(tarjetas).toHaveCount(8); // (Fase 15: + Bitacora, solo admin; Fase 16: + Mi familia; Cuentas: + Cuentas)
     await expect(tarjetas.nth(0)).toContainText("Mi familia");
     await expect(tarjetas.nth(1)).toContainText("Miembros");
     await expect(tarjetas.nth(1)).toContainText("Quiénes forman tu familia");
