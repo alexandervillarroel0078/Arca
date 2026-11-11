@@ -1,5 +1,12 @@
 # NOTAS
 
+## Cómo retomar
+1. **Qué es:** Arca, app de gastos familiares (backend FastAPI en `backend_arca/`, frontend React + Vite + TS PWA en `web_arca/`, PostgreSQL).
+2. **Dónde está:** backend `arca-backend-djl0.onrender.com` y frontend `arca-web-zn5s.onrender.com` (Render), base en Supabase (Session pooler), repo privado en GitHub, rama `main`.
+3. **Desplegar un cambio:** el auto-deploy está apagado: commit y push a `main`, luego deploy manual de cada servicio (dashboard de Render o MCP). Detalle en `DESPLIEGUE.md`, sección 6.
+4. **Pruebas:** `TEST_DATABASE_URL` siempre a `arca_test` en localhost (pytest hace `TRUNCATE CASCADE`: jamás con la URL de Supabase). Cómo correr pytest, Vitest y Playwright: ver Fase 11 y Fase 13 de este archivo.
+5. **Pendientes:** sección "Pendientes" al final de este archivo.
+
 ## Decisiones tomadas (datos que faltaban en el SPEC)
 - SQLAlchemy 2.0 sincrono + psycopg2 (lo mas simple).
 - Python 3.10 del sistema; entorno virtual en `backend_arca/.venv`.
@@ -516,3 +523,35 @@ Vitest **1140/1140** (59 archivos), E2E de desarrollo **100/100** y E2E de la ap
 - Pendientes: I (periodo compacto), K (formato es-BO de los montos), `JWT_SECRET` de produccion (generar uno propio y definirlo en el entorno, nunca en el repo) y prueba en telefono real (la PWA instalada necesita HTTPS).
 
 Fase 18: bloques A-H, D2 y J terminados.
+
+## Fase 19 - Cierre y despliegue
+
+### Arreglo de visibilidad al editar
+- En `PATCH` de movimientos y de apoyos, **solo el dueño** puede cambiar `visibilidad` / `compartido_con`. Si quien edita es un admin ajeno al registro, el servidor responde **403**.
+- `_gastos_por_categoria` filtra además por `Categoria.familia_id`, para que una categoría de otra familia no entre en el cálculo.
+- 13 pruebas nuevas en `test_fase19_visibilidad_editar.py`.
+- **Totales:** pytest **903**, Vitest **1141**, E2E de desarrollo **99-100**, E2E de la app compilada (PWA) **3**.
+
+### Login
+- El texto de versión solo se muestra si `VITE_BUILD_ID` existe y no es `"local"` (`PaginaLogin.tsx`). En builds locales ya no aparece "Versión local".
+
+### Decisiones
+- **Gasto de varias unidades:** se registra como total + nota (por ejemplo "3 x 22"). La opción B (`cantidad` y `precio_unitario` opcionales) queda como mejora futura; la C (ítems por movimiento) se descarta por ahora.
+- **Fondo de ahorro personal:** se lleva en Google Sheets, fuera de Arca.
+
+### Despliegue
+- Backend, frontend y base ya están en producción (Render + Supabase). Todo el detalle, las variables (solo nombres) y los respaldos están en `DESPLIEGUE.md`, secciones 4c y 6.
+
+## Pendientes
+- [ ] **Crear el primer usuario en producción.** El registro está abierto solo mientras la base está vacía; hasta entonces cualquiera con la URL podría crear el primer admin. Después, comprobar que un segundo registro da 403.
+- [ ] **Resetear la clave de Supabase** y actualizar `DATABASE_URL` en Render (deploy manual después).
+- [ ] **Verificar `FORWARDED_ALLOW_IPS=*` en Render.** Sin ella, el límite de login y la IP de la bitácora usan la IP del proxy.
+- [ ] **Probar la PWA offline en el teléfono** (modo avión, crear/editar cambios y sincronizar al volver la conexión).
+- [ ] **Fase 18, bloques I** (periodo compacto) **y K** (formato es-BO de los montos).
+- [ ] **Protección contra abuso** (decidida como *opcional por ahora*). Hoy ya hay: registro cerrado, límite de login por (IP, correo), `/docs` apagado y CORS acotado. Propuesta:
+  - contador de login solo por IP: 30 fallos en 10 minutos (hoy se evade rotando correos);
+  - tope de tamaño de body: 256 KB (413);
+  - rate limit general: 120 peticiones por minuto por IP, excluyendo `/salud` y la sincronización;
+  - RLS en Supabase como migración **0008** (probar primero en `arca_test`; el backend usa un rol de Postgres, no la API REST).
+- [ ] **Activar el auto-deploy** cuando se quiera.
+- **Hueco conocido, sin arreglar:** el historial revela las entradas anteriores de un registro cuando pasa de privado a familia. Es coherente con la regla (el historial es de solo agregar), solo hay que tenerlo presente.

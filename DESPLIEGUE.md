@@ -95,6 +95,25 @@ pg_restore --no-owner --dbname "postgresql://USUARIO:CLAVE@HOST-NUEVO.neon.tech/
 Despues apunta `DATABASE_URL` del backend a la base nueva. Recomendado: un respaldo semanal, guardado **fuera** de tu computadora
 principal y fuera del repositorio (los respaldos contienen todos los datos y los hashes de clave).
 
+## 4c. Respaldo manual de la base real (Supabase)
+
+Procedimiento vigente para la base de producción. Las cadenas de conexión **nunca** se escriben en este archivo ni en el repo.
+
+1. **Carpeta:** `C:\respaldos` (fuera del proyecto).
+2. **Frecuencia:** semanal, y antes de cada migración sobre Supabase.
+3. **Respaldo:** `pg_dump -F c` contra el **Session pooler** (puerto 5432), con la cadena puesta solo en la variable de entorno de esa terminal:
+   ```powershell
+   $env:DATABASE_URL = "<cadena del Session pooler, sin +psycopg2>"
+   pg_dump -F c --no-owner --file="C:\respaldos\arca-$(Get-Date -Format yyyy-MM-dd).dump" $env:DATABASE_URL
+   pg_restore --list "C:\respaldos\arca-AAAA-MM-DD.dump" | Select-Object -First 10
+   Remove-Item Env:DATABASE_URL
+   ```
+4. **Versión de `pg_dump`:** si falla con "server version mismatch", usar un `pg_dump` de versión **17 o superior** (debe ser igual o más nueva que la del servidor).
+5. **Copia fuera de la PC:** subir el `.dump` a Drive o a un USB. Contiene todos los datos y los hashes de clave: tratarlo como confidencial.
+6. **Probar la restauración** de vez en cuando en `arca_test` (local), nunca encima de Supabase:
+   `pg_restore --no-owner --clean --if-exists --dbname <cadena-local-de-arca_test> "C:\respaldos\arca-AAAA-MM-DD.dump"`
+7. **No subir dumps a GitHub.** `*.dump` ya está en `.gitignore`; igualmente, mantener los respaldos fuera del repositorio.
+
 ## 4b. Bitacora (Fase 15)
 - La migracion `0005` (parte de `alembic upgrade head`, que ya corre al arrancar) crea la tabla `bitacora` y su trigger de solo agregar. Nada que configurar.
 - La **IP** que se anota es la del socket que resuelve uvicorn: en Render hay que tener `FORWARDED_ALLOW_IPS=*` (ver la tabla de variables); sin ella todos los accesos aparecerian con la IP del proxy. La app no lee `X-Forwarded-For` por su cuenta.
@@ -109,3 +128,62 @@ principal y fuera del repositorio (los respaldos contienen todos los datos y los
 - [ ] Un respaldo hecho y comprobado con `pg_restore --list`.
 - [ ] Ningun `.env` en el repositorio (`.gitignore` ya excluye `.env`, `.venv` y `node_modules`).
 - [ ] Con `FORWARDED_ALLOW_IPS=*` puesta: entrar una vez y comprobar en Familia > Bitacora que la IP del acceso es la tuya y no la del proxy.
+
+## 6. Despliegue real en Render + Supabase
+
+Lo que está en producción hoy. Las secciones 1 a 3 describen la arquitectura sugerida original (Neon + Vercel); donde difieran, manda esta sección. **Aquí solo hay nombres de variables, nunca valores.**
+
+### Arquitectura
+- **Backend:** Web Service `arca-backend` en Render (FastAPI).
+- **Frontend:** Static Site `arca-web` en Render (React + Vite, PWA).
+- **Base de datos:** Supabase, por el **Session pooler** (puerto 5432, `sslmode=require`).
+- **Código:** repositorio privado en GitHub, rama `main`.
+
+### Servicios y URLs
+| Servicio | URL |
+|---|---|
+| Backend | `https://arca-backend-djl0.onrender.com` (salud: `/api/salud`) |
+| Frontend | `https://arca-web-zn5s.onrender.com` |
+
+### Variables del backend (solo nombres)
+`DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRA_MINUTOS`, `CORS_ORIGENES`, `ENTORNO=produccion`, `PYTHON_VERSION`, `FORWARDED_ALLOW_IPS` (**verificar que esté puesta** con valor `*`).
+- `DATABASE_URL` y `JWT_SECRET` se cargan **a mano en el dashboard** de Render (no por MCP ni por archivo).
+- Frontend: `VITE_API_URL` (se lee al compilar).
+
+### Comandos de build y arranque
+El MCP de Render no admite `rootDir`, así que los comandos entran a la carpeta:
+| Servicio | Build | Start / publicación |
+|---|---|---|
+| Backend | `cd backend_arca && pip install -r requirements.txt` | `cd backend_arca && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Frontend | `cd web_arca && npm install && npm run build` | directorio de publicación: `web_arca/dist` |
+
+### Regla de rewrite (SPA)
+`/*` → `/index.html` (acción *Rewrite*), configurada **a mano en el dashboard de `arca-web`**. Sin ella, recargar `/apoyos` u otra ruta da 404.
+
+### Cómo desplegar un cambio
+El **auto-deploy está apagado**. Cada cambio requiere: 1) commit y `push` a `main`; 2) deploy manual del servicio afectado (dashboard de Render o MCP). Si se cambia una variable de entorno, también hay que redesplegar.
+
+### Migraciones a Supabase
+Se corren **desde la PC**, con `DATABASE_URL` puesta solo en esa terminal, **nunca en el `.env`**:
+```powershell
+$env:DATABASE_URL = "<cadena del Session pooler>"
+cd backend_arca
+.venv\Scripts\alembic.exe upgrade head
+.venv\Scripts\alembic.exe current
+Remove-Item Env:DATABASE_URL
+```
+Haz un respaldo antes (sección 4c). Estado actual: **0007 (head)**.
+
+### Regla de oro de las pruebas
+El `.env` local **siempre apunta a localhost**. Nunca correr `pytest` con la URL de Supabase: las pruebas hacen `TRUNCATE ... CASCADE` y borrarían los datos reales.
+
+### Comportamiento en producción
+- `/docs`, `/redoc` y `/openapi.json` apagados.
+- CORS: solo el origen del frontend.
+- Registro cerrado: solo se crea el primer usuario (con la base vacía). Después, el admin invita desde Familia con una **clave temporal**; "restablecer clave" también genera una clave temporal.
+
+### Plan gratuito
+El backend se duerme a los 15 minutos sin uso; la primera carga después tarda 30-50 s (la app muestra "Despertando el servidor...").
+
+### PWA
+Se instala desde Chrome ("Instalar"). Las actualizaciones aparecen como aviso y se aplican al cerrar y reabrir la app; **no hace falta reinstalar**.
