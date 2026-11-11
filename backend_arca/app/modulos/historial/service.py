@@ -16,6 +16,7 @@ from app.core.deps import Contexto
 from app.modulos.apoyos.models import Apoyo, Devolucion
 from app.modulos.auth.models import Usuario
 from app.modulos.categorias.models import Categoria
+from app.modulos.cuentas import nombres as nombres_cuentas
 from app.modulos.familia.models import Familia
 from app.modulos.historial.models import Historial
 from app.modulos.historial.schemas import HistorialItem, HistorialPagina
@@ -106,7 +107,7 @@ def operacion_aplicada(db: Session, familia_id: int, uuid_operacion: str | None,
 
 
 # ---------------------------------------------------------------- lectura
-def _etiquetas(db: Session, filas: list[Historial]) -> dict[tuple[str, int], str]:
+def _etiquetas(db: Session, ctx: Contexto, filas: list[Historial]) -> dict[tuple[str, int], str]:
     """Nombre legible de cada registro mencionado (nada se borra, asi que siempre existen)."""
     ids: dict[str, set[int]] = {}
     for f in filas:
@@ -126,6 +127,9 @@ def _etiquetas(db: Session, filas: list[Historial]) -> dict[tuple[str, int], str
         ).all()
         for d, a in filas_d:
             out[("devolucion", d.id)] = f"Devolución de {a.beneficiario} (Bs {d.monto:.2f})"
+    for entidad in nombres_cuentas.ENTIDADES_CUENTAS:  # sin saldos ni ultimos 4; nombres solo por `nombres_para`
+        for i, d in nombres_cuentas.describir(db, ctx, entidad, ids.get(entidad, set())).items():
+            out[(entidad, i)] = d[:1].upper() + d[1:]
     if ids.get("categoria"):
         for c in db.scalars(select(Categoria).where(Categoria.id.in_(ids["categoria"]))):
             out[("categoria", c.id)] = f"Categoría {c.nombre}"
@@ -156,7 +160,9 @@ def listar(
 ) -> HistorialPagina:
     """Siempre limitado a la familia del usuario y a los registros que PUEDE ver (visibilidad actual), tambien el admin."""
     q = select(Historial).where(vis.condicion_historial(ctx))
-    if entidad:
+    if entidad == "cuentas":  # filtro de grupo: cuentas y sus movimientos
+        q = q.where(Historial.entidad.in_(nombres_cuentas.ENTIDADES_CUENTAS))
+    elif entidad:
         q = q.where(Historial.entidad == entidad)
     if entidad_id is not None:
         q = q.where(Historial.entidad_id == entidad_id)
@@ -172,7 +178,8 @@ def listar(
     orden = (Historial.fecha.asc(), Historial.id.asc()) if cronologico else (Historial.fecha.desc(), Historial.id.desc())
     filas = list(db.scalars(q.order_by(*orden).limit(limite).offset(desplazamiento)))
     nombres = nombres_usuarios(db, {f.usuario_id for f in filas})
-    etiquetas = _etiquetas(db, filas)
+    etiquetas = _etiquetas(db, ctx, filas)
+    cambios_vistos = nombres_cuentas.resolver_cambios(db, ctx, filas)  # ids de cuenta -> nombre para ESTE lector
     items = [
         HistorialItem(
             id=f.id,
@@ -182,11 +189,11 @@ def listar(
             usuario_id=f.usuario_id,
             usuario_nombre=nombres.get(f.usuario_id, ""),
             fecha=f.fecha,
-            cambios=f.cambios or {},
+            cambios=cambios_vistos[i],
             motivo=f.motivo,
             fecha_cliente=f.fecha_cliente,
             etiqueta=etiquetas.get((f.entidad, f.entidad_id)),
         )
-        for f in filas
+        for i, f in enumerate(filas)
     ]
     return HistorialPagina(items=items, total=total, hay_mas=desplazamiento + limite < total)

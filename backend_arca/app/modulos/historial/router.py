@@ -11,7 +11,9 @@ from app.modulos.visibilidad import service as vis
 # Solo lectura: el historial no se edita ni se borra (no hay POST/PATCH/PUT/DELETE aqui).
 router = APIRouter(prefix="/historial", tags=["historial"])
 
-Entidad = Literal["movimiento", "apoyo", "devolucion", "categoria", "miembro", "usuario", "familia"]
+Entidad = Literal[
+    "movimiento", "apoyo", "devolucion", "categoria", "miembro", "usuario", "familia", "cuenta", "cuenta_mov", "cuentas"
+]  # "cuentas" = filtro de grupo (cuenta + cuenta_mov), solo para listas
 
 
 @router.get("", response_model=HistorialPagina)
@@ -31,6 +33,8 @@ def listar(
     Sin `entidad_id`: actividad global de la familia (solo admin, mas reciente primero)."""
     if entidad_id is not None and entidad is None:
         raise HTTPException(status_code=422, detail="Indica también la entidad")
+    if entidad == "cuentas" and entidad_id is not None:
+        raise HTTPException(status_code=422, detail="«cuentas» es un filtro de grupo: usa «cuenta» o «cuenta_mov» con un id")
     cadena = entidad is not None and entidad_id is not None
     if not cadena and not ctx.es_admin:
         raise HTTPException(status_code=403, detail="Solo un administrador puede ver la actividad de la familia")

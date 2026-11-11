@@ -394,6 +394,19 @@ CON_FILTRO_PROPIO = {  # rutas de listas/totales/creacion cubiertas por los otro
     ("GET", "/api/reportes/tendencia-mensual"), ("GET", "/api/privacidad"),
     ("GET", "/api/sincronizacion/visibles"),
 }
+# Cuentas (etapa 2): su visibilidad es POR CUENTA y se prueba ruta por ruta en test_etapa2_cuentas_aislamiento.py
+# (404 para admin, otro miembro, elegido y otra familia; ver `test_toda_ruta_de_cuentas_esta_cubierta...`).
+CUENTAS_RUTAS = {
+    ("GET", "/api/cuentas"), ("POST", "/api/cuentas"), ("GET", "/api/cuentas/catalogo"),
+    ("GET", "/api/cuentas/movimientos"), ("POST", "/api/cuentas/traspasos"),
+    ("GET", "/api/cuentas/movimientos/{movimiento_id}"), ("POST", "/api/cuentas/movimientos/{movimiento_id}/anular"),
+    ("POST", "/api/cuentas/movimientos/{movimiento_id}/reactivar"),
+    ("GET", "/api/cuentas/{cuenta_id}"), ("PATCH", "/api/cuentas/{cuenta_id}"),
+    ("POST", "/api/cuentas/{cuenta_id}/anular"), ("POST", "/api/cuentas/{cuenta_id}/reactivar"),
+    ("PATCH", "/api/cuentas/{cuenta_id}/visibilidad"), ("GET", "/api/cuentas/{cuenta_id}/movimientos"),
+    ("POST", "/api/cuentas/{cuenta_id}/depositos"), ("POST", "/api/cuentas/{cuenta_id}/retiros"),
+    ("POST", "/api/cuentas/{cuenta_id}/ajustes"),
+}
 
 
 def _rutas_de_la_app():
@@ -407,7 +420,7 @@ def _rutas_de_la_app():
 
 def test_todas_las_rutas_estan_en_la_matriz():
     """Un endpoint nuevo que devuelva datos de registros DEBE agregarse a la matriz (E, L o SIN_DATOS_DE_REGISTROS)."""
-    clasificadas = set(E) | CON_FILTRO_PROPIO | SIN_DATOS_DE_REGISTROS
+    clasificadas = set(E) | CON_FILTRO_PROPIO | SIN_DATOS_DE_REGISTROS | CUENTAS_RUTAS
     reales = _rutas_de_la_app()
     sin_clasificar = reales - clasificadas
     assert not sin_clasificar, (

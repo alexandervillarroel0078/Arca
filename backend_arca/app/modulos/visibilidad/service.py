@@ -11,12 +11,13 @@ from sqlalchemy.orm import Session
 
 from app.core.deps import Contexto
 from app.modulos.apoyos.models import Apoyo, Devolucion
+from app.modulos.cuentas.models import Cuenta, CuentaMovimiento
 from app.modulos.historial.models import Historial
 from app.modulos.movimientos.models import Movimiento
 from app.modulos.visibilidad.models import Compartido
 
-ENTIDAD = {Movimiento: "movimiento", Apoyo: "apoyo"}
-ENTIDADES_CON_VISIBILIDAD = ("movimiento", "apoyo", "devolucion")
+ENTIDAD = {Movimiento: "movimiento", Apoyo: "apoyo", Cuenta: "cuenta"}
+ENTIDADES_CON_VISIBILIDAD = ("movimiento", "apoyo", "devolucion", "cuenta", "cuenta_mov")
 # Lista BLANCA: solo estas entidades del historial no dependen de la visibilidad de un registro. Cualquier otra entidad
 # necesita una rama explicita en `condicion_historial` y en `exigir_ver_entidad`; si no la tiene, queda OCULTA para todos
 # (admin incluido). Una entidad nueva olvidada nunca se vuelve publica.
@@ -35,10 +36,10 @@ def condicion(ctx: Contexto, modelo):
         .correlate(modelo)
         .exists()
     )
-    return and_(
-        modelo.familia_id == ctx.familia_id,
-        or_(modelo.usuario_id == uid, modelo.visibilidad == "familia", and_(modelo.visibilidad == "elegidas", elegido)),
-    )
+    quien = [modelo.usuario_id == uid, modelo.visibilidad == "familia", and_(modelo.visibilidad == "elegidas", elegido)]
+    if hasattr(modelo, "encargado_id"):
+        quien.append(modelo.encargado_id == uid)  # el encargado de una cuenta SIEMPRE la ve (si no, no podria registrar)
+    return and_(modelo.familia_id == ctx.familia_id, or_(*quien))
 
 
 def filtrar(consulta, ctx: Contexto, modelo):
@@ -51,6 +52,15 @@ def condicion_devolucion(ctx: Contexto):
     return Devolucion.apoyo_id.in_(select(Apoyo.id).where(condicion(ctx, Apoyo)))
 
 
+def condicion_mov_cuenta(ctx: Contexto):
+    """Un movimiento de cuenta se ve si se ve su cuenta o, en un traspaso, la cuenta de destino (hereda la visibilidad)."""
+    ve = select(Cuenta.id).where(condicion(ctx, Cuenta))
+    return and_(
+        CuentaMovimiento.familia_id == ctx.familia_id,
+        or_(CuentaMovimiento.cuenta_id.in_(ve), CuentaMovimiento.cuenta_destino_id.in_(ve)),
+    )
+
+
 def condicion_historial(ctx: Contexto):
     """Entradas del historial que este usuario puede ver, segun la visibilidad ACTUAL del registro al que se refieren.
 
@@ -60,11 +70,15 @@ def condicion_historial(ctx: Contexto):
     ve_mov = select(Movimiento.id).where(condicion(ctx, Movimiento))
     ve_apo = select(Apoyo.id).where(condicion(ctx, Apoyo))
     ve_dev = select(Devolucion.id).where(condicion_devolucion(ctx))
+    ve_cuenta = select(Cuenta.id).where(condicion(ctx, Cuenta))
+    ve_cmov = select(CuentaMovimiento.id).where(condicion_mov_cuenta(ctx))
     datos = or_(
         Historial.entidad.in_(ENTIDADES_SIN_VISIBILIDAD),
         and_(Historial.entidad == "movimiento", Historial.entidad_id.in_(ve_mov)),
         and_(Historial.entidad == "apoyo", Historial.entidad_id.in_(ve_apo)),
         and_(Historial.entidad == "devolucion", Historial.entidad_id.in_(ve_dev)),
+        and_(Historial.entidad == "cuenta", Historial.entidad_id.in_(ve_cuenta)),
+        and_(Historial.entidad == "cuenta_mov", Historial.entidad_id.in_(ve_cmov)),
     )
     return and_(
         Historial.familia_id == ctx.familia_id,
@@ -88,11 +102,13 @@ def compartidos_de(db: Session, entidad: str, ids) -> dict[int, list[int]]:
     return salida
 
 
-def puede_ver(db: Session, ctx: Contexto, obj: Movimiento | Apoyo) -> bool:
+def puede_ver(db: Session, ctx: Contexto, obj: Movimiento | Apoyo | Cuenta) -> bool:
     """Misma regla que `condicion`, para un objeto ya cargado."""
     if obj is None or obj.familia_id != ctx.familia_id:
         return False
     if obj.usuario_id == ctx.usuario.id or obj.visibilidad == "familia":
+        return True
+    if getattr(obj, "encargado_id", None) == ctx.usuario.id:
         return True
     if obj.visibilidad != "elegidas":
         return False
@@ -105,6 +121,14 @@ def exigir_ver(db: Session, ctx: Contexto, obj, que: str):
     if not puede_ver(db, ctx, obj):
         raise HTTPException(status_code=404, detail=f"{que} no encontrado")
     return obj
+
+
+def puede_ver_mov_cuenta(db: Session, ctx: Contexto, mov: CuentaMovimiento | None) -> bool:
+    """Misma regla que `condicion_mov_cuenta`, para un movimiento ya cargado."""
+    if mov is None or mov.familia_id != ctx.familia_id:
+        return False
+    ids = [mov.cuenta_id] + ([mov.cuenta_destino_id] if mov.cuenta_destino_id else [])
+    return any(puede_ver(db, ctx, db.get(Cuenta, i)) for i in ids)
 
 
 def puede_editar(ctx: Contexto, obj: Movimiento | Apoyo) -> bool:
@@ -141,6 +165,11 @@ def exigir_ver_entidad(db: Session, ctx: Contexto, entidad: str, entidad_id: int
     elif entidad == "devolucion":
         d = db.get(Devolucion, entidad_id)
         exigir_ver(db, ctx, db.get(Apoyo, d.apoyo_id) if d is not None else None, "Devolución")
+    elif entidad == "cuenta":
+        exigir_ver(db, ctx, db.get(Cuenta, entidad_id), "Cuenta")
+    elif entidad == "cuenta_mov":
+        if not puede_ver_mov_cuenta(db, ctx, db.get(CuentaMovimiento, entidad_id)):
+            raise HTTPException(status_code=404, detail="Movimiento de cuenta no encontrado")
     elif entidad not in ENTIDADES_SIN_VISIBILIDAD:
         # entidad desconocida: se comporta como si no existiera (mismo 404 que un id inexistente)
         raise HTTPException(status_code=404, detail="Registro no encontrado")

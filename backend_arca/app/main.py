@@ -15,6 +15,7 @@ from app.modulos.auth.router import router as auth_router
 from app.modulos.bitacora import registro as bitacora
 from app.modulos.bitacora.router import router as bitacora_router
 from app.modulos.categorias.router import router as categorias_router
+from app.modulos.cuentas.router import router as cuentas_router
 from app.modulos.familia.router import router as familia_router
 from app.modulos.historial.router import router as historial_router
 from app.modulos.movimientos.router import router as movimientos_router
@@ -43,7 +44,7 @@ api = APIRouter(prefix="/api", dependencies=[Depends(bitacora.fijar_origen)])
 for r in (
     auth_router, familia_router, categorias_router, movimientos_router, apoyos_router, actividad_router,
     historial_router, bitacora_router, periodos_router, reportes_router, privacidad_router,
-    sincronizacion_router,
+    sincronizacion_router, cuentas_router,
 ):
     api.include_router(r)
 
@@ -66,7 +67,10 @@ def _registrar_rechazo(request: Request, status: int, detalle, campos: list[str]
     if isinstance(detalle, dict):  # p. ej. el 409 de version: solo el mensaje, nunca el registro del servidor
         detalle = detalle.get("mensaje") or detalle.get("codigo")
     motivo = _sin_montos(detalle) if isinstance(detalle, str) else "rechazado"
-    datos = {"ruta": request.url.path, "metodo": request.method, "status": status, "motivo": motivo}
+    ruta = request.url.path
+    if "/cuentas" in ruta:  # el id de una cuenta no debe llegar a la bitacora (el admin podria deducir cuentas privadas)
+        ruta = re.sub(r"/\d+", "/{id}", ruta)
+    datos = {"ruta": ruta, "metodo": request.method, "status": status, "motivo": motivo}
     if campos:
         datos["campos"] = campos
     if status == 403:

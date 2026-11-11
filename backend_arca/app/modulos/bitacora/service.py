@@ -26,6 +26,7 @@ from app.modulos.bitacora.schemas import (
     BitacoraItem, BitacoraPagina, FalloUsuario, NovedadAcceso, ResumenBitacora, UltimoAcceso,
 )
 from app.modulos.categorias.models import Categoria
+from app.modulos.cuentas import nombres as nombres_cuentas
 from app.modulos.familia.models import Miembro
 from app.modulos.historial.models import Historial
 from app.modulos.movimientos.models import Movimiento
@@ -59,6 +60,9 @@ CAMPOS = {
     "monto": "Monto", "fecha": "Fecha", "categoria": "Categoría", "nota": "Nota", "tipo": "Tipo",
     "beneficiario": "Beneficiario", "monto_consumido": "Consumido", "nombre": "Nombre", "email": "Correo",
     "dia_inicio_mes": "Día de inicio del mes", "visibilidad": "Quién lo ve", "compartido_con": "Compartido con", "rol": "Rol", "activo": "Activo", "activa": "Activa", "icono": "Ícono", "anulado": "Anulado", "clave": "Clave",
+    "moneda": "Moneda", "banco": "Banco", "banco_otro": "Otro banco", "saldo_inicial": "Saldo inicial",
+    "comision": "Comisión de red", "sentido": "Sentido", "saldo_previo": "Saldo antes", "saldo_declarado": "Saldo contado",
+    "cuenta": "Cuenta", "cuenta_destino": "Cuenta destino", "persona": "Persona", "encargado": "Encargado",
 }
 CAMPOS_DINERO = {"monto", "monto_consumido"}
 
@@ -88,6 +92,11 @@ def lineas_de_cambios(accion: str, cambios: dict, entidad: str = "") -> list[str
         if accion == "crear" and entidad in ("categoria", "miembro", "usuario") and campo != "email":
             continue
         etiqueta = CAMPOS.get(campo, campo)
+        if entidad in nombres_cuentas.ENTIDADES_CUENTAS:  # los montos de cuentas ya traen su moneda ("100.00 USD")
+            c = c if isinstance(c, dict) and ("antes" in c or "despues" in c) else {"antes": None, "despues": c}
+            antes, despues = ("(vacío)" if v in (None, "") else str(v) for v in (c.get("antes"), c.get("despues")))
+            out.append(f"{etiqueta}: {despues}" if c.get("antes") is None else f"{etiqueta}: {antes} -> {despues}")
+            continue
         if not isinstance(c, dict) or ("antes" not in c and "despues" not in c):
             out.append(f"{etiqueta}: {c}")  # p. ej. {"clave": "clave cambiada"}
         elif c.get("antes") is None:
@@ -175,6 +184,7 @@ class Filtros:
     desde: datetime | None = None
     hasta: datetime | None = None  # exclusivo
     ip: str | None = None
+    entidad: str | None = None  # 'cuentas' = filtro de grupo (cuenta + cuenta_mov), solo cambios de datos
 
 
 def parsear_fecha(texto: str | None, fin: bool = False) -> datetime | None:
@@ -249,6 +259,8 @@ def _q_datos(ctx: Contexto, f: Filtros, cur):
     q = select(Historial).where(vis.condicion_historial(ctx))
     if f.evento:
         q = q.where(Historial.accion == f.evento)
+    if f.entidad == "cuentas":
+        q = q.where(Historial.entidad.in_(nombres_cuentas.ENTIDADES_CUENTAS))
     if f.persona:
         q = q.where(Historial.usuario_id == f.persona)
     if f.desde:
@@ -261,7 +273,7 @@ def _q_datos(ctx: Contexto, f: Filtros, cur):
 
 
 # ------------------------------------------------------------------ descripcion legible de los registros
-def _descripciones(db: Session, filas: list[Historial]) -> dict[tuple[str, int], str]:
+def _descripciones(db: Session, ctx: Contexto, filas: list[Historial]) -> dict[tuple[str, int], str]:
     """'gasto Transporte Bs 50.00', 'apoyo a Tia Rosa Bs 100.00', ... segun el estado actual del registro."""
     ids: dict[str, set[int]] = {}
     for h in filas:
@@ -283,6 +295,9 @@ def _descripciones(db: Session, filas: list[Historial]) -> dict[tuple[str, int],
             select(Devolucion, Apoyo).join(Apoyo, Apoyo.id == Devolucion.apoyo_id).where(Devolucion.id.in_(ids["devolucion"]))
         ).all():
             out[("devolucion", d.id)] = f"devolución de {a.beneficiario} Bs {d.monto:.2f}"
+    for entidad in nombres_cuentas.ENTIDADES_CUENTAS:  # nombres de cuenta solo por `nombres_para` (enmascarado al lector)
+        for i, d in nombres_cuentas.describir(db, ctx, entidad, ids.get(entidad, set())).items():
+            out[(entidad, i)] = d
     if ids.get("categoria"):
         for c in db.scalars(select(Categoria).where(Categoria.id.in_(ids["categoria"]))):
             out[("categoria", c.id)] = f"categoría {c.nombre}"
@@ -298,9 +313,11 @@ def _descripciones(db: Session, filas: list[Historial]) -> dict[tuple[str, int],
 
 
 # ------------------------------------------------------------------ armado de items
-def _armar(db: Session, filas: list[tuple[str, Any]]) -> list[BitacoraItem]:
+def _armar(db: Session, ctx: Contexto, filas: list[tuple[str, Any]]) -> list[BitacoraItem]:
     nombres = nombres_usuarios(db, {f.usuario_id for _, f in filas})
-    descr = _descripciones(db, [f for o, f in filas if o == "datos"])
+    datos = [f for o, f in filas if o == "datos"]
+    descr = _descripciones(db, ctx, datos)
+    cambios_vistos = dict(zip((f.id for f in datos), nombres_cuentas.resolver_cambios(db, ctx, datos)))
     items = []
     for origen, f in filas:
         if origen == "acceso":
@@ -323,7 +340,7 @@ def _armar(db: Session, filas: list[tuple[str, Any]]) -> list[BitacoraItem]:
             clave=f"datos-{f.id}", origen="datos", evento=f.accion,
             etiqueta=ETIQUETA_DATOS.get(f.accion, f.accion), titulo=_titulo_datos(f.accion, f.entidad, d),
             resultado="ok", fecha=f.fecha, fecha_real=real, fecha_sincronizacion=sync, usuario_id=f.usuario_id,
-            usuario_nombre=nombres.get(f.usuario_id), detalle=lineas_de_cambios(f.accion, f.cambios or {}, f.entidad),
+            usuario_nombre=nombres.get(f.usuario_id), detalle=lineas_de_cambios(f.accion, cambios_vistos[f.id], f.entidad),
             motivo=f.motivo, entidad=f.entidad, entidad_id=f.entidad_id,
         ))
     return items
@@ -332,7 +349,7 @@ def _armar(db: Session, filas: list[tuple[str, Any]]) -> list[BitacoraItem]:
 def listar(db: Session, ctx: Contexto, f: Filtros, cursor: str | None, limite: int) -> BitacoraPagina:
     cur = decodificar_cursor(cursor)
     candidatos: list[tuple[datetime, int, int, str, Any]] = []
-    if f.origen in (None, "acceso"):
+    if f.origen in (None, "acceso") and not f.entidad:
         q = _q_acceso(ctx.familia_id, f, cur).order_by(Bitacora.fecha.desc(), Bitacora.id.desc()).limit(limite + 1)
         candidatos += [(x.fecha, RANGO["acceso"], x.id, "acceso", x) for x in db.scalars(q)]
     if f.origen in (None, "datos") and not f.ip and f.resultado in (None, "ok"):
@@ -341,7 +358,7 @@ def listar(db: Session, ctx: Contexto, f: Filtros, cursor: str | None, limite: i
     candidatos.sort(key=lambda t: (t[0], t[1], t[2]), reverse=True)
     pagina = candidatos[:limite]
     hay_mas = len(candidatos) > limite
-    items = _armar(db, [(c[3], c[4]) for c in pagina])
+    items = _armar(db, ctx, [(c[3], c[4]) for c in pagina])
     siguiente = codificar_cursor(pagina[-1][0], pagina[-1][1], pagina[-1][2]) if hay_mas and pagina else None
     return BitacoraPagina(items=items, hay_mas=hay_mas, siguiente=siguiente)
 
