@@ -51,7 +51,7 @@ test.describe("Cuentas", () => {
     // Depósito de 50
     await registrarEnEstaCuenta(page).click();
     await expect(page.getByTestId("aviso-nota")).toContainText("No escribas claves ni frases semilla");
-    await expect(page.getByRole("button", { name: /micr[óo]fono|voz|dictar/i })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /Dictar movimiento/ })).toBeVisible(); // el dictado solo rellena: aquí se llena a mano
     await page.getByLabel("Monto (Bs)").fill("50");
     await page.getByLabel("Nota (opcional)").fill("Pago del almacén");
     await guardar(page).click();

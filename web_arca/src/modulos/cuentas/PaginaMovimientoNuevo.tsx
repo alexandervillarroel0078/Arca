@@ -3,15 +3,17 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAviso } from "../../core/Aviso";
 import Encabezado, { AccionFija } from "../../core/Encabezado";
 import { hoyISO } from "../../core/formato";
-import { Boton, Campo, Cargando, ErrorCaja, Vacio, claseInput, useCarga } from "../../core/ui";
+import { AvisoRevisar, Boton, Campo, Cargando, ErrorCaja, Vacio, claseInput, claseRevisar, useCarga } from "../../core/ui";
 import { nuevoUuid } from "../../core/uuid";
 import { listarMiembros } from "../familia/api";
 import {
   listarCuentas, listarMovimientosCuentas, registrarAjuste, registrarDeposito, registrarRetiro, registrarTraspaso,
-  type MovimientoCuenta, type Persona, type PersonaTipo, type TipoMovimiento,
+  type Cuenta, type MovimientoCuenta, type Persona, type PersonaTipo, type TipoMovimiento,
 } from "./api";
+import BotonDictar from "./BotonDictar";
 import { AvisoNegativo, AvisoNota, NOMBRE_MOVIMIENTO, useManejoError } from "./componentes";
-import { aMonto, errorDeMonto, formatear, formatearTexto, abs, esNegativo, type Moneda } from "./montos";
+import { interpretarDictado, type CampoDictado, type Eleccion } from "./dictadoInterprete";
+import { aMonto, errorDeMonto, formatear, formatearTexto, abs, esNegativo, NOMBRE_MONEDA, type Moneda } from "./montos";
 import { cuentasRegistrables, destinosDeTraspaso } from "./permisos";
 import { guardarUltimo, leerUltimo } from "./recordar";
 import { sugerenciasDeNombres } from "./resumen";
@@ -46,6 +48,10 @@ export default function PaginaMovimientoNuevo() {
   const [intento, setIntento] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [errorServidor, setErrorServidor] = useState<string | null>(null);
+  // dictado: lo que no se entendió queda por revisar (resaltado) y, si hay dudas entre cuentas, se elige con un toque
+  const [porRevisar, setPorRevisar] = useState<Partial<Record<CampoDictado, string>>>({});
+  const [elecciones, setElecciones] = useState<Eleccion[]>([]);
+  const [mensajeDictado, setMensajeDictado] = useState("");
   const uuid = useRef(nuevoUuid()); // reintentar el mismo envío no duplica el movimiento
   const inicializado = useRef(false);
 
@@ -109,9 +115,74 @@ export default function PaginaMovimientoNuevo() {
     return { persona_tipo: "sin_identificar" };
   }
 
+  /** El usuario tocó o corrigió estos campos: dejan de estar «por revisar». */
+  function quitarRevision(...campos: CampoDictado[]) {
+    setPorRevisar((p) => (campos.some((c) => c in p) ? Object.fromEntries(Object.entries(p).filter(([k]) => !campos.includes(k as CampoDictado))) : p));
+    setElecciones((e) => (e.some((x) => campos.includes(x.campo)) ? e.filter((x) => !campos.includes(x.campo)) : e));
+  }
+
+  /**
+   * Dictado (entrega A: tipo, cuenta, destino y monto). SOLO rellena el formulario con los mismos setters que usa el teclado:
+   * no guarda nada, y lo que no entendió queda vacío o conservado pero resaltado. Guardar sigue siendo el único camino.
+   */
+  function alDictar(frases: string[]) {
+    const r = interpretarDictado(frases, { cuentas: registrables, cuentaActualId: cuentaId });
+    if (r.ajuste || (r.tipo === null && tipo === "ajuste")) {
+      setMensajeDictado("El ajuste por conteo no se dicta. Elige «Ajuste por conteo» en el tipo de movimiento y escribe tú el saldo contado.");
+      return;
+    }
+    const revisar = Object.keys(r.porRevisar).length;
+    if (r.rellenados === 0 && r.elecciones.length === 0) {
+      setMensajeDictado("No entendí nada del dictado. Inténtalo otra vez o llena el formulario a mano.");
+      return;
+    }
+    setIntento(false);
+    setErrorServidor(null);
+    if (r.tipo) setTipo(r.tipo);
+    if (r.cuentaId !== null) setCuentaId(r.cuentaId);
+    if (r.tipo === "traspaso") setDestinoId(r.destinoId);
+    else if (r.tipo !== null) setDestinoId(null);
+    setMonto(r.monto ?? "");
+    setPorRevisar(r.porRevisar);
+    setElecciones(r.elecciones);
+    setMensajeDictado(
+      `Dictado aplicado: ${r.rellenados} ${r.rellenados === 1 ? "campo rellenado" : "campos rellenados"}, ${revisar} por revisar. Revisa y toca Guardar cuando esté bien.`,
+    );
+    setTimeout(() => document.querySelector('[data-revisar="true"]')?.scrollIntoView?.({ block: "center", behavior: "smooth" }), 0);
+  }
+
+  function elegirCuentaDictada(c: Cuenta) {
+    setCuentaId(c.id);
+    quitarRevision("cuenta");
+    // la moneda de la cuenta elegida puede no admitir los decimales dictados: no se redondea, se vacía y se marca
+    const e = monto.trim() ? errorDeMonto(monto, c.moneda) : null;
+    if (e) {
+      setPorRevisar((p) => ({ ...p, monto: `Escuché ${monto.trim()}: ${e}` }));
+      setMonto("");
+    }
+  }
+  function elegirDestinoDictado(c: Cuenta) {
+    setDestinoId(c.id);
+    quitarRevision("destino");
+  }
+  const fichas = (campo: "cuenta" | "destino", elegir: (c: Cuenta) => void) => {
+    const e = elecciones.find((x) => x.campo === campo);
+    if (!e) return null;
+    const opciones = e.opciones.map((id) => registrables.find((c) => c.id === id)).filter((c): c is Cuenta => !!c);
+    return (
+      <div className="flex flex-wrap gap-2" role="group" aria-label={campo === "cuenta" ? "Elige la cuenta" : "Elige la cuenta de destino"} data-testid={`eleccion-${campo}`}>
+        {opciones.map((c) => (
+          <button key={c.id} type="button" onClick={() => elegir(c)} className="min-h-[44px] px-4 rounded-full border-[1.5px] border-stone-300 bg-white text-sm font-semibold active:bg-stone-100">
+            {[c.nombre, c.banco_otro ?? c.banco, NOMBRE_MONEDA[c.moneda]].filter(Boolean).join(" · ")}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   /** Lleva la vista al primer campo con error (el botón de guardar está abajo y los errores pueden quedar fuera de pantalla). */
   function mostrarPrimerError() {
-    setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView({ block: "center", behavior: "smooth" }), 0);
+    setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView?.({ block: "center", behavior: "smooth" }), 0); // (jsdom no lo implementa)
   }
 
   async function guardar() {
@@ -177,7 +248,7 @@ export default function PaginaMovimientoNuevo() {
     <div className="space-y-4">
       <Encabezado titulo="Nuevo movimiento" volverA={cuenta ? `/cuentas/${cuenta.id}` : "/cuentas"} />
 
-      <div>
+      <div className={porRevisar.tipo ? claseRevisar : undefined} data-revisar={porRevisar.tipo ? "true" : undefined}>
         <span id="etiqueta-tipo-mov" className="block text-sm font-semibold text-stone-600 mb-1.5">Tipo de movimiento</span>
         <div role="radiogroup" aria-labelledby="etiqueta-tipo-mov" className="grid grid-cols-2 gap-1 bg-stone-200 rounded-xl p-1">
           {TIPOS.map((t) => (
@@ -186,31 +257,36 @@ export default function PaginaMovimientoNuevo() {
               type="button"
               role="radio"
               aria-checked={tipo === t}
-              onClick={() => { setTipo(t); setIntento(false); setErrorServidor(null); }}
+              onClick={() => { setTipo(t); setIntento(false); setErrorServidor(null); quitarRevision("tipo"); }}
               className={`min-h-[48px] rounded-lg text-sm font-semibold ${tipo === t ? "bg-white text-arca shadow-sm" : "text-stone-700"}`}
             >
               {NOMBRE_MOVIMIENTO[t]}
             </button>
           ))}
         </div>
+        <AvisoRevisar mensaje={porRevisar.tipo} />
       </div>
 
-      <Campo etiqueta={tipo === "traspaso" ? "Desde" : "Cuenta"} error={mostrar("cuenta")}>
-        <select className={claseInput} value={cuentaId ?? ""} onChange={(e) => { setCuentaId(Number(e.target.value)); setDestinoId(null); }}>
+      <BotonDictar listo={!!cuentasQ.datos && !!miembrosQ.datos} alTerminar={alDictar} mensaje={mensajeDictado} />
+
+      <Campo etiqueta={tipo === "traspaso" ? "Desde" : "Cuenta"} error={mostrar("cuenta")} aviso={porRevisar.cuenta}>
+        <select className={claseInput} value={cuentaId ?? ""} onChange={(e) => { setCuentaId(Number(e.target.value)); setDestinoId(null); quitarRevision("cuenta"); }}>
           {registrables.map((c) => (
             <option key={c.id} value={c.id}>{c.nombre} · {formatearTexto(c.saldo, c.moneda)}</option>
           ))}
         </select>
       </Campo>
+      {fichas("cuenta", elegirCuentaDictada)}
 
       {tipo === "traspaso" && (
         <>
-          <Campo etiqueta="Hacia" error={mostrar("destino")}>
-            <select className={claseInput} value={destinoId ?? ""} onChange={(e) => setDestinoId(e.target.value ? Number(e.target.value) : null)}>
+          <Campo etiqueta="Hacia" error={mostrar("destino")} aviso={porRevisar.destino}>
+            <select className={claseInput} value={destinoId ?? ""} onChange={(e) => { setDestinoId(e.target.value ? Number(e.target.value) : null); quitarRevision("destino"); }}>
               <option value="">Elige la cuenta de destino</option>
               {destinos.map((c) => <option key={c.id} value={c.id}>{c.nombre} · {formatearTexto(c.saldo, c.moneda)}</option>)}
             </select>
           </Campo>
+          {fichas("destino", elegirDestinoDictado)}
           {destinos.length === 0 && (
             <p className="text-sm text-stone-600" data-testid="sin-destinos">No tienes otra cuenta en {moneda === "BS" ? "Bs" : moneda} donde puedas registrar. Un traspaso solo une cuentas de la misma moneda.</p>
           )}
@@ -240,13 +316,13 @@ export default function PaginaMovimientoNuevo() {
         </div>
       ) : (
         <div className="space-y-2">
-          <Campo etiqueta={`Monto (${moneda === "BS" ? "Bs" : moneda})`} error={mostrar("monto")}>
-            <input className={claseInput} inputMode="decimal" autoComplete="off" value={monto} onChange={(e) => setMonto(e.target.value)} placeholder="0.00" />
+          <Campo etiqueta={`Monto (${moneda === "BS" ? "Bs" : moneda})`} error={mostrar("monto")} aviso={porRevisar.monto}>
+            <input className={claseInput} inputMode="decimal" autoComplete="off" value={monto} onChange={(e) => { setMonto(e.target.value); quitarRevision("monto"); }} placeholder="0.00" />
           </Campo>
           {rapidos && (
             <div className="flex flex-wrap gap-2" role="group" aria-label="Montos rápidos">
               {MONTOS_RAPIDOS.map((n) => (
-                <button key={n} type="button" onClick={() => setMonto(String(n))} className="min-h-[44px] min-w-[64px] px-4 rounded-full border-[1.5px] border-stone-300 bg-white font-semibold active:bg-stone-100">
+                <button key={n} type="button" onClick={() => { setMonto(String(n)); quitarRevision("monto"); }} className="min-h-[44px] min-w-[64px] px-4 rounded-full border-[1.5px] border-stone-300 bg-white font-semibold active:bg-stone-100">
                   {n}
                 </button>
               ))}
