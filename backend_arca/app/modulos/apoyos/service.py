@@ -237,6 +237,9 @@ def editar(db: Session, ctx: Contexto, apoyo_id: int, datos: ApoyoEditar) -> Apo
     a = _obtener_modificable(db, ctx, apoyo_id)
     if _ya_aplicada(db, ctx, "apoyo", a.id):
         return _armar(db, [a], ctx)[0]
+    if (datos.visibilidad is not None or datos.compartido_con is not None) and a.usuario_id != ctx.usuario.id:
+        # el admin puede editar lo "familia" de otros, pero quien lo ve solo lo cambia el dueno (como en /visibilidad)
+        raise HTTPException(status_code=403, detail="Solo quien lo registró puede cambiar quién lo ve")
     exigir_version(a, datos.version_base, _actual_apoyo(db, a, ctx), "El apoyo")
     cambios = datos.model_dump(exclude_unset=True, exclude={"visibilidad", "compartido_con", "version_base"})
     if cambios or not (datos.visibilidad or datos.compartido_con is not None):

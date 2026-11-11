@@ -187,6 +187,9 @@ def editar(db: Session, ctx: Contexto, movimiento_id: int, datos: MovimientoEdit
     m = _obtener_modificable(db, ctx, movimiento_id)
     if _ya_aplicada(db, ctx, m):
         return armar(db, [m], ctx)[0]
+    if (datos.visibilidad is not None or datos.compartido_con is not None) and m.usuario_id != ctx.usuario.id:
+        # el admin puede editar lo "familia" de otros, pero quien lo ve solo lo cambia el dueno (como en /visibilidad)
+        raise HTTPException(status_code=403, detail="Solo quien lo registró puede cambiar quién lo ve")
     exigir_version(m, datos.version_base, lambda: armar(db, [m], ctx)[0], "El movimiento")
     cambios = datos.model_dump(exclude_unset=True, exclude={"visibilidad", "compartido_con", "version_base"})
     if cambios or not (datos.visibilidad or datos.compartido_con is not None):

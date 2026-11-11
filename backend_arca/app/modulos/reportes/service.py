@@ -122,6 +122,7 @@ def _gastos_por_categoria(db: Session, ctx: Contexto, inicio: date, fin: date):
         select(Categoria.id, Categoria.nombre, Categoria.icono, func.sum(Movimiento.monto))
         .join(Movimiento, Movimiento.categoria_id == Categoria.id)
         .where(
+            Categoria.familia_id == ctx.familia_id,
             vis.condicion(ctx, Movimiento), Movimiento.tipo == "gasto", Movimiento.anulado.is_(False),
             Movimiento.fecha >= inicio, Movimiento.fecha < fin,
         )
