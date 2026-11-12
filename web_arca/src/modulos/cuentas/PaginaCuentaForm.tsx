@@ -83,7 +83,7 @@ export default function PaginaCuentaForm() {
     setErrorServidor(null);
     if (Object.keys(errores).length > 0) {
       // el botón está abajo: se lleva la vista al primer error para que se vea qué falta
-      setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView({ block: "center", behavior: "smooth" }), 0);
+      setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView?.({ block: "center", behavior: "smooth" }), 0);
       return;
     }
     setOcupado(true);

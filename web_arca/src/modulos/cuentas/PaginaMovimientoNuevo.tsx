@@ -111,7 +111,7 @@ export default function PaginaMovimientoNuevo() {
 
   /** Lleva la vista al primer campo con error (el botón de guardar está abajo y los errores pueden quedar fuera de pantalla). */
   function mostrarPrimerError() {
-    setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView({ block: "center", behavior: "smooth" }), 0);
+    setTimeout(() => document.querySelector('[role="alert"]')?.scrollIntoView?.({ block: "center", behavior: "smooth" }), 0);
   }
 
   async function guardar() {
