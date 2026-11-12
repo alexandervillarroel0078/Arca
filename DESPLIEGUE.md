@@ -172,7 +172,19 @@ cd backend_arca
 .venv\Scripts\alembic.exe current
 Remove-Item Env:DATABASE_URL
 ```
-Haz un respaldo antes (sección 4c). Estado actual: **0007 (head)**.
+Haz un respaldo antes (sección 4c). Estado actual de Supabase: **0007**. El head del repo en la rama `modulo-cuentas` es **0008** (ver "Despliegue del módulo Cuentas").
+
+### Despliegue del módulo Cuentas
+Orden obligatorio (la migración va **antes** de desplegar el código nuevo):
+1. **Respaldo** `pg_dump` de Supabase (sección 4c).
+2. **Merge** de `modulo-cuentas` a `main` y `push`.
+3. **Migrar Supabase** desde la PC, con `DATABASE_URL` puesta solo en esa terminal (como en "Migraciones a Supabase"): `alembic upgrade head`. `alembic current` debe decir **0008 (head)**.
+4. **Deploy manual** del backend y del frontend en Render (el auto-deploy está apagado).
+5. **Probar en producción:** login, registrar un gasto y crear una cuenta.
+
+**Rollback:** `alembic downgrade -1` (probado en `arca_test`). El downgrade borra solo las filas de `compartidos` cuya entidad es `cuenta`; el `historial` se conserva y queda oculto por el filtro cerrado de entidades desconocidas.
+
+**Aviso:** la 0008 crea tablas nuevas y **no modifica las existentes**.
 
 ### Regla de oro de las pruebas
 El `.env` local **siempre apunta a localhost**. Nunca correr `pytest` con la URL de Supabase: las pruebas hacen `TRUNCATE ... CASCADE` y borrarían los datos reales.
