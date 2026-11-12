@@ -542,6 +542,41 @@ Fase 18: bloques A-H, D2 y J terminados.
 ### Despliegue
 - Backend, frontend y base ya están en producción (Render + Supabase). Todo el detalle, las variables (solo nombres) y los respaldos están en `DESPLIEGUE.md`, secciones 4c y 6.
 
+## Cuentas - Dictado por voz (rama `cuentas-voz`, entrega A)
+
+"Dictar movimiento" en **Nuevo movimiento** de Cuentas: rellena **tipo, cuenta, cuenta destino y monto** a partir de una frase ("Depósito a la cuenta BCP, 1500 bolivianos", "Retiro de cien con cincuenta de la caja", "Traspaso de 200 de la principal al ahorro"). La entrega B (persona y nota) queda pendiente.
+
+### Qué hace y qué no
+- **Solo rellena el formulario.** Usa los mismos setters que el teclado; Guardar sigue siendo el único camino y la validación de siempre (`errorDeMonto` por moneda) manda. Lo que no entiende queda vacío (monto, destino) o conservado (tipo, cuenta), pero **resaltado** con el motivo; un `aria-live` anuncia cuántos campos se rellenaron y cuántos quedan por revisar.
+- **Ambigüedad:** si dos cuentas encajan (p. ej. dos del mismo banco) no se rellena ninguna y salen fichas para elegir con un toque. Si el origen empata en un traspaso, el destino espera a que se elija.
+- **No se dicta** uuid, fecha, comisión ni ajuste. Si dice "ajuste" (o "conteo", "cuadre") en la lectura más probable, se avisa y no se cambia nada.
+- **Montos como texto o BigInt**, nunca Number ni float. Si sobran decimales para la moneda de la cuenta (Bs/USD 2; USDT/BTC 8) no se redondea: el monto queda vacío y resaltado. "1.500" es 1500 en Bs y USD; en USDT y BTC puede ser 1,5, así que queda por revisar. "con cincuenta" son 50 centavos; "con cinco", 05.
+- Si dice una moneda distinta a la de la cuenta ("100 dólares" en una cuenta en Bs) no convierte nada: rellena y marca la cuenta para revisar.
+
+### Privacidad
+- **El audio sale del dispositivo**: lo procesa el **servicio de voz del navegador** (externo a Arca; Chrome, Edge y Safari usan el suyo). No se asume reconocimiento local. Arca no recibe ni guarda el audio.
+- Texto fijo, siempre visible junto al botón: "El dictado lo procesa el servicio de voz de tu navegador. Arca no guarda ni recibe el audio. No dictes claves ni frases semilla."
+- La transcripción vive solo en variables locales y en el estado del hook mientras se escucha, y se descarta al terminar. No va a ningún almacén del navegador (local, de sesión, IndexedDB, caché), ni al historial, ni al servidor. `sinAlmacenLocal.test.ts` vigila que los archivos `dictado*` y `BotonDictar` no usen fetch, `api(`, `console.*` ni almacenes, y que solo `dictadoVoz.ts` toque `SpeechRecognition`; la E2E de la PWA compara localStorage, IndexedDB y caches antes y después de dictar.
+- Revisé que la app no tiene telemetría ni reporte de errores (ni Sentry, analytics, `onerror` global, `sendBeacon` ni ErrorBoundary) que pudiera capturar la transcripción. Si algún día se agrega, debe excluir este flujo.
+
+### Navegadores
+- Detección de `SpeechRecognition` o `webkitSpeechRecognition`; idioma `es-BO` con respaldo `es-419`; `maxAlternatives = 3` (el intérprete se queda con la alternativa que más entiende).
+- Sin soporte (p. ej. Firefox) o sin conexión: el botón se ve pero desactivado, con una línea de explicación. Solo en línea, igual que el resto del módulo.
+- iOS y la PWA instalada en iPhone: **mejor esfuerzo, sin garantía**.
+
+### Archivos (`web_arca/src/modulos/cuentas/`)
+`dictadoNumeros.ts` (números hablados), `dictadoInterprete.ts` (frase a campos), `dictadoVoz.ts` (hook; única parte que toca la API del navegador), `BotonDictar.tsx`; pruebas `dictado*.test.*`, `pantallas.test.tsx`, `src/test/vozFalsa.ts`, `e2e/dictado.spec.ts` y `e2e/pwa/cuentas.spec.ts` (con `e2e/vozSimulada.ts` compartido). `Campo` (`core/ui.tsx`) tiene la prop `aviso` para el resalte.
+
+### Pruebas manuales por dispositivo (no se pueden automatizar: dependen del servicio de voz real)
+Para cada dispositivo: dictar las tres frases de ejemplo, una con "mil quinientos", una con "cien con cinco", una con dos cuentas del mismo banco y una con "ajuste"; comprobar que **no guarda solo**, que lo no entendido queda resaltado y que el lector de pantalla anuncia el resultado.
+- [ ] Chrome en Android (navegador y PWA instalada): permiso de micrófono, denegarlo y ver el mensaje, avión sin conexión.
+- [ ] Edge de escritorio y Chrome de escritorio: micrófono bloqueado en los permisos del sitio.
+- [ ] Safari en iPhone y PWA instalada en iPhone (mejor esfuerzo): ¿pide permiso?, ¿funciona el dictado de Siri activado?, ¿qué pasa con el dictado desactivado?
+- [ ] Firefox: botón visible, desactivado, con la explicación.
+- [ ] Acento boliviano: ¿entiende "Banco Unión", "BCP", "Mercantil", "Bisa" y los nombres de tus cuentas?
+- [ ] Ruido de fondo y frases largas; cortar a mitad de frase con el botón.
+- [ ] Revisar con DevTools que no aparece ninguna petición de Arca al dictar (la voz no pasa por nuestro servidor).
+
 ## Pendientes
 - [ ] **Crear el primer usuario en producción.** El registro está abierto solo mientras la base está vacía; hasta entonces cualquiera con la URL podría crear el primer admin. Después, comprobar que un segundo registro da 403.
 - [ ] **Resetear la clave de Supabase** y actualizar `DATABASE_URL` en Render (deploy manual después).
