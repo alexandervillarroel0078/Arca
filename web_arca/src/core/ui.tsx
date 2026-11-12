@@ -47,28 +47,14 @@ export function MensajeError({ mensaje }: { mensaje: string | null | undefined }
   );
 }
 
-/** Resalte de «esto hay que revisarlo» (p. ej. un campo que el dictado no entendió): borde y fondo del color de apoyo. */
-export const claseRevisar = "rounded-xl p-2 -m-2 bg-apoyo-claro/60 ring-2 ring-apoyo";
-
-/** Aviso de un campo por revisar: icono + texto (nunca solo color). No es un error: no usa role="alert". */
-export function AvisoRevisar({ mensaje }: { mensaje: string | null | undefined }) {
-  if (!mensaje) return null;
+/** Etiqueta arriba, campo de 52px y, si hay, el error debajo del campo. */
+export function Campo({ etiqueta, children, error }: { etiqueta: string; children: ReactNode; error?: string | null }) {
   return (
-    <p data-testid="aviso-revisar" className="mt-1 flex items-start gap-1.5 text-sm font-semibold text-apoyo-texto before:content-['⚠'] before:shrink-0">
-      {mensaje}
-    </p>
-  );
-}
-
-/** Etiqueta arriba, campo de 52px y, si hay, el error debajo del campo. `aviso` marca el campo como «por revisar». */
-export function Campo({ etiqueta, children, error, aviso }: { etiqueta: string; children: ReactNode; error?: string | null; aviso?: string | null }) {
-  return (
-    <div className={aviso ? claseRevisar : undefined} data-revisar={aviso ? "true" : undefined}>
+    <div>
       <label className="block">
         <span className="block text-sm font-semibold text-stone-600 mb-1.5">{etiqueta}</span>
         {children}
       </label>
-      <AvisoRevisar mensaje={aviso} />
       <MensajeError mensaje={error} />
     </div>
   );

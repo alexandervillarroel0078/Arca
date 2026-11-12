@@ -2,7 +2,6 @@
 // el aparato (ni en el cache del service worker, ni en IndexedDB, ni en localStorage), y sin conexión no se muestran datos viejos.
 import type { Page } from "@playwright/test";
 import { API, almacenLocal, crearAdmin, entrarRapido, expect, test } from "../ayudas";
-import { decir, instalarVoz } from "../vozSimulada";
 
 async function esperarServiceWorker(page: Page) {
   await page.evaluate(async () => {
@@ -62,87 +61,4 @@ test.describe("PWA compilada: Cuentas no se guarda en el aparato", () => {
     await expect(page.getByText("Bs 7,765.43")).toHaveCount(0);
     await context.setOffline(false);
   });
-
-  test("dictar un movimiento no deja nada en el aparato: localStorage, IndexedDB y caches iguales antes y después, y nada sale a la red", async ({ page, request }) => {
-    const ana = await crearAdmin(request);
-    const rc = await request.post(`${API}/cuentas`, { headers: ana.headers, data: { nombre: "Caja Dictada", tipo: "efectivo", moneda: "BS", saldo_inicial: "500" } });
-    expect(rc.status()).toBe(201);
-
-    await instalarVoz(page); // SpeechRecognition simulado: el real depende del servicio de voz del navegador
-    await page.goto("/");
-    await esperarServiceWorker(page);
-    await entrarRapido(page, ana);
-    await page.goto("/cuentas/movimiento");
-    const dictar = page.getByRole("button", { name: /Dictar movimiento/ });
-    await expect(dictar).toBeEnabled();
-    await expect(page.getByLabel(/^Cuenta/)).toHaveValue(/\d+/);
-
-    const antes = await foto(page);
-    expect(antes.caches.length).toBeGreaterThan(0); // hay service worker y caché: la comparación mide algo
-
-    const salidas: string[] = [];
-    page.on("request", (r) => {
-      const u = r.url();
-      if ((u.includes("/api/") && r.method() !== "GET") || /cincuenta|retiro de cien/i.test(decodeURIComponent(u))) salidas.push(`${r.method()} ${u}`);
-    });
-
-    await dictar.click();
-    await decir(page, "Retiro de cien con cincuenta de la caja dictada");
-    await expect(page.getByLabel("Monto (Bs)")).toHaveValue("100.50");
-    await expect(page.getByTestId("dictado-estado")).toContainText("3 campos rellenados");
-
-    const despues = await foto(page);
-    expect(despues.local).toEqual(antes.local);
-    expect(despues.sesion).toEqual(antes.sesion);
-    expect(despues.caches).toEqual(antes.caches);
-    expect(despues.idb).toEqual(antes.idb);
-    // ni lo dicho ni el monto dictado aparecen en NINGÚN almacén del aparato
-    expect(JSON.stringify(despues)).not.toMatch(/cincuenta|100\.50|retiro de cien|caja dictada/i);
-    expect(salidas).toEqual([]);
-  });
 });
-
-/** Todo lo que la página puede guardar en el aparato: localStorage, sessionStorage, caches (con sus URL) y TODAS las bases IndexedDB. */
-async function foto(page: Page) {
-  return page.evaluate(async () => {
-    const local = Object.entries(localStorage).sort();
-    const sesion = Object.entries(sessionStorage).sort();
-    const caches_: [string, string[]][] = [];
-    for (const k of (await caches.keys()).sort()) caches_.push([k, (await (await caches.open(k)).keys()).map((r) => r.url).sort()]);
-    const leer = (nombre: string) =>
-      new Promise<Record<string, unknown>>((res) => {
-        const r = indexedDB.open(nombre);
-        r.onerror = () => res({ error: "no se pudo abrir" });
-        r.onsuccess = () => {
-          const db = r.result;
-          const nombres = Array.from(db.objectStoreNames);
-          const salida: Record<string, unknown> = {};
-          let faltan = nombres.length;
-          if (faltan === 0) {
-            db.close();
-            return res(salida);
-          }
-          for (const n of nombres) {
-            const q = db.transaction(n, "readonly").objectStore(n).getAll();
-            q.onsuccess = () => {
-              salida[n] = q.result;
-              if (--faltan === 0) {
-                db.close();
-                res(salida);
-              }
-            };
-            q.onerror = () => {
-              salida[n] = "error";
-              if (--faltan === 0) {
-                db.close();
-                res(salida);
-              }
-            };
-          }
-        };
-      });
-    const idb: Record<string, unknown> = {};
-    for (const b of await indexedDB.databases()) if (b.name) idb[b.name] = await leer(b.name);
-    return { local, sesion, caches: caches_, idb };
-  });
-}

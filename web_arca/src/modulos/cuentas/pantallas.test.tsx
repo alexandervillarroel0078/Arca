@@ -1,11 +1,10 @@
 // Pantallas de Cuentas con la API simulada: permisos en la interfaz, saldo negativo, aviso de nota, el servidor manda.
-import { act, screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ErrorApi } from "../../core/api";
 import { admin, renderPantalla } from "../../test/ayudas";
 import { cuentaDe, mov } from "../../test/cuentas";
-import { instalarVozFalsa, quitarVozFalsa } from "../../test/vozFalsa";
 import type { Yo } from "../auth/api";
 import * as api from "./api";
 import * as familia from "../familia/api";
@@ -180,166 +179,10 @@ describe("Nuevo movimiento", () => {
     expect(nota).toHaveAttribute("aria-describedby", aviso.id);
   });
 
-  describe("botón «Dictar movimiento»", () => {
-    afterEach(() => quitarVozFalsa());
-    const boton = () => screen.getByRole("button", { name: /Dictar movimiento/ });
-
-    it("sin soporte del navegador: está visible pero desactivado, con su explicación, y el aviso de privacidad", async () => {
-      await abrir(); // jsdom no tiene reconocimiento de voz
-      expect(boton()).toBeVisible();
-      expect(boton()).toBeDisabled();
-      expect(screen.getByTestId("dictado-explicacion")).toHaveTextContent("Tu navegador no permite dictar. Prueba con Chrome o Edge.");
-      expect(screen.getByTestId("dictado-privacidad")).toHaveTextContent(
-        "El dictado lo procesa el servicio de voz de tu navegador. Arca no guarda ni recibe el audio. No dictes claves ni frases semilla.",
-      );
-    });
-
-    it("sin conexión: visible pero desactivado, con su explicación", async () => {
-      instalarVozFalsa();
-      const enLinea = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
-      try {
-        await abrir();
-        expect(boton()).toBeDisabled();
-        expect(screen.getByTestId("dictado-explicacion")).toHaveTextContent("Necesitas conexión a internet para dictar.");
-      } finally {
-        enLinea.mockRestore();
-      }
-    });
-
-    it("con soporte y conexión: activo una vez cargadas las cuentas y los miembros", async () => {
-      instalarVozFalsa();
-      await abrir();
-      expect(boton()).toBeEnabled();
-      expect(screen.queryByTestId("dictado-explicacion")).not.toBeInTheDocument();
-      expect(screen.getByTestId("dictado-privacidad")).toBeVisible();
-    });
-  });
-
-  describe("dictado: rellena el formulario, nunca guarda", () => {
-    let voz: ReturnType<typeof instalarVozFalsa>;
-    beforeEach(() => {
-      voz = instalarVozFalsa();
-    });
-    afterEach(() => quitarVozFalsa());
-    const dictar = async (...alternativas: string[]) => {
-      await userEvent.click(screen.getByRole("button", { name: /Dictar movimiento/ }));
-      act(() => voz.ultima().decir(...alternativas));
-    };
-    const tipoMarcado = () => screen.getAllByRole("radio", { checked: true }).map((r) => r.textContent)[0];
-    const monto = () => screen.getByLabelText(/^Monto \(/);
-
-    it("tipo, cuenta y monto; lo anuncia en una región aria-live y no llama al servidor", async () => {
-      await abrir();
-      await dictar("retiro de cien con cincuenta del efectivo");
-      expect(tipoMarcado()).toBe("Retiro");
-      expect(screen.getByLabelText("Cuenta")).toHaveValue("1");
-      expect(monto()).toHaveValue("100.50");
-      const estado = screen.getByTestId("dictado-estado");
-      expect(estado).toHaveAttribute("aria-live", "polite");
-      expect(estado).toHaveTextContent("Dictado aplicado: 3 campos rellenados, 0 por revisar.");
-      expect(screen.queryByTestId("aviso-revisar")).not.toBeInTheDocument();
-      for (const f of [m.registrarDeposito, m.registrarRetiro, m.registrarTraspaso, m.registrarAjuste]) expect(f).not.toHaveBeenCalled();
-    });
-
-    it("Guardar sigue siendo el único camino: manda lo dictado tal cual", async () => {
-      await abrir();
-      m.registrarRetiro.mockResolvedValue(mov({ id: 10, tipo: "retiro", monto: "100.50" }));
-      await dictar("retiro de cien con cincuenta del efectivo");
-      expect(m.registrarRetiro).not.toHaveBeenCalled();
-      await userEvent.click(screen.getByRole("button", { name: /^Guardar/ }));
-      await waitFor(() => expect(m.registrarRetiro).toHaveBeenCalledWith(1, expect.objectContaining({ monto: "100.50", persona_tipo: "sin_identificar" })));
-    });
-
-    it("traspaso: origen y destino", async () => {
-      await abrir();
-      await dictar("traspaso de 200 del efectivo al ahorro");
-      expect(tipoMarcado()).toBe("Traspaso");
-      expect(screen.getByLabelText("Desde")).toHaveValue("1");
-      expect(screen.getByLabelText("Hacia")).toHaveValue("2");
-      expect(monto()).toHaveValue("200");
-    });
-
-    it("lo que no entendió queda vacío y resaltado, y se limpia al corregirlo", async () => {
-      await abrir();
-      await userEvent.type(monto(), "77");
-      await dictar("depósito de 10,5555 al efectivo");
-      expect(monto()).toHaveValue("");
-      expect(screen.getByTestId("aviso-revisar")).toHaveTextContent("Escuché 10.5555: Bs admite hasta 2 decimales");
-      expect(monto().closest('[data-revisar="true"]')).not.toBeNull();
-      expect(screen.getByTestId("dictado-estado")).toHaveTextContent("2 campos rellenados, 1 por revisar");
-      await userEvent.type(monto(), "5");
-      expect(screen.queryByTestId("aviso-revisar")).not.toBeInTheDocument();
-    });
-
-    it("tipo que no se entendió: se marca y se conserva el que había", async () => {
-      await abrir();
-      await dictar("100 bolivianos del efectivo");
-      expect(tipoMarcado()).toBe("Depósito");
-      expect(screen.getByTestId("aviso-revisar")).toHaveTextContent("No entendí el tipo de movimiento");
-      await userEvent.click(screen.getByRole("radio", { name: "Retiro" }));
-      expect(screen.queryByTestId("aviso-revisar")).not.toBeInTheDocument();
-    });
-
-    it("empate entre cuentas: se elige con un toque, y la elección quita el aviso", async () => {
-      lista([cuentaDe({ id: 1, nombre: "BCP Sueldo", tipo: "corriente", banco: "BCP" }), cuentaDe({ id: 2, nombre: "BCP Ahorro", tipo: "ahorro", banco: "BCP" }), cuentaDe({ id: 3, nombre: "Caja" })]);
-      renderPantalla(<PaginaMovimientoNuevo />, { ruta: "/cuentas/movimiento", patron: "/cuentas/movimiento" });
-      await screen.findByRole("radiogroup", { name: "Tipo de movimiento" });
-      await dictar("depósito a la cuenta bcp 1.500 bolivianos");
-      const grupo = screen.getByRole("group", { name: "Elige la cuenta" });
-      expect(within(grupo).getAllByRole("button").map((b) => b.textContent)).toEqual(["BCP Sueldo · BCP · Bs", "BCP Ahorro · BCP · Bs"]);
-      expect(screen.getByTestId("aviso-revisar")).toHaveTextContent("más de una cuenta");
-      expect(monto()).toHaveValue("1500");
-      expect(screen.getByTestId("dictado-estado")).toHaveTextContent("2 campos rellenados, 1 por revisar");
-      await userEvent.click(within(grupo).getByRole("button", { name: /BCP Ahorro/ }));
-      expect(screen.getByLabelText("Cuenta")).toHaveValue("2");
-      expect(screen.queryByRole("group", { name: "Elige la cuenta" })).not.toBeInTheDocument();
-      expect(screen.queryByTestId("aviso-revisar")).not.toBeInTheDocument();
-      expect(m.registrarDeposito).not.toHaveBeenCalled();
-    });
-
-    it("el empate también se resuelve en el destino de un traspaso", async () => {
-      lista([cuentaDe({ id: 1, nombre: "Caja" }), cuentaDe({ id: 2, nombre: "BCP Sueldo", banco: "BCP" }), cuentaDe({ id: 3, nombre: "BCP Ahorro", tipo: "ahorro", banco: "BCP" })]);
-      renderPantalla(<PaginaMovimientoNuevo />, { ruta: "/cuentas/movimiento", patron: "/cuentas/movimiento" });
-      await screen.findByRole("radiogroup", { name: "Tipo de movimiento" });
-      await dictar("traspaso de 100 de la caja al bcp");
-      const grupo = screen.getByRole("group", { name: "Elige la cuenta de destino" });
-      await userEvent.click(within(grupo).getByRole("button", { name: /BCP Sueldo/ }));
-      expect(screen.getByLabelText("Hacia")).toHaveValue("2");
-      expect(screen.queryByTestId("aviso-revisar")).not.toBeInTheDocument();
-    });
-
-    it("«ajuste» no se dicta: avisa y no cambia nada", async () => {
-      await abrir();
-      await userEvent.type(monto(), "5");
-      await dictar("ajuste del efectivo 500");
-      expect(screen.getByTestId("dictado-estado")).toHaveTextContent("El ajuste por conteo no se dicta");
-      expect(tipoMarcado()).toBe("Depósito");
-      expect(monto()).toHaveValue("5");
-      expect(screen.queryByTestId("aviso-revisar")).not.toBeInTheDocument();
-    });
-
-    it("si no entiende nada, lo dice y deja el formulario como estaba", async () => {
-      await abrir();
-      await userEvent.type(monto(), "5");
-      await dictar("hola buenas tardes");
-      expect(screen.getByTestId("dictado-estado")).toHaveTextContent("No entendí nada del dictado");
-      expect(monto()).toHaveValue("5");
-    });
-
-    it("moneda dicha distinta a la de la cuenta: la cuenta se rellena pero queda por revisar", async () => {
-      await abrir();
-      await dictar("retiro de 100 dólares del efectivo");
-      expect(screen.getByLabelText("Cuenta")).toHaveValue("1");
-      expect(screen.getByTestId("aviso-revisar")).toHaveTextContent("Dijiste USD, pero «Efectivo Bs» está en Bs");
-      expect(screen.getByTestId("dictado-estado")).toHaveTextContent("2 campos rellenados, 1 por revisar");
-    });
-
-    it("lo dictado no deja nada en el aparato", async () => {
-      await abrir();
-      await dictar("retiro de cien con cincuenta del efectivo");
-      expect(sessionStorage.length).toBe(0);
-      expect(JSON.stringify({ ...localStorage })).not.toMatch(/100|cincuenta|efectivo/i);
-    });
+  it("no hay botón de micrófono ni de voz (es la fase siguiente)", async () => {
+    await abrir();
+    expect(screen.queryByRole("button", { name: /micr[óo]fono|voz|dictar|hablar/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/🎤|🎙/)).not.toBeInTheDocument();
   });
 
   it("solo ofrece cuentas donde puedes registrar", async () => {
