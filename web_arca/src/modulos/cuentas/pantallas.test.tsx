@@ -90,13 +90,20 @@ describe("Detalle de cuenta: los botones salen de lo que dice la API", () => {
     await screen.findByTestId("mes-cuenta");
     await screen.findAllByTestId("fila-movimiento");
   };
+  /** Abre el menu "…" de una fila y devuelve los textos de sus acciones (menuitem). */
+  const abrirMenu = async (fila: HTMLElement = screen.getAllByTestId("fila-movimiento")[0]) => {
+    await userEvent.click(within(fila).getByRole("button", { name: /^Acciones de / }));
+    const menu = screen.getByRole("menu");
+    return { menu, textos: within(menu).getAllByRole("menuitem").map((i) => i.textContent) };
+  };
 
   it("dueño: registrar, editar, anular cuenta y anular movimientos", async () => {
     await abrir();
     expect(screen.getByRole("link", { name: "Registrar en esta cuenta" })).toHaveAttribute("href", "/cuentas/movimiento?cuenta=1");
     expect(screen.getByRole("link", { name: "Editar" })).toHaveAttribute("href", "/cuentas/1/editar");
     expect(screen.getByRole("button", { name: "Anular cuenta" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Anular" })).toBeInTheDocument();
+    const { menu } = await abrirMenu();
+    expect(within(menu).getByRole("menuitem", { name: "Anular" })).toBeInTheDocument();
   });
 
   it("encargado: registra y anula movimientos, pero no edita ni anula la cuenta", async () => {
@@ -104,7 +111,8 @@ describe("Detalle de cuenta: los botones salen de lo que dice la API", () => {
     expect(screen.getByRole("link", { name: "Registrar en esta cuenta" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Editar" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Anular cuenta" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Anular" })).toBeInTheDocument();
+    const { menu } = await abrirMenu();
+    expect(within(menu).getByRole("menuitem", { name: "Anular" })).toBeInTheDocument();
   });
 
   it("miembro que solo ve (también el admin si no es dueño ni encargado): ningún botón de registrar, editar ni anular", async () => {
@@ -112,8 +120,8 @@ describe("Detalle de cuenta: los botones salen de lo que dice la API", () => {
     expect(screen.queryByRole("link", { name: "Registrar en esta cuenta" })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Editar" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Anular/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Reactivar" })).not.toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Historial" }).length).toBeGreaterThan(0); // ver sí
+    const { textos } = await abrirMenu();
+    expect(textos).toEqual(["Historial"]); // ver sí; ni anular, ni reactivar, ni cambiar fecha
   });
 
   it("un traspaso con una cuenta que no ves muestra «otra cuenta» y no se puede anular si solo ves una", async () => {
@@ -121,7 +129,8 @@ describe("Detalle de cuenta: los botones salen de lo que dice la API", () => {
       mov({ id: 8, tipo: "traspaso", cuenta_id: null, cuenta_nombre: "otra cuenta", cuenta_destino_id: 1, cuenta_destino_nombre: "Caja", efecto: "40.00", puede_registrar: false }),
     ]);
     expect(screen.getByTestId("fila-movimiento")).toHaveTextContent("Traspaso desde otra cuenta");
-    expect(screen.queryByRole("button", { name: "Anular" })).not.toBeInTheDocument();
+    const { textos } = await abrirMenu();
+    expect(textos).toEqual(["Historial"]); // sin permiso en ambas cuentas: solo Historial
   });
 
   it("saldo negativo: rojo, con aviso, sin bloquear el botón de registrar", async () => {
@@ -148,7 +157,8 @@ describe("Detalle de cuenta: los botones salen de lo que dice la API", () => {
     await abrir();
     m.anularMovimientoCuenta.mockRejectedValue(new ErrorApi(403, "Solo el dueño o el encargado de la cuenta puede registrar o anular sus movimientos"));
     const llamadas = m.obtenerCuenta.mock.calls.length;
-    await userEvent.click(within(screen.getByTestId("fila-movimiento")).getByRole("button", { name: "Anular" }));
+    const { menu } = await abrirMenu(screen.getByTestId("fila-movimiento"));
+    await userEvent.click(within(menu).getByRole("menuitem", { name: "Anular" }));
     const dialogo = await screen.findByRole("dialog", { name: "Anular movimiento" });
     await userEvent.click(within(dialogo).getByRole("button", { name: "Anular" }));
     await waitFor(() => expect(m.obtenerCuenta.mock.calls.length).toBeGreaterThan(llamadas)); // refrescó

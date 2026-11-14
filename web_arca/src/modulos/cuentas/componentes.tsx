@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { useAviso } from "../../core/Aviso";
 import { ErrorApi } from "../../core/api";
 import { fechaCorta } from "../../core/formato";
+import MenuFila, { type AccionMenu } from "../../core/MenuFila";
 import { Tarjeta } from "../../core/ui";
 import { useUsuarioOpcional } from "../auth/AuthContext";
 import { etiquetaVisibilidad } from "../privacidad/visibilidad";
 import type { Cuenta, MovimientoCuenta, TipoMovimiento } from "./api";
 import { ICONO_TIPO, NOMBRE_TIPO } from "./matriz";
 import { aMonto, esNegativo, formatear, formatearTexto, type Moneda } from "./montos";
+import { puedeCambiarFecha } from "./permisos";
 
 export const NOMBRE_MOVIMIENTO: Record<TipoMovimiento, string> = {
   deposito: "Depósito",
@@ -67,8 +69,9 @@ export function FilaCuenta({ c }: { c: Cuenta }) {
       >
         <span aria-hidden className="shrink-0 w-11 h-11 rounded-2xl bg-arca-claro flex items-center justify-center text-2xl">{ICONO_TIPO[c.tipo]}</span>
         <span className="flex-1 min-w-0">
-          <span className="block font-titulo font-bold truncate">{c.nombre}{c.anulado && " (anulada)"}</span>
-          <span className="block text-sm text-stone-600 truncate">{descripcionCuenta(c)}</span>
+          {/* truncados A PROPOSITO (la prueba visual los acepta solo con esta marca); el texto completo queda en `title` */}
+          <span className="block font-titulo font-bold truncate" data-truncado="a-proposito" title={c.nombre}>{c.nombre}{c.anulado && " (anulada)"}</span>
+          <span className="block text-sm text-stone-600 truncate" data-truncado="a-proposito" title={descripcionCuenta(c)}>{descripcionCuenta(c)}</span>
           {etiqueta && <span className="block text-xs font-semibold text-stone-600">{etiqueta}</span>}
         </span>
         <span className="text-right shrink-0">
@@ -79,62 +82,105 @@ export function FilaCuenta({ c }: { c: Cuenta }) {
   );
 }
 
-export function nombrePersona(m: Pick<MovimientoCuenta, "persona_tipo" | "persona_nombre">): string {
-  return m.persona_tipo === "sin_identificar" ? "Sin identificar" : m.persona_nombre || "Sin identificar";
+/** Nombre de la persona del movimiento, o null si no está identificada (en la fila no se escribe "Sin identificar"). */
+export function personaIdentificada(m: Pick<MovimientoCuenta, "persona_tipo" | "persona_nombre">): string | null {
+  return m.persona_tipo === "sin_identificar" ? null : m.persona_nombre || null;
 }
 
-/** Una línea de movimiento. `cuentaRef`: se está viendo ESA cuenta (se muestra el efecto sobre ella y no su nombre). */
+/** Título de la fila: el tipo, o "Traspaso a X" / "Traspaso desde X" según la cuenta que se está viendo. */
+export function tituloMovimiento(m: MovimientoCuenta, cuentaRef?: number): string {
+  if (m.tipo !== "traspaso") return NOMBRE_MOVIMIENTO[m.tipo];
+  const dondeEstoy = cuentaRef !== undefined && m.cuenta_destino_id === cuentaRef;
+  return dondeEstoy ? `Traspaso desde ${m.cuenta_nombre}` : `Traspaso a ${m.cuenta_destino_nombre}`;
+}
+
+/** Lo que va en la segunda línea (vacío: la fila queda en una sola línea). El "Anulado · motivo" va aparte, en rojo. */
+export function detallesMovimiento(m: MovimientoCuenta, cuentaRef?: number): string[] {
+  return [
+    cuentaRef === undefined ? m.cuenta_nombre : null, // lista global: de qué cuenta es
+    personaIdentificada(m),
+    m.tipo === "retiro" && m.comision && aMonto(m.comision) !== 0n ? `comisión ${formatearTexto(m.comision, m.moneda)}` : null,
+    m.tipo === "ajuste" && m.saldo_declarado ? `saldo contado ${formatearTexto(m.saldo_declarado, m.moneda)}` : null,
+    m.nota,
+  ].filter((x): x is string => !!x);
+}
+
+/** Acciones del menu "…" de la fila. Mismas reglas de siempre; el servidor manda (si rechaza, la pantalla se refresca). */
+export function accionesMovimiento(
+  m: MovimientoCuenta,
+  h: { alHistorial?: (m: MovimientoCuenta) => void; alCambiarFecha?: (m: MovimientoCuenta) => void; alAnular?: (m: MovimientoCuenta) => void; alReactivar?: (m: MovimientoCuenta) => void },
+): AccionMenu[] {
+  const out: AccionMenu[] = [];
+  if (h.alHistorial) out.push({ texto: "Historial", alAccionar: () => h.alHistorial!(m) });
+  if (h.alCambiarFecha && puedeCambiarFecha(m)) out.push({ texto: "Cambiar fecha", alAccionar: () => h.alCambiarFecha!(m) });
+  if (h.alAnular && m.puede_registrar && !m.anulado) out.push({ texto: "Anular", alAccionar: () => h.alAnular!(m), peligro: true });
+  if (h.alReactivar && m.puede_registrar && m.anulado) out.push({ texto: "Reactivar", alAccionar: () => h.alReactivar!(m) });
+  return out;
+}
+
+// Columnas compartidas por la cabecera y las filas (que queden alineadas).
+const COL_FECHA = "w-12 shrink-0";
+const COL_MENU = "w-11 shrink-0";
+
+/** Cabecera de columnas, solo visual: los lectores de pantalla leen cada fila completa. */
+export function CabeceraMovimientos({ conMenu = false }: { conMenu?: boolean }) {
+  return (
+    <div aria-hidden="true" data-testid="cabecera-movimientos" className="flex items-center gap-2 pt-3 pb-2 border-b border-stone-100 text-xs font-semibold text-stone-500">
+      <span className={COL_FECHA}>Fecha</span>
+      <span className="flex-1 min-w-0">Movimiento</span>
+      <span className="shrink-0">Monto</span>
+      {conMenu && <span className={COL_MENU} />}
+    </div>
+  );
+}
+
+/**
+ * Una fila de movimiento en una línea: fecha · tipo · monto · "…". El tipo se trunca con "…" (el monto nunca se parte ni se
+ * corta); una segunda línea pequeña solo si hay algo que mostrar. `cuentaRef`: se está viendo ESA cuenta (se muestra el efecto
+ * sobre ella y no su nombre). Sin manejadores (lista global) no hay menu.
+ */
 export function FilaMovimiento({
-  m, cuentaRef, alAnular, alReactivar, alHistorial,
+  m, cuentaRef, alAnular, alReactivar, alHistorial, alCambiarFecha,
 }: {
   m: MovimientoCuenta;
   cuentaRef?: number;
   alAnular?: (m: MovimientoCuenta) => void;
   alReactivar?: (m: MovimientoCuenta) => void;
   alHistorial?: (m: MovimientoCuenta) => void;
+  alCambiarFecha?: (m: MovimientoCuenta) => void;
 }) {
   const efecto = m.efecto !== null && m.efecto !== undefined ? aMonto(m.efecto) : null;
-  const titulo = m.tipo === "traspaso" ? `Traspaso a ${m.cuenta_destino_nombre}` : NOMBRE_MOVIMIENTO[m.tipo];
-  const dondeEstoy = m.tipo === "traspaso" && cuentaRef !== undefined && m.cuenta_destino_id === cuentaRef;
-  const tituloFinal = m.tipo === "traspaso" ? (dondeEstoy ? `Traspaso desde ${m.cuenta_nombre}` : titulo) : titulo;
-  const detalles = [
-    nombrePersona(m),
-    fechaCorta(m.fecha),
-    cuentaRef === undefined ? m.cuenta_nombre : null,
-    m.tipo === "retiro" && m.comision && aMonto(m.comision) !== 0n ? `comisión ${formatearTexto(m.comision, m.moneda)}` : null,
-    m.tipo === "ajuste" && m.saldo_declarado ? `saldo contado ${formatearTexto(m.saldo_declarado, m.moneda)}` : null,
-  ].filter(Boolean);
+  const titulo = tituloMovimiento(m, cuentaRef);
+  const detalles = detallesMovimiento(m, cuentaRef);
+  const conMenu = !!(alAnular || alReactivar || alHistorial || alCambiarFecha);
+  const acciones = conMenu ? accionesMovimiento(m, { alHistorial, alCambiarFecha, alAnular, alReactivar }) : [];
+  const tachado = m.anulado ? "line-through text-stone-500" : "";
   return (
-    <li data-testid="fila-movimiento" data-tipo={m.tipo} data-anulado={m.anulado || undefined} className="py-3 space-y-1">
-      <div className="flex items-start gap-3">
-        <div className="flex-1 min-w-0">
-          <p className={`font-semibold ${m.anulado ? "line-through text-stone-500" : ""}`}>{tituloFinal}</p>
-          <p className="text-sm text-stone-600">{detalles.join(" · ")}</p>
-          {m.nota && <p className="text-sm text-stone-700 break-words">{m.nota}</p>}
-          {m.anulado && <p className="text-sm font-semibold text-red-700">Anulado{m.motivo_anulacion ? ` · ${m.motivo_anulacion}` : ""}</p>}
-        </div>
-        <p className={`shrink-0 font-titulo font-bold ${m.anulado ? "line-through text-stone-500" : efecto !== null ? (esNegativo(efecto) ? "text-red-700" : "text-arca") : ""}`}>
+    <li data-testid="fila-movimiento" data-tipo={m.tipo} data-anulado={m.anulado || undefined} className={m.anulado ? "text-stone-500" : ""}>
+      <div className="flex items-center gap-2 min-h-[52px]">
+        <span className={`${COL_FECHA} monto whitespace-nowrap text-sm text-stone-600`}>{fechaCorta(m.fecha)}</span>
+        {/* truncado A PROPOSITO: la prueba visual lo acepta solo con esta marca; el texto completo queda en `title` y en el DOM */}
+        <p className={`flex-1 min-w-0 truncate break-words font-semibold ${tachado}`} title={titulo} data-truncado="a-proposito">
+          {titulo}
+        </p>
+        <p data-testid="monto-movimiento" className={`shrink-0 whitespace-nowrap monto font-titulo font-bold ${m.anulado ? tachado : efecto !== null ? (esNegativo(efecto) ? "text-red-700" : "text-arca") : ""}`}>
           {efecto !== null ? `${esNegativo(efecto) ? "" : "+"}${formatear(efecto, m.moneda)}` : formatearTexto(m.monto, m.moneda)}
         </p>
+        {conMenu && (
+          <div className={COL_MENU}>
+            <MenuFila acciones={acciones} etiqueta={`Acciones de ${titulo}`} />
+          </div>
+        )}
       </div>
-      {(alAnular || alReactivar || alHistorial) && (
-        <div className="flex flex-wrap gap-2">
-          {alHistorial && (
-            <button type="button" onClick={() => alHistorial(m)} className="min-h-[44px] px-3 rounded-xl text-sm font-semibold text-arca active:bg-arca-claro">
-              Historial
-            </button>
+      {(m.anulado || detalles.length > 0) && (
+        <p data-testid="detalle-movimiento" className={`-mt-1.5 pb-2 pl-14 text-xs text-stone-600 break-words ${conMenu ? "pr-11" : ""}`}>
+          {m.anulado && (
+            <span className="font-semibold text-red-700">
+              Anulado{m.motivo_anulacion ? ` · ${m.motivo_anulacion}` : ""}{detalles.length > 0 ? " · " : ""}
+            </span>
           )}
-          {m.puede_registrar && !m.anulado && alAnular && (
-            <button type="button" onClick={() => alAnular(m)} className="min-h-[44px] px-3 rounded-xl text-sm font-semibold text-red-700 active:bg-red-50">
-              Anular
-            </button>
-          )}
-          {m.puede_registrar && m.anulado && alReactivar && (
-            <button type="button" onClick={() => alReactivar(m)} className="min-h-[44px] px-3 rounded-xl text-sm font-semibold text-arca active:bg-arca-claro">
-              Reactivar
-            </button>
-          )}
-        </div>
+          {detalles.join(" · ")}
+        </p>
       )}
     </li>
   );

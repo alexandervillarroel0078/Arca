@@ -1,14 +1,20 @@
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useAviso } from "../../core/Aviso";
 import { ChipFiltro, ChipInterruptor } from "../../core/ChipFiltro";
+import { ErrorApi } from "../../core/api";
 import Encabezado, { AccionFija } from "../../core/Encabezado";
 import HojaOpciones from "../../core/HojaOpciones";
 import { mesActual, mesDesplazado, nombreMes } from "../../core/formato";
 import { useAnular } from "../../core/useAnular";
 import { Boton, Cargando, ErrorCaja, Tarjeta, Vacio, claseBotonPrimario, useCarga } from "../../core/ui";
 import DialogoHistorial, { type PedidoHistorial } from "../historial/DialogoHistorial";
-import { anularCuenta, anularMovimientoCuenta, listarMovimientosCuentas, obtenerCuenta, reactivarCuenta, reactivarMovimientoCuenta, type MovimientoCuenta } from "./api";
-import { AvisoNegativo, FilaMovimiento, NOMBRE_MOVIMIENTO, Saldo, descripcionCuenta, useManejoError } from "./componentes";
+import {
+  anularCuenta, anularMovimientoCuenta, cambiarFechaMovimientoCuenta, listarMovimientosCuentas, obtenerCuenta, reactivarCuenta,
+  reactivarMovimientoCuenta, type MovimientoCuenta,
+} from "./api";
+import { AvisoNegativo, CabeceraMovimientos, FilaMovimiento, NOMBRE_MOVIMIENTO, Saldo, descripcionCuenta, useManejoError } from "./componentes";
+import DialogoFecha, { type PedidoFecha } from "./DialogoFecha";
 import { formatear, formatearTexto } from "./montos";
 import { permisosDeCuenta, puedeAnularMovimiento } from "./permisos";
 import { filtrarPorPersona, limitesDeMes, personasDe, resumenMes } from "./resumen";
@@ -21,6 +27,8 @@ export default function PaginaCuentaDetalle() {
   const [hoja, setHoja] = useState(false);
   const [verAnulados, setVerAnulados] = useState(false);
   const [historial, setHistorial] = useState<PedidoHistorial | null>(null);
+  const [pedidoFecha, setPedidoFecha] = useState<PedidoFecha | null>(null);
+  const avisar = useAviso();
 
   const cuenta = useCarga(() => obtenerCuenta(id), [id]);
   const { desde, hasta } = limitesDeMes(mes);
@@ -56,6 +64,23 @@ export default function PaginaCuentaDetalle() {
       advertencia: m.tipo === "traspaso" ? "Se anula el traspaso completo: el dinero vuelve a la cuenta de origen." : undefined,
       anular: (motivo) => anularMovimientoCuenta(m, motivo).catch((e) => { alError(e); throw e; }),
       reactivar: () => reactivarMovimientoCuenta(m),
+    });
+  const pedirCambiarFecha = (m: MovimientoCuenta) =>
+    setPedidoFecha({
+      detalle: `${NOMBRE_MOVIMIENTO[m.tipo]} · ${formatearTexto(m.monto, m.moneda)}`,
+      fecha: m.fecha,
+      ejecutar: async (fecha) => {
+        try {
+          await cambiarFechaMovimientoCuenta(m, fecha);
+        } catch (e) {
+          alError(e);
+          // 403/404/409: la pantalla ya se refrescó con los datos del servidor; el diálogo (con la versión vieja) se cierra
+          if (e instanceof ErrorApi && [403, 404, 409].includes(e.estado)) return;
+          throw e; // 422 u otro: se muestra en el diálogo y se puede corregir
+        }
+        avisar("Fecha cambiada");
+        recargar();
+      },
     });
   const reactivarMovimiento = async (m: MovimientoCuenta) => {
     try {
@@ -128,6 +153,7 @@ export default function PaginaCuentaDetalle() {
       )}
       {visibles.length > 0 && (
         <Tarjeta className="!py-0">
+          <CabeceraMovimientos conMenu />
           <ul className="divide-y divide-stone-100" aria-label="Movimientos del mes">
             {visibles.map((m) => (
               <FilaMovimiento
@@ -137,6 +163,7 @@ export default function PaginaCuentaDetalle() {
                 alHistorial={(x) => setHistorial({ entidad: "cuenta_mov", id: x.id, titulo: `${x.tipo} · ${x.monto}` })}
                 alAnular={puedeAnularMovimiento(m) ? pedirAnularMovimiento : undefined}
                 alReactivar={puedeAnularMovimiento(m) ? reactivarMovimiento : undefined}
+                alCambiarFecha={pedirCambiarFecha}
               />
             ))}
           </ul>
@@ -158,6 +185,7 @@ export default function PaginaCuentaDetalle() {
         />
       )}
       {historial && <DialogoHistorial pedido={historial} alCerrar={() => setHistorial(null)} />}
+      {pedidoFecha && <DialogoFecha pedido={pedidoFecha} alCerrar={() => setPedidoFecha(null)} />}
       {anular.dialogo}
     </div>
   );

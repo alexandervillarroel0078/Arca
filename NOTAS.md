@@ -562,6 +562,8 @@ Las cuentas de la familia (bancarias, cripto y efectivo) y cuánto entra y sale 
 - Comisión de red: solo en retiros cripto; se descuenta del saldo además del monto.
 - Saldo negativo permitido, con aviso.
 - **Sin DELETE**: se anula y se reactiva.
+- **Un movimiento no se edita; solo puede cambiar de fecha** (`PATCH /cuentas/movimientos/{id}` con `{fecha, version_base}`; en el detalle, "Cambiar fecha"). Lo hace el dueño o encargado de TODAS las cuentas que toca (404 si no la ves, 403 si la ves pero no registras), con 409 si la versión no coincide y 400 si está anulado. **Nunca en un ajuste por conteo** (422): su saldo previo y su saldo contado son una foto del momento en que se registró; se anula y se registra otro. La fecha no cambia el saldo (no depende de la fecha), solo el mes en que aparece y el orden. Queda en el historial como `editar` con `{"fecha": {antes, despues}}`; la misma fecha no registra nada. Para corregir monto, cuenta o persona: anular y registrar de nuevo.
+- **Ninguna fecha posterior a hoy en La Paz** (`hoy_la_paz`): el servidor la rechaza con 422 al crear cualquier movimiento y al cambiar la fecha (antes solo lo impedía el `max` del campo).
 - Persona = miembro de la familia; también "otra persona" con nombre libre, o sin identificar.
 
 ### Permisos
@@ -594,7 +596,7 @@ Familia → Cuentas. Montos con BigInt (nunca Number ni float). Montos rápidos 
 Además: revert del dictado por voz `a47c8c3` y el arreglo de `scrollIntoView` en formularios (`01f9958`).
 
 ### Pruebas
-pytest **959**, Vitest **1208**, E2E dev **107**, E2E PWA **4**.
+pytest **971**, Vitest **1222**, E2E dev **107**, E2E PWA **4**. (Cambio de fecha de movimientos: `tests/test_etapa4_cuentas_fecha.py` y `src/modulos/cuentas/fechaMovimiento.test.tsx`.)
 
 ### Fuera de alcance por ahora
 Valorización de cripto, conversión entre monedas, enlazar gastos con cuentas, exportar CSV de cuentas y cola offline para cuentas.

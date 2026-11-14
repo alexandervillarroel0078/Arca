@@ -14,6 +14,10 @@ export function permisosDeCuenta(c: Pick<Cuenta, "puede_registrar" | "es_dueno" 
 /** Anular o reactivar un movimiento: la API dice si eres dueño o encargado de TODAS las cuentas que toca. */
 export const puedeAnularMovimiento = (m: Pick<MovimientoCuenta, "puede_registrar">) => m.puede_registrar;
 
+/** Cambiar la fecha: lo único que se corrige de un movimiento. Nunca en un ajuste por conteo ni en uno anulado. */
+export const puedeCambiarFecha = (m: Pick<MovimientoCuenta, "puede_registrar" | "anulado" | "tipo">) =>
+  m.puede_registrar && !m.anulado && m.tipo !== "ajuste";
+
 /** Cuentas donde se puede registrar algo (no anuladas). */
 export const cuentasRegistrables = (cuentas: Cuenta[]) => cuentas.filter((c) => c.puede_registrar && !c.anulado);
 

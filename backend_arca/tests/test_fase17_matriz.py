@@ -400,7 +400,7 @@ CUENTAS_RUTAS = {
     ("GET", "/api/cuentas"), ("POST", "/api/cuentas"), ("GET", "/api/cuentas/catalogo"),
     ("GET", "/api/cuentas/movimientos"), ("POST", "/api/cuentas/traspasos"),
     ("GET", "/api/cuentas/movimientos/{movimiento_id}"), ("POST", "/api/cuentas/movimientos/{movimiento_id}/anular"),
-    ("POST", "/api/cuentas/movimientos/{movimiento_id}/reactivar"),
+    ("POST", "/api/cuentas/movimientos/{movimiento_id}/reactivar"), ("PATCH", "/api/cuentas/movimientos/{movimiento_id}"),
     ("GET", "/api/cuentas/{cuenta_id}"), ("PATCH", "/api/cuentas/{cuenta_id}"),
     ("POST", "/api/cuentas/{cuenta_id}/anular"), ("POST", "/api/cuentas/{cuenta_id}/reactivar"),
     ("PATCH", "/api/cuentas/{cuenta_id}/visibilidad"), ("GET", "/api/cuentas/{cuenta_id}/movimientos"),

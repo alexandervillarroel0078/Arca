@@ -130,6 +130,13 @@ class TraspasoCrear(MovimientoBase):
     cuenta_destino_id: int
 
 
+class MovimientoFechaEditar(BaseModel):
+    """Lo UNICO que se corrige de un movimiento: su fecha (nunca en un ajuste por conteo). Ni hoy en La Paz se pasa."""
+
+    fecha: date
+    version_base: int | None = Field(default=None, ge=1)
+
+
 class MovimientoCuentaOut(AuditoriaOut):
     id: int
     tipo: str

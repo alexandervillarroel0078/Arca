@@ -139,5 +139,8 @@ export const registrarTraspaso = (d: Comun & { cuenta_id: number; cuenta_destino
 
 export const anularMovimientoCuenta = (m: MovimientoCuenta, motivo: string) =>
   api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/anular`, { metodo: "POST", cuerpo: { motivo: motivo || null, version_base: m.version } });
+/** Corrige SOLO la fecha (nunca de un ajuste por conteo; el servidor lo rechaza). Un 409 = alguien lo cambió antes. */
+export const cambiarFechaMovimientoCuenta = (m: MovimientoCuenta, fecha: string) =>
+  api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}`, { metodo: "PATCH", cuerpo: { fecha, version_base: m.version } });
 export const reactivarMovimientoCuenta = (m: MovimientoCuenta) =>
   api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/reactivar`, { metodo: "POST", cuerpo: { version_base: m.version } });

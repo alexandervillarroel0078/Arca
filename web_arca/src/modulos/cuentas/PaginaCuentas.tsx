@@ -4,7 +4,7 @@ import { ChipInterruptor } from "../../core/ChipFiltro";
 import Encabezado from "../../core/Encabezado";
 import { Boton, Cargando, ErrorCaja, Tarjeta, Vacio, claseBotonPrimario, useCarga } from "../../core/ui";
 import { listarCuentas, listarMovimientosCuentas } from "./api";
-import { BloqueMoneda, FilaCuenta, FilaMovimiento } from "./componentes";
+import { BloqueMoneda, CabeceraMovimientos, FilaCuenta, FilaMovimiento } from "./componentes";
 import { cuentasRegistrables } from "./permisos";
 
 /** Inicio de Cuentas: un total por moneda (sin sumar monedas distintas), las cuentas que ves y lo último que pasó. */
@@ -66,6 +66,7 @@ export default function PaginaCuentas() {
             {movs.datos && movs.datos.length === 0 && <p className="text-sm text-stone-600">Todavía no hay movimientos.</p>}
             {movs.datos && movs.datos.length > 0 && (
               <Tarjeta className="!py-0">
+                <CabeceraMovimientos />
                 <ul className="divide-y divide-stone-100" aria-label="Últimos movimientos">
                   {movs.datos.map((m) => <FilaMovimiento key={m.id} m={m} />)}
                 </ul>

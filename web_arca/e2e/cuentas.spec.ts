@@ -1,6 +1,6 @@
 // Cuentas (etapa 3): crear una cuenta y registrar depósito, retiro, traspaso y ajuste desde la pantalla; lo privado no lo ve
 // nadie más (ni el admin); saldo negativo; permisos que salen de la API; el servidor manda; filtro «Cuentas» en historial y bitácora.
-import type { APIRequestContext, Page } from "@playwright/test";
+import type { APIRequestContext, Locator, Page } from "@playwright/test";
 import { API, alturaMinima, crearAdmin, crearMiembro, entrarRapido, expect, irAOpcionFamilia, nav, sinDesborde, test, type Sesion } from "./ayudas";
 
 async function cuentaApi(request: APIRequestContext, s: Sesion, datos: Record<string, unknown> = {}) {
@@ -19,6 +19,12 @@ async function depositoApi(request: APIRequestContext, s: Sesion, cuenta: number
 const saldoCuenta = (page: Page) => page.getByTestId("saldo-cuenta").first();
 const registrarEnEstaCuenta = (page: Page) => page.getByRole("link", { name: "Registrar en esta cuenta" });
 const guardar = (page: Page) => page.getByRole("button", { name: /^Guardar/ });
+
+/** Abre el menú «…» de una fila de movimiento (las acciones ya no son botones sueltos) y devuelve el menú. */
+async function abrirMenuFila(fila: Locator) {
+  await fila.getByRole("button", { name: /^Acciones de / }).click();
+  return fila.page().getByRole("menu");
+}
 
 /** Entra a Cuentas por el menú Familia y abre una cuenta de la lista. */
 async function abrirCuenta(page: Page, nombre: string) {
@@ -109,11 +115,11 @@ test.describe("Cuentas", () => {
     await entrarRapido(page, ana);
     await abrirCuenta(page, "Caja chica");
     await expect(saldoCuenta(page)).toHaveText("Bs 140.00");
-    await page.getByTestId("fila-movimiento").filter({ hasText: "Venta" }).getByRole("button", { name: "Anular" }).click();
+    await (await abrirMenuFila(page.getByTestId("fila-movimiento").filter({ hasText: "Venta" }))).getByRole("menuitem", { name: "Anular", exact: true }).click();
     await page.getByRole("dialog", { name: "Anular movimiento" }).getByRole("button", { name: "Anular", exact: true }).click();
     await expect(saldoCuenta(page)).toHaveText("Bs 100.00");
     await page.getByRole("switch", { name: "Ver anulados" }).check({ force: true });
-    await page.getByTestId("fila-movimiento").filter({ hasText: "Venta" }).getByRole("button", { name: "Reactivar" }).click();
+    await (await abrirMenuFila(page.getByTestId("fila-movimiento").filter({ hasText: "Venta" }))).getByRole("menuitem", { name: "Reactivar", exact: true }).click();
     await expect(saldoCuenta(page)).toHaveText("Bs 140.00");
   });
 
@@ -177,18 +183,21 @@ test.describe("Cuentas", () => {
     await expect(page.getByRole("link", { name: "Editar" })).toHaveCount(0); // pero no edita
     await expect(page.getByRole("button", { name: "Anular cuenta" })).toHaveCount(0);
     const fila = page.getByTestId("fila-movimiento").filter({ hasText: "Del dueño" });
-    await expect(fila.getByRole("button", { name: "Anular" })).toBeVisible();
+    const menu = await abrirMenuFila(fila);
+    await expect(menu.getByRole("menuitem", { name: "Anular", exact: true })).toBeVisible();
 
     // mientras Beto mira, Ana le quita el encargo (la pantalla de Beto todavía muestra los botones)
     const r = await request.patch(`${API}/cuentas/${c.id}`, { headers: ana.headers, data: { encargado_id: null } });
     expect(r.status()).toBe(200);
-    await fila.getByRole("button", { name: "Anular" }).click();
+    await menu.getByRole("menuitem", { name: "Anular", exact: true }).click();
     await page.getByRole("dialog", { name: "Anular movimiento" }).getByRole("button", { name: "Anular", exact: true }).click();
     await expect(page.getByRole("dialog", { name: "Anular movimiento" }).getByRole("alert")).toContainText("Solo el dueño o el encargado");
     await page.getByRole("dialog", { name: "Anular movimiento" }).getByRole("button", { name: "Cancelar" }).click();
     // la pantalla se refrescó con lo que dice el servidor: ya no hay botones de registrar ni de anular
     await expect(registrarEnEstaCuenta(page)).toHaveCount(0);
-    await expect(page.getByTestId("fila-movimiento").filter({ hasText: "Del dueño" }).getByRole("button", { name: "Anular" })).toHaveCount(0);
+    const menu2 = await abrirMenuFila(page.getByTestId("fila-movimiento").filter({ hasText: "Del dueño" }));
+    await expect(menu2.getByRole("menuitem", { name: "Historial", exact: true })).toBeVisible(); // ver sí
+    await expect(menu2.getByRole("menuitem", { name: "Anular", exact: true })).toHaveCount(0);
   });
 
   test("Actividad de la familia y Bitácora tienen el filtro «Cuentas»", async ({ page, request }) => {

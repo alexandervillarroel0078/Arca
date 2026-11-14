@@ -8,11 +8,12 @@ from app.core.deps import Ctx, DbSession
 from app.modulos.cuentas import service
 from app.modulos.cuentas.schemas import (
     AjusteCrear, Catalogo, CuentaCrear, CuentaEditar, CuentaOut, CuentasOut, DepositoCrear, MovimientoCuentaOut,
-    RetiroCrear, TraspasoCrear,
+    MovimientoFechaEditar, RetiroCrear, TraspasoCrear,
 )
 from app.modulos.visibilidad.cambios import VisibilidadCambiar
 
-# Nota: no hay DELETE. Cuentas y movimientos se anulan y se pueden reactivar. Las rutas fijas van ANTES de /{cuenta_id}.
+# Nota: no hay DELETE. Cuentas y movimientos se anulan y se pueden reactivar; de un movimiento solo se corrige la fecha.
+# Las rutas fijas van ANTES de /{cuenta_id}.
 router = APIRouter(prefix="/cuentas", tags=["cuentas"])
 
 
@@ -62,6 +63,12 @@ def traspaso(datos: TraspasoCrear, db: DbSession, ctx: Ctx, response: Response):
 @router.get("/movimientos/{movimiento_id}", response_model=MovimientoCuentaOut)
 def obtener_movimiento(movimiento_id: int, db: DbSession, ctx: Ctx):
     return service.obtener_movimiento(db, ctx, movimiento_id)
+
+
+@router.patch("/movimientos/{movimiento_id}", response_model=MovimientoCuentaOut)
+def cambiar_fecha_movimiento(movimiento_id: int, datos: MovimientoFechaEditar, db: DbSession, ctx: Ctx):
+    """Corrige SOLO la fecha (dueño o encargado de todas sus cuentas). Nunca en un ajuste por conteo ni a futuro."""
+    return service.cambiar_fecha_movimiento(db, ctx, movimiento_id, datos)
 
 
 @router.post("/movimientos/{movimiento_id}/anular", response_model=MovimientoCuentaOut)

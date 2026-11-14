@@ -9,7 +9,10 @@ Reglas clave (ver tambien `monedas.py`, `nombres.py` y `visibilidad/service.py`)
 - Todo registro de movimiento bloquea (SELECT ... FOR UPDATE, en orden de id) las cuentas que toca: el ajuste por
   conteo calcula su diferencia sobre un saldo que nadie mas puede cambiar mientras tanto.
 - Los nombres de cuenta SOLO salen por `nombres.nombres_para`.
+- Un movimiento no se edita: se anula y se reactiva. La UNICA excepcion es su fecha (`cambiar_fecha_movimiento`), y
+  nunca la de un ajuste por conteo. Ninguna fecha (al crear ni al corregir) puede ser posterior a hoy en La Paz.
 """
+from datetime import date
 from decimal import Decimal
 
 from fastapi import HTTPException
@@ -27,10 +30,11 @@ from app.modulos.cuentas.monedas import (
 )
 from app.modulos.cuentas.schemas import (
     AjusteCrear, Catalogo, CuentaCrear, CuentaEditar, CuentaOut, CuentasOut, DepositoCrear, MovimientoCuentaOut,
-    PersonaIn, RetiroCrear, TotalMoneda, TraspasoCrear,
+    MovimientoFechaEditar, PersonaIn, RetiroCrear, TotalMoneda, TraspasoCrear,
 )
 from app.modulos.familia.models import Miembro
 from app.modulos.historial import service as historial
+from app.modulos.periodos.calculo import hoy_la_paz
 from app.modulos.visibilidad import cambios as visib
 from app.modulos.visibilidad import service as vis
 
@@ -121,6 +125,12 @@ def _bloquear(db: Session, ids) -> dict[int, Cuenta]:
 def _exigir_cuenta_activa(c: Cuenta) -> None:
     if c.anulado:
         raise HTTPException(status_code=400, detail="La cuenta está anulada: reactívala antes de usarla")
+
+
+def _exigir_fecha_valida(fecha: date) -> None:
+    """La fecha de un movimiento no puede ser posterior a hoy en La Paz (al crear y al corregirla)."""
+    if fecha > hoy_la_paz():
+        raise HTTPException(status_code=422, detail="La fecha no puede ser posterior a hoy")
 
 
 def _ya_aplicada(db: Session, ctx: Contexto, entidad: str, entidad_id: int) -> bool:
@@ -451,6 +461,7 @@ def registrar_deposito(db: Session, ctx: Contexto, cuenta_id: int, d: DepositoCr
         return p
     c = _preparar(db, ctx, [cuenta_id])[cuenta_id]
     validar_monto(d.monto, c.moneda)
+    _exigir_fecha_valida(d.fecha)
     persona = _persona(db, ctx, d)
     m = _nuevo(ctx, uuid_txt, c, "deposito", monto=d.monto, fecha=d.fecha, nota=d.nota, **persona)
     return _guardar(db, ctx, m, persona, c)
@@ -466,6 +477,7 @@ def registrar_retiro(db: Session, ctx: Contexto, cuenta_id: int, d: RetiroCrear)
         if c.tipo != "cripto":
             raise HTTPException(status_code=422, detail="Solo los retiros de cuentas cripto llevan comisión de red")
         validar_monto(d.comision, c.moneda, "comision", positivo=False)
+    _exigir_fecha_valida(d.fecha)
     persona = _persona(db, ctx, d)
     m = _nuevo(ctx, uuid_txt, c, "retiro", monto=d.monto, comision=d.comision, fecha=d.fecha, nota=d.nota, **persona)
     return _guardar(db, ctx, m, persona, c)
@@ -479,6 +491,7 @@ def registrar_ajuste(db: Session, ctx: Contexto, cuenta_id: int, d: AjusteCrear)
         return p
     c = _preparar(db, ctx, [cuenta_id])[cuenta_id]
     validar_monto(d.saldo_declarado, c.moneda, "saldo_declarado", positivo=False, permitir_negativo=True)
+    _exigir_fecha_valida(d.fecha)
     previo = saldos(db, [c])[c.id]
     diferencia = d.saldo_declarado - previo
     if diferencia == 0:
@@ -504,6 +517,7 @@ def registrar_traspaso(db: Session, ctx: Contexto, d: TraspasoCrear) -> tuple[Mo
     if origen.moneda != destino.moneda:
         raise HTTPException(status_code=422, detail="Solo se puede traspasar entre cuentas de la misma moneda")
     validar_monto(d.monto, origen.moneda)
+    _exigir_fecha_valida(d.fecha)
     persona = _persona(db, ctx, d)
     m = _nuevo(
         ctx, uuid_txt, origen, "traspaso", cuenta_destino_id=destino.id, monto=d.monto, fecha=d.fecha, nota=d.nota, **persona
@@ -523,7 +537,7 @@ def obtener_movimiento(db: Session, ctx: Contexto, mov_id: int) -> MovimientoCue
 
 
 def _tocar_movimiento(db: Session, ctx: Contexto, mov_id: int) -> tuple[CM, dict[int, Cuenta]]:
-    """Para anular o reactivar: lo ves (404), eres dueno o encargado de TODAS sus cuentas (403), todo bloqueado."""
+    """Para anular, reactivar o corregir la fecha: lo ves (404), eres dueno o encargado de TODAS sus cuentas (403), todo bloqueado."""
     m = _ver_movimiento(db, ctx, mov_id)
     ids = [m.cuenta_id] + ([m.cuenta_destino_id] if m.cuenta_destino_id else [])
     # lo ves (por una de sus cuentas), pero si no eres dueno o encargado de TODAS (incluida una que no ves) es 403
@@ -568,6 +582,34 @@ def reactivar_movimiento(db: Session, ctx: Contexto, mov_id: int, version_base: 
     db.commit()
     saldo = saldos(db, [cuentas[m.cuenta_id]])[m.cuenta_id]
     return armar_movimientos(db, ctx, [m], resultado={m.id: saldo})[0]
+
+
+def cambiar_fecha_movimiento(db: Session, ctx: Contexto, mov_id: int, d: MovimientoFechaEditar) -> MovimientoCuentaOut:
+    """Corrige SOLO la fecha. No toca el saldo (que no depende de la fecha): solo el mes en que aparece y el orden.
+
+    Nunca en un ajuste por conteo: su saldo previo y su saldo contado son una foto del momento en que se registro."""
+    m, cuentas = _tocar_movimiento(db, ctx, mov_id)
+    if _ya_aplicada(db, ctx, "cuenta_mov", m.id):
+        return armar_movimientos(db, ctx, [m])[0]
+    exigir_version(m, d.version_base, lambda: armar_movimientos(db, ctx, [m])[0], "El movimiento")
+    exigir_activo(m, "El movimiento")
+    if m.tipo == "ajuste":
+        raise HTTPException(
+            status_code=422,
+            detail="La fecha de un ajuste por conteo no se puede cambiar: el saldo contado corresponde al momento en que "
+            "se registró. Anúlalo y registra un ajuste nuevo",
+        )
+    for c in cuentas.values():
+        _exigir_cuenta_activa(c)
+    _exigir_fecha_valida(d.fecha)
+    if d.fecha == m.fecha:  # sin cambio real: no se toca nada (ni la version ni el historial)
+        return armar_movimientos(db, ctx, [m])[0]
+    antes = m.fecha
+    m.fecha = d.fecha
+    marcar_edicion(m, ctx.usuario.id)
+    historial.registrar(db, ctx.familia_id, ctx.usuario.id, "cuenta_mov", m.id, "editar", {"fecha": historial.cambio(antes, d.fecha)})
+    db.commit()
+    return armar_movimientos(db, ctx, [m])[0]
 
 
 def listar_movimientos(

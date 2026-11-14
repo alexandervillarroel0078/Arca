@@ -43,6 +43,10 @@ async function revisar(page: Page, nombre: string) {
       if (!visible(e)) continue;
       const cs = getComputedStyle(e);
       const escondido = cs.overflowX === "hidden" || cs.overflowX === "clip";
+      // Excepcion UNICA: texto marcado data-truncado="a-proposito" que de verdad muestra "…" (text-overflow: ellipsis) y lleva el
+      // texto completo en `title` (p. ej. el tipo de un movimiento de Cuentas junto a un monto grande). Todo lo demas sigue igual.
+      const truncadoAProposito = e.getAttribute("data-truncado") === "a-proposito" && cs.textOverflow === "ellipsis" && !!e.getAttribute("title");
+      if (truncadoAProposito) continue;
       if (escondido && e.scrollWidth > e.clientWidth + 1 && !e.classList.contains("esqueleto")) { // incluye el texto truncado con "..."
         // las barras de progreso recortan a proposito sus segmentos
         if (e.getAttribute("role") === "progressbar" || e.closest("[role=progressbar]")) continue;
@@ -366,5 +370,67 @@ test.describe("Prueba visual a 390px", () => {
     await captura(pm, "36-mi-familia-miembro");
     await revisar(pm, "Mi familia (miembro)");
     await otro.close();
+  });
+
+  test("Cuentas: fila de movimiento en una línea a 360px, con montos grandes", async ({ page, request }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    const admin = await crearAdmin(request, { nombre: "Ana Maria de los Angeles Perez", familia: "Familia Perez Rodriguez" });
+    const crear = async (ruta: string, data: Record<string, unknown>) => {
+      const r = await request.post(`${API}${ruta}`, { headers: admin.headers, data });
+      expect(r.status(), await r.text()).toBe(201);
+      return (await r.json()) as { id: number };
+    };
+    const caja = await crear("/cuentas", { nombre: "Caja de la casa", tipo: "efectivo", moneda: "BS", saldo_inicial: "0" });
+    const ahorro = await crear("/cuentas", {
+      nombre: "Cuenta de ahorros familiar para emergencias", tipo: "ahorro", moneda: "BS", banco: "Banco Unión", saldo_inicial: "0",
+    });
+    await crear(`/cuentas/${caja.id}/depositos`, {
+      monto: "123456789.50", nota: "Venta del terreno de la familia en las afueras de la ciudad", persona_tipo: "otra",
+      persona_nombre: "Tía Rosa María del Carmen",
+    });
+    await crear(`/cuentas/${caja.id}/retiros`, { monto: "1234567.89" });
+    await crear("/cuentas/traspasos", { cuenta_id: caja.id, cuenta_destino_id: ahorro.id, monto: "999999.99" });
+    await crear(`/cuentas/${caja.id}/ajustes`, { saldo_declarado: "100000000" });
+    const dup = await crear(`/cuentas/${caja.id}/depositos`, { monto: "10" });
+    await request.post(`${API}/cuentas/movimientos/${dup.id}/anular`, { headers: admin.headers, data: { motivo: "Registrado dos veces" } });
+
+    await entrarRapido(page, admin);
+    await page.goto(`/cuentas/${caja.id}`);
+    await page.getByRole("switch", { name: "Ver anulados" }).check({ force: true });
+    const filas = page.getByTestId("fila-movimiento");
+    await expect(filas).toHaveCount(5);
+    await expect(filas.filter({ hasText: "Venta del terreno" })).toContainText("+Bs 123,456,789.50");
+    // el monto nunca se parte en dos líneas; la primera línea de cada fila mide ~52px (mínimo 48 para el dedo)
+    for (const alto of await page.getByTestId("monto-movimiento").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height))) {
+      expect(alto).toBeLessThan(32);
+    }
+    for (const alto of await filas.evaluateAll((els) => els.map((e) => e.firstElementChild!.getBoundingClientRect().height))) {
+      expect(alto).toBeGreaterThanOrEqual(48);
+      expect(alto).toBeLessThan(60);
+    }
+    // el tipo del traspaso no cabe junto al monto: se trunca con "…" (a propósito), sin desbordar
+    const tipoTraspaso = filas.filter({ hasText: "Traspaso a" }).locator("[data-truncado=a-proposito]");
+    expect(await tipoTraspaso.evaluate((e) => e.scrollWidth > e.clientWidth)).toBe(true);
+    await captura(page, "37-cuenta-movimientos-360");
+    await revisar(page, "Cuenta (movimientos a 360px)");
+    await page.getByTestId("cabecera-movimientos").evaluate((e) => e.scrollIntoView({ block: "start" }));
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: join(CARPETA, "37b-cuenta-lista-de-movimientos-360.png") });
+
+    // el menú «…» de una fila (captura sin volver arriba, para que se vea el menú abierto)
+    await filas.filter({ hasText: "Venta del terreno" }).getByRole("button", { name: /^Acciones de / }).click();
+    await expect(page.getByRole("menuitem")).toHaveText(["Historial", "Cambiar fecha", "Anular"]);
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: join(CARPETA, "38-cuenta-menu-fila-360.png") });
+    await page.keyboard.press("Escape");
+
+    // lista global: la misma fila compacta, sin menú, con el nombre de la cuenta en la segunda línea
+    await page.goto("/cuentas");
+    const globales = page.getByRole("list", { name: "Últimos movimientos" }).getByTestId("fila-movimiento");
+    await expect(globales.first()).toBeVisible();
+    await expect(globales.getByRole("button")).toHaveCount(0);
+    await expect(globales.filter({ hasText: "Venta del terreno" }).getByTestId("detalle-movimiento")).toContainText("Caja de la casa");
+    await captura(page, "39-cuentas-inicio-360");
+    await revisar(page, "Cuentas (inicio a 360px)");
   });
 });
