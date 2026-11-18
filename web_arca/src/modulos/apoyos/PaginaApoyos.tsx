@@ -220,7 +220,7 @@ export default function PaginaApoyos() {
     <li key={a.id} data-testid="fila-apoyo" data-anulado={a.anulado} className={`py-1 ${a.anulado ? "text-stone-600" : "text-stone-700"}`}>
       <div className="flex items-center justify-between gap-1">
         <p className={`monto text-sm min-w-0 ${a.anulado ? "line-through" : ""}`}>
-          {fechaCorta(a.fecha)} · {bs(a.monto)} entregado por {a.usuario_nombre}
+          {fechaCorta(a.fecha, { conDia: true })} · {bs(a.monto)} entregado por {a.usuario_nombre}
           {a.consumido > 0 && ` · consumido ${bs(a.consumido)}`}
           <span className="ml-1 align-middle"><EtiquetaPrivacidad registro={a} /></span>
           {(a.sinSincronizar || a.enConflicto) && (
@@ -236,7 +236,7 @@ export default function PaginaApoyos() {
             <li key={d.id} data-testid="fila-devolucion" data-anulado={d.anulado} className={d.anulado ? "text-stone-600" : ""}>
               <div className="flex items-center justify-between gap-1">
                 <p className={`monto text-sm ${d.anulado ? "line-through" : ""}`}>
-                  Devolución {bs(d.monto)} · {fechaCorta(d.fecha)}
+                  Devolución {bs(d.monto)} · {fechaCorta(d.fecha, { conDia: true })}
                   {d.usuario_nombre ? ` · ${d.usuario_nombre}` : ""}
                   {(d.sinSincronizar || d.enConflicto) && (
                     <span className="ml-1 inline-flex flex-wrap gap-1.5 align-middle"><EtiquetaSync sinSincronizar={d.sinSincronizar} enConflicto={d.enConflicto} /></span>

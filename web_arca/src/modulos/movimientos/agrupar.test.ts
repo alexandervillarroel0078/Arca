@@ -8,12 +8,12 @@ const ingreso = (id: number, fecha: string, monto: number) => itemDe({ id, tipo:
 const apoyo = (id: number, fecha: string, monto: number) => itemDe({ clase: "apoyo", id, tipo: "apoyo", fecha, monto, categoria_nombre: null });
 
 describe("etiquetaDia", () => {
-  it("Hoy, Ayer y 'd mes' para los demas", () => {
+  it("Hoy, Ayer y 'd mes (dia)' para los demas", () => {
     expect(etiquetaDia("2026-11-08", HOY)).toBe("Hoy");
     expect(etiquetaDia("2026-11-07", HOY)).toBe("Ayer");
-    expect(etiquetaDia("2026-11-06", HOY)).toBe("6 nov");
-    expect(etiquetaDia("2026-10-31", HOY)).toBe("31 oct");
-    expect(etiquetaDia("2025-03-01", HOY)).toBe("1 mar");
+    expect(etiquetaDia("2026-11-06", HOY)).toBe("6 nov (vie)");
+    expect(etiquetaDia("2026-10-31", HOY)).toBe("31 oct (sáb)");
+    expect(etiquetaDia("2025-03-01", HOY)).toBe("1 mar (sáb)");
   });
 
   it("Ayer cruza el cambio de mes y de anio (usa el mismo sumarDias de los periodos)", () => {
@@ -23,7 +23,7 @@ describe("etiquetaDia", () => {
   });
 
   it("un dia futuro no es 'Hoy' ni 'Ayer'", () => {
-    expect(etiquetaDia("2026-11-09", HOY)).toBe("9 nov");
+    expect(etiquetaDia("2026-11-09", HOY)).toBe("9 nov (lun)");
   });
 });
 
@@ -61,7 +61,7 @@ describe("agruparPorDia", () => {
 
   it("un grupo por dia, en el orden recibido, con titulo y filas", () => {
     const g = agruparPorDia(items, HOY);
-    expect(g.map((x) => x.titulo)).toEqual(["Hoy", "Ayer", "3 nov"]);
+    expect(g.map((x) => x.titulo)).toEqual(["Hoy", "Ayer", "3 nov (mar)"]);
     expect(g.map((x) => x.fecha)).toEqual(["2026-11-08", "2026-11-07", "2026-11-03"]);
     expect(g.map((x) => x.items.map((i) => i.id))).toEqual([[1, 2], [3, 4, 5], [6]]);
   });

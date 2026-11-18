@@ -3,8 +3,24 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   anterior, calcular, claveRango, contiene, enRango, etiqueta, etiquetaComparacion, hoyLaPaz, periodoComparacion, resolverPeriodo, siguiente,
-  sumarDias, type TipoPeriodo,
+  diaSemanaCorto, sumarDias, type TipoPeriodo,
 } from "./periodo";
+
+describe("diaSemanaCorto", () => {
+  it("usa el dia de la fecha, sin zona horaria", () => {
+    expect(diaSemanaCorto("2026-11-14")).toBe("sáb");
+    expect(diaSemanaCorto("2026-11-08")).toBe("dom");
+    expect(diaSemanaCorto("2026-11-09")).toBe("lun");
+    expect(diaSemanaCorto("2026-11-11")).toBe("mié");
+  });
+  it("cruza cambio de mes y de anio", () => {
+    expect(diaSemanaCorto("2026-10-31")).toBe("sáb");
+    expect(diaSemanaCorto("2026-11-01")).toBe("dom");
+    expect(diaSemanaCorto("2026-12-31")).toBe("jue");
+    expect(diaSemanaCorto("2027-01-01")).toBe("vie");
+    expect(diaSemanaCorto("2028-02-29")).toBe("mar");
+  });
+});
 
 interface Caso {
   tipo: TipoPeriodo;

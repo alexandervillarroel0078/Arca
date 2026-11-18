@@ -1,19 +1,17 @@
+import { diaMes } from "../../core/formato";
 import { sumarDias } from "../../core/periodo";
 import type { ItemActividad } from "./actividad";
 
-const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
-
-/** "Hoy", "Ayer" o "6 nov". `hoy` es el dia de hoy en La Paz (el mismo que usan los periodos: `hoyLaPaz`). */
+/** "Hoy", "Ayer" o "6 nov (vie)". `hoy` es el dia de hoy en La Paz (el mismo que usan los periodos: `hoyLaPaz`). */
 export function etiquetaDia(iso: string, hoy: string): string {
   if (iso === hoy) return "Hoy";
   if (iso === sumarDias(hoy, -1)) return "Ayer";
-  const [, m, d] = iso.split("-").map(Number);
-  return `${d} ${MESES[m - 1]}`;
+  return diaMes(iso, true);
 }
 
 export interface GrupoDia {
   fecha: string; // AAAA-MM-DD
-  titulo: string; // "Hoy" | "Ayer" | "6 nov"
+  titulo: string; // "Hoy" | "Ayer" | "6 nov (vie)"
   items: ItemActividad[];
   /**
    * Neto del dia de lo que se ve en la lista: ingresos suman; gastos y apoyos entregados restan; lo anulado no cuenta.

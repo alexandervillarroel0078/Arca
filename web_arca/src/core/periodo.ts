@@ -57,6 +57,11 @@ export function hoyLaPaz(ahora: Date = new Date()): string {
 
 const diaDeSemana = (f: string) => (new Date(aUTC(f)).getUTCDay() + 6) % 7; // lunes = 0
 
+const DIAS_CORTOS = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
+
+/** "sáb" para "2026-11-14". Usa UTC: nunca depende de la zona horaria del aparato. */
+export const diaSemanaCorto = (f: string) => DIAS_CORTOS[new Date(aUTC(f)).getUTCDay()];
+
 export function calcular(tipo: TipoPeriodo, referencia: string, diaInicioMes = 1, desde?: string, hasta?: string): Rango {
   if (!Number.isInteger(diaInicioMes) || diaInicioMes < 1 || diaInicioMes > 28) throw new Error("El día de inicio del mes debe ser de 1 a 28");
   if (tipo === "dia") return { desde: referencia, hasta: referencia };

@@ -126,7 +126,7 @@ export default function FilaActividad({
         <p className="text-xs text-stone-600">
           {i.tipo === "apoyo" ? "Apoyo" : i.categoria_nombre ?? "Ingreso"}
           {mostrarAutor ? <> · <Autor nombre={i.usuario_nombre} /></> : <span className="solo-lectores"> · {i.usuario_nombre}</span>}
-          {mostrarFecha ? <> · {fechaCorta(i.fecha)}</> : <span className="solo-lectores"> · {fechaCorta(i.fecha)}</span>}
+          {mostrarFecha ? <> · {fechaCorta(i.fecha, { conDia: true })}</> : <span className="solo-lectores"> · {fechaCorta(i.fecha, { conDia: true })}</span>}
           {i.tipo === "apoyo" && i.estado && !i.anulado ? <span className="text-sm font-semibold">{` · ${i.estado}`}</span> : ""}
         </p>
         {/* etiquetas del registro (quien lo ve, sin enviar, en conflicto); un registro normal no muestra nada */}

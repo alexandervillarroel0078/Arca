@@ -48,8 +48,8 @@ describe("Lista: encabezados por dia con su total", () => {
     abrir();
     await screen.findByText("Almuerzo");
     const titulos = screen.getAllByTestId("encabezado-dia").map((h) => within(h).getByRole("heading", { level: 2 }).textContent);
-    expect(titulos).toEqual(["Hoy", "Ayer", "3 nov"]);
-    expect(screen.queryByRole("heading", { name: "5 nov" })).not.toBeInTheDocument();
+    expect(titulos).toEqual(["Hoy", "Ayer", "3 nov (mar)"]);
+    expect(screen.queryByRole("heading", { name: "5 nov (jue)" })).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1); // el titulo de la pantalla sigue siendo uno solo
   });
 
@@ -58,7 +58,7 @@ describe("Lista: encabezados por dia con su total", () => {
     await screen.findByText("Almuerzo");
     expect(within(dia("Hoy")).getByTestId("total-dia")).toHaveTextContent("+Bs 955.10"); // 1,000.10 - 45
     expect(within(dia("Ayer")).getByTestId("total-dia")).toHaveTextContent("-Bs 230.00"); // -30 -200 (el anulado de 999 no entra)
-    expect(within(dia("3 nov")).getByTestId("total-dia")).toHaveTextContent("-Bs 12.50");
+    expect(within(dia("3 nov (mar)")).getByTestId("total-dia")).toHaveTextContent("-Bs 12.50");
     expect(within(dia("Hoy")).getByTestId("total-dia")).toHaveTextContent("Total del día"); // y se lee como total para lectores de pantalla
   });
 
@@ -68,7 +68,7 @@ describe("Lista: encabezados por dia con su total", () => {
     expect(screen.getAllByTestId("fila-lista")).toHaveLength(6);
     expect(within(dia("Hoy")).getAllByTestId("fila-lista")).toHaveLength(2);
     expect(within(dia("Ayer")).getAllByTestId("fila-lista")).toHaveLength(3);
-    expect(within(dia("3 nov")).getAllByTestId("fila-lista")).toHaveLength(1);
+    expect(within(dia("3 nov (mar)")).getAllByTestId("fila-lista")).toHaveLength(1);
     expect(screen.getByTestId("total-lista")).toHaveTextContent("6 registros");
   });
 
@@ -94,11 +94,11 @@ describe("Lista: encabezados por dia con su total", () => {
     abrir();
     await screen.findByText("Almuerzo");
     expect(within(dia("Hoy")).getByTestId("total-dia")).toHaveTextContent("-Bs 45.00");
-    expect(within(dia("3 nov")).queryByTestId("total-dia")).not.toBeInTheDocument(); // puede seguir en la pagina que falta
+    expect(within(dia("3 nov (mar)")).queryByTestId("total-dia")).not.toBeInTheDocument(); // puede seguir en la pagina que falta
     await u.click(screen.getByRole("button", { name: "Cargar más" }));
     await screen.findByText("Cena");
-    expect(within(dia("3 nov")).getAllByTestId("fila-lista")).toHaveLength(2); // el mismo dia, ahora completo
-    expect(within(dia("3 nov")).getByTestId("total-dia")).toHaveTextContent("-Bs 20.00"); // 12.50 + 7.50
+    expect(within(dia("3 nov (mar)")).getAllByTestId("fila-lista")).toHaveLength(2); // el mismo dia, ahora completo
+    expect(within(dia("3 nov (mar)")).getByTestId("total-dia")).toHaveTextContent("-Bs 20.00"); // 12.50 + 7.50
   });
 });
 

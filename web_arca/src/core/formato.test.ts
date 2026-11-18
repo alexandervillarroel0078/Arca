@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { bs, fechaCorta, hoyISO, iconoDe, mesActual, mesDesplazado, nombreMes } from "./formato";
+import { bs, diaMes, fechaCorta, hoyISO, iconoDe, mesActual, mesDesplazado, nombreMes } from "./formato";
 
 describe("bs (moneda boliviana)", () => {
   it("usa dos decimales y separador de miles", () => {
@@ -30,6 +30,28 @@ describe("fechas", () => {
     expect(fechaCorta("2026-11-07")).toBe("Hoy");
     expect(fechaCorta("2026-11-03")).toBe("3 nov");
     expect(fechaCorta("2026-01-31")).toBe("31 ene");
+  });
+
+  it("fechaCorta con conDia agrega el dia; Hoy no lo lleva; sin conDia es igual que antes", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 7, 12, 0));
+    expect(fechaCorta("2026-11-14", { conDia: true })).toBe("14 nov (sáb)");
+    expect(fechaCorta("2026-10-31", { conDia: true })).toBe("31 oct (sáb)");
+    expect(fechaCorta("2026-12-31", { conDia: true })).toBe("31 dic (jue)");
+    expect(fechaCorta("2027-01-01", { conDia: true })).toBe("1 ene (vie)");
+    expect(fechaCorta("2026-11-07", { conDia: true })).toBe("Hoy");
+    expect(fechaCorta("2026-11-14")).toBe("14 nov");
+    expect(fechaCorta("2026-11-14", {})).toBe("14 nov");
+  });
+
+  it("diaMes con y sin dia, nunca dice Hoy", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 14, 12, 0));
+    expect(diaMes("2026-11-14")).toBe("14 nov");
+    expect(diaMes("2026-11-14", true)).toBe("14 nov (sáb)");
+    expect(diaMes("2026-12-31", true)).toBe("31 dic (jue)");
+    expect(diaMes("2027-01-01", true)).toBe("1 ene (vie)");
+    expect(diaMes("2027-01-01")).toBe("1 ene");
   });
 
   it("nombreMes largo y corto", () => {
