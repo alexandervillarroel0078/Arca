@@ -134,6 +134,30 @@ describe("Reportes", () => {
     expect(within(filas[2]).getByText("Saldo -Bs 70.00").className).toMatch(/text-red-700/);
     expect(filas[5]).toHaveTextContent("Ingresos Bs 1,500.00 · Gastos Bs 200.00");
   });
+
+  it("ultimos 6 meses: muestra los apoyos para que el saldo cuadre (Apoyos siempre, aunque sea 0)", async () => {
+    const lista = meses();
+    lista[5] = { ...lista[5], ingresos: 561.5, gastos: 243.5, apoyos_entregados: 200, devoluciones: 0, saldo: 118 };
+    A.tendencia.mockResolvedValue({ meses: lista });
+    abrir();
+    await waitFor(() => expect(screen.getAllByTestId("fila-mes")).toHaveLength(6));
+    const filas = screen.getAllByTestId("fila-mes");
+    expect(filas[5]).toHaveTextContent("Saldo Bs 118.00");
+    expect(filas[5]).toHaveTextContent("Ingresos Bs 561.50 · Gastos Bs 243.50 · Apoyos Bs 200.00");
+    expect(filas[5]).not.toHaveTextContent("Devoluciones");
+    expect(filas[0]).toHaveTextContent("Ingresos Bs 0.00 · Gastos Bs 0.00 · Apoyos Bs 0.00");
+  });
+
+  it("ultimos 6 meses: las devoluciones solo aparecen si hay", async () => {
+    const lista = meses();
+    lista[5] = { ...lista[5], ingresos: 500, gastos: 100, apoyos_entregados: 300, devoluciones: 50, saldo: 150 };
+    A.tendencia.mockResolvedValue({ meses: lista });
+    abrir();
+    await waitFor(() => expect(screen.getAllByTestId("fila-mes")).toHaveLength(6));
+    const filas = screen.getAllByTestId("fila-mes");
+    expect(filas[5]).toHaveTextContent("Ingresos Bs 500.00 · Gastos Bs 100.00 · Apoyos Bs 300.00 · Devoluciones Bs 50.00");
+    expect(filas[4]).not.toHaveTextContent("Devoluciones");
+  });
 });
 
 describe("Reportes: comparacion con el periodo anterior (siempre flecha y texto, nunca solo color)", () => {

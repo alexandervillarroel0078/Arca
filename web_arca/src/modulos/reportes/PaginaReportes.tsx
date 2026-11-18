@@ -5,7 +5,7 @@ import SelectorPeriodo from "../../core/SelectorPeriodo";
 import { NotaPrivados } from "../privacidad/Etiquetas";
 import { Cargando, ErrorCaja, SinDatosPeriodo, Tarjeta, Titulo, Vacio, useCarga } from "../../core/ui";
 import { useEnCola } from "../sync/useSync";
-import { porCategoria, porMiembro, resumenPeriodo, tendencia } from "./api";
+import { porCategoria, porMiembro, resumenPeriodo, tendencia, type MesTotal } from "./api";
 
 /** No hay base para comparar: el periodo anterior estaba en cero (no se divide por cero). */
 const sinBase = (c: Comparacion) => c.porcentaje === null;
@@ -47,6 +47,35 @@ function Barra({ valor, maximo, clase }: { valor: number; maximo: number; clase:
   return (
     <div className="h-2.5 rounded-full bg-stone-100 overflow-hidden">
       <div className={`h-full rounded-full ${clase}`} style={{ width: `${maximo ? Math.max(2, (valor / maximo) * 100) : 0}%` }} />
+    </div>
+  );
+}
+
+/** Largo de la barra de un mes: lo que entro (ingresos + devoluciones) o lo que salio (gastos + apoyos), lo mayor. */
+const largoMes = (m: MesTotal) => Math.max(m.ingresos + m.devoluciones, m.gastos + m.apoyos_entregados);
+
+/**
+ * UNA barra por mes: gris (gastos), naranja (apoyos) y verde (lo que queda = saldo). Con saldo >= 0 los tres
+ * suman ingresos + devoluciones; con saldo < 0 no hay verde. Un monto 0 no dibuja tramo; si todo es 0 queda la
+ * tira minima gris (2 %). Cada tramo dice su monto (aria-label y title): el color nunca es lo unico que informa.
+ */
+function BarraMes({ m, maximo }: { m: MesTotal; maximo: number }) {
+  const tramos = [
+    { texto: "Gastos", monto: m.gastos, clase: "bg-stone-500" },
+    { texto: "Apoyos", monto: m.apoyos_entregados, clase: "bg-apoyo" },
+    { texto: "Te queda", monto: m.saldo, clase: "bg-arca" },
+  ].filter((t) => t.monto > 0);
+  const visibles = tramos.length ? tramos : [{ texto: "Gastos", monto: 0, clase: "bg-stone-500" }];
+  return (
+    <div className="h-2.5 rounded-full bg-stone-100 overflow-hidden flex">
+      {visibles.map((t, i) => (
+        <div
+          key={t.texto}
+          className={`h-full ${t.clase} ${i === 0 ? "rounded-l-full" : ""} ${i === visibles.length - 1 ? "rounded-r-full" : ""}`}
+          style={{ width: `${Math.max(2, (t.monto / maximo) * 100)}%` }}
+          role="img" aria-label={`${t.texto} ${bs(t.monto)}`} title={`${t.texto} ${bs(t.monto)}`}
+        />
+      ))}
     </div>
   );
 }
@@ -186,19 +215,23 @@ export default function PaginaReportes() {
           <Tarjeta>
             <h2 className="font-titulo font-bold mb-3">Últimos 6 meses</h2>
             <NotaPrivados n={datos.privados.meses} className="text-arca -mt-2 mb-2" />
-            {/* que representa cada barra: la verde es de ingresos y la gris de gastos (la misma que lleva cada mes) */}
+            {/* que representa cada tramo de la barra del mes: gris gastos, naranja apoyos, verde lo que queda */}
             <ul aria-label="Leyenda de las barras" data-testid="leyenda-meses" className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-stone-700">
-              <li className="flex items-center gap-1.5">
-                <span aria-hidden className="inline-block h-2.5 w-5 rounded-full bg-arca" />
-                Ingresos
-              </li>
               <li className="flex items-center gap-1.5">
                 <span aria-hidden className="inline-block h-2.5 w-5 rounded-full bg-stone-500" />
                 Gastos
               </li>
+              <li className="flex items-center gap-1.5">
+                <span aria-hidden className="inline-block h-2.5 w-5 rounded-full bg-apoyo" />
+                Apoyos
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span aria-hidden className="inline-block h-2.5 w-5 rounded-full bg-arca" />
+                Te queda
+              </li>
             </ul>
             {(() => {
-              const max = Math.max(1, ...datos.meses.flatMap((m) => [m.ingresos, m.gastos]));
+              const max = Math.max(1, ...datos.meses.map(largoMes));
               return (
                 <div className="space-y-3">
                   {datos.meses.map((m) => (
@@ -207,11 +240,11 @@ export default function PaginaReportes() {
                         <span className="font-medium capitalize whitespace-nowrap">{nombreMes(m.mes, true)} {m.mes.slice(0, 4)}</span>
                         <span className={`monto whitespace-nowrap ${m.saldo < 0 ? "text-red-700" : "text-stone-600"}`}>Saldo {bs(m.saldo)}</span>
                       </div>
-                      <div className="space-y-1">
-                        <Barra valor={m.ingresos} maximo={max} clase="bg-arca" />
-                        <Barra valor={m.gastos} maximo={max} clase="bg-stone-500" />
-                      </div>
-                      <p className="monto text-sm text-stone-600 mt-0.5">Ingresos {bs(m.ingresos)} · Gastos {bs(m.gastos)}</p>
+                      <BarraMes m={m} maximo={max} />
+                      <p className="monto text-sm text-stone-600 mt-0.5">
+                        Ingresos {bs(m.ingresos)} · Gastos {bs(m.gastos)} · Apoyos {bs(m.apoyos_entregados)}
+                        {m.devoluciones > 0 && ` · Devoluciones ${bs(m.devoluciones)}`}
+                      </p>
                     </div>
                   ))}
                 </div>

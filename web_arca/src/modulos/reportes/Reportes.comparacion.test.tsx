@@ -126,27 +126,69 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     A.tendencia.mockResolvedValue({ meses });
   });
 
-  it("explica que la barra verde es de ingresos y la gris de gastos", async () => {
+  it("explica los tramos: gris gastos, naranja apoyos, verde lo que queda", async () => {
     abrir();
     const leyenda = await screen.findByTestId("leyenda-meses");
     expect(leyenda).toHaveAccessibleName("Leyenda de las barras");
     const items = within(leyenda).getAllByRole("listitem");
-    expect(items.map((i) => i.textContent?.trim())).toEqual(["Ingresos", "Gastos"]);
-    expect(items[0].querySelector("span")!.className).toMatch(/bg-arca/);
-    expect(items[1].querySelector("span")!.className).toMatch(/bg-stone-500/);
-    expect(items[0].querySelector("span")).toHaveAttribute("aria-hidden", "true"); // el muestrario es decorativo: el texto lo dice
+    expect(items.map((i) => i.textContent?.trim())).toEqual(["Gastos", "Apoyos", "Te queda"]);
+    expect(items[0].querySelector("span")!.className).toMatch(/bg-stone-500/);
+    expect(items[1].querySelector("span")!.className).toMatch(/bg-apoyo/);
+    expect(items[2].querySelector("span")!.className).toMatch(/bg-arca/);
+    items.forEach((i) => expect(i.querySelector("span")).toHaveAttribute("aria-hidden", "true")); // el muestrario es decorativo
   });
 
-  it("los colores de la leyenda son los mismos de las barras (ingresos primero, verde; gastos despues, gris)", async () => {
+  it("los colores de la leyenda son los mismos de los tramos, y hay una sola barra por mes", async () => {
     abrir();
     const leyenda = await screen.findByTestId("leyenda-meses");
-    const [verde, gris] = within(leyenda).getAllByRole("listitem").map((i) => i.querySelector("span")!.className);
+    const [gris, naranja, verde] = within(leyenda).getAllByRole("listitem").map((i) => i.querySelector("span")!.className);
     const fila = screen.getAllByTestId("fila-mes")[0];
-    const barras = Array.from(fila.querySelectorAll(".h-2\\.5 > div")).map((b) => b.className);
-    expect(barras[0]).toContain("bg-arca");
-    expect(barras[1]).toContain("bg-stone-500");
-    expect(verde).toContain("bg-arca");
-    expect(gris).toContain("bg-stone-500");
+    expect(fila.querySelectorAll(".h-2\\.5")).toHaveLength(1);
+    expect(within(fila).getByRole("img", { name: "Gastos Bs 400.00" }).className).toContain(gris.match(/bg-\S+/)![0]);
+    expect(within(fila).getByRole("img", { name: "Te queda Bs 600.00" }).className).toContain(verde.match(/bg-\S+/)![0]);
+    expect(naranja).toContain("bg-apoyo");
+  });
+
+  const tramos = (f: HTMLElement) => within(f).getAllByRole("img").map((t) => [t.getAttribute("aria-label"), t.style.width]);
+
+  it("saldo positivo: gris + naranja + verde suman ingresos + devoluciones, en una escala comun", async () => {
+    A.tendencia.mockResolvedValue({ meses: [
+      { mes: "2026-08", ingresos: 1000, gastos: 300, apoyos_entregados: 200, devoluciones: 0, consumido: 0, saldo: 500 },
+      { mes: "2026-09", ingresos: 1600, gastos: 800, apoyos_entregados: 200, devoluciones: 400, consumido: 0, saldo: 1000 },
+    ] });
+    abrir();
+    await screen.findByTestId("leyenda-meses");
+    const [ago, sep] = screen.getAllByTestId("fila-mes");
+    // max = 1600 + 400 = 2000 (si no sumara devoluciones seria 1600)
+    expect(tramos(ago)).toEqual([["Gastos Bs 300.00", "15%"], ["Apoyos Bs 200.00", "10%"], ["Te queda Bs 500.00", "25%"]]);
+    expect(tramos(sep)).toEqual([["Gastos Bs 800.00", "40%"], ["Apoyos Bs 200.00", "10%"], ["Te queda Bs 1,000.00", "50%"]]);
+    const pista = within(ago).getByRole("img", { name: "Gastos Bs 300.00" }).parentElement!;
+    expect(within(pista).getAllByRole("img")).toHaveLength(3); // una sola pista
+    expect(within(ago).getByRole("img", { name: "Te queda Bs 500.00" })).toHaveAttribute("title", "Te queda Bs 500.00");
+  });
+
+  const NEGATIVO_Y_CERO: api.MesTotal[] = [
+    { mes: "2026-10", ingresos: 500, gastos: 600, apoyos_entregados: 400, devoluciones: 0, consumido: 0, saldo: -500 },
+    { mes: "2026-11", ingresos: 0, gastos: 0, apoyos_entregados: 0, devoluciones: 0, consumido: 0, saldo: 0 },
+  ];
+
+  it("saldo negativo: solo gris + naranja (sin verde), largo = gastos + apoyos, y el saldo en rojo", async () => {
+    A.tendencia.mockResolvedValue({ meses: NEGATIVO_Y_CERO });
+    abrir();
+    await screen.findByTestId("leyenda-meses");
+    const [oct] = screen.getAllByTestId("fila-mes");
+    expect(tramos(oct)).toEqual([["Gastos Bs 600.00", "60%"], ["Apoyos Bs 400.00", "40%"]]);
+    expect(within(oct).queryByRole("img", { name: /^Te queda/ })).not.toBeInTheDocument();
+    expect(within(oct).getByText("Saldo -Bs 500.00").className).toMatch(/text-red-700/);
+  });
+
+  it("mes en 0: tira minima gris de 2 %, sin naranja ni verde", async () => {
+    A.tendencia.mockResolvedValue({ meses: NEGATIVO_Y_CERO });
+    abrir();
+    await screen.findByTestId("leyenda-meses");
+    const [, nov] = screen.getAllByTestId("fila-mes");
+    expect(tramos(nov)).toEqual([["Gastos Bs 0.00", "2%"]]);
+    expect(nov.querySelector(".bg-apoyo, .bg-arca")).toBeNull();
   });
 
   it("la leyenda esta dentro de la tarjeta de los 6 meses, antes de las barras", async () => {
