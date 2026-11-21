@@ -7,7 +7,19 @@ import { operarMovimiento } from "../sync/operaciones";
 import { superponerMovimientos } from "../sync/superponer";
 import type { Visibilidad } from "../privacidad/visibilidad";
 
-export interface Movimiento extends Auditoria {
+/** Fuente de pago (0010) tal como la ve este usuario. Sin dato (registros guardados antes o creados sin conexión) = Efectivo. */
+export interface CamposFuente {
+  fuente?: "efectivo" | "banco";
+  cuenta_id?: number | null; // solo si ves la cuenta
+  cuenta_nombre?: string | null; // "otra cuenta" si no la ves
+  estado_cuenta?: "pendiente" | "confirmado" | "rechazado" | null;
+  confirma_nombre?: string | null; // pendiente: quién debe confirmarlo
+  rechazado_por_nombre?: string | null; // pasó a Efectivo porque rechazaron el pago
+  rechazo_motivo?: string | null;
+  rechazo_cuenta_nombre?: string | null;
+}
+
+export interface Movimiento extends Auditoria, CamposFuente {
   id: number;
   tipo: "gasto" | "ingreso";
   monto: number;
@@ -31,6 +43,7 @@ export interface NuevoMovimiento {
   uuid_cliente?: string;
   visibilidad?: Visibilidad;
   compartido_con?: number[];
+  cuenta_id?: number | null; // fuente de pago: vacío = Efectivo (la cola sin conexión SOLO acepta Efectivo)
 }
 export interface NuevoApoyo {
   beneficiario: string;
@@ -40,6 +53,7 @@ export interface NuevoApoyo {
   uuid_cliente?: string;
   visibilidad?: Visibilidad;
   compartido_con?: number[];
+  cuenta_id?: number | null;
 }
 
 // Todas las lecturas guardan copia (se ven sin internet) y las escrituras pasan por la cola de operaciones (Fase 12).

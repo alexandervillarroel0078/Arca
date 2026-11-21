@@ -9,7 +9,7 @@ from decimal import Decimal
 
 from sqlalchemy import (
     CheckConstraint, Date, DateTime, ForeignKey, ForeignKeyConstraint, Index, Numeric, String, Time, UniqueConstraint,
-    func,
+    func, text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -84,6 +84,16 @@ class CuentaMovimiento(Anulable, Base):
             "or (persona_tipo = 'sin_identificar' and persona_usuario_id is null and persona_nombre is null)",
             name="ck_cmov_persona",
         ),
+        CheckConstraint("origen_tipo is null or origen_tipo in ('movimiento','apoyo')", name="ck_cmov_origen_tipo"),
+        CheckConstraint("(origen_tipo is null) = (origen_id is null)", name="ck_cmov_origen"),
+        CheckConstraint("estado in ('pendiente','confirmado','rechazado')", name="ck_cmov_estado"),
+        CheckConstraint("estado = 'confirmado' or origen_id is not null", name="ck_cmov_estado_origen"),
+        CheckConstraint("origen_id is null or tipo in ('deposito','retiro')", name="ck_cmov_origen_tipos"),
+        Index(
+            "uq_cmov_origen_vigente", "origen_tipo", "origen_id", unique=True,
+            postgresql_where=text("origen_id is not null and estado <> 'rechazado' and not anulado"),
+        ),
+        Index("ix_cmov_por_confirmar", "cuenta_id", postgresql_where=text("estado = 'pendiente' and not anulado")),
         Index("ix_cmov_cuenta_fecha", "cuenta_id", "fecha"),
         Index("ix_cmov_destino", "cuenta_destino_id"),
         Index("ix_cmov_familia_fecha", "familia_id", "fecha"),
@@ -108,3 +118,12 @@ class CuentaMovimiento(Anulable, Base):
     persona_usuario_id: Mapped[int | None] = mapped_column(ForeignKey("usuarios.id"), nullable=True)
     persona_nombre: Mapped[str | None] = mapped_column(String(80), nullable=True)
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # Fuente de pago (0010): el gasto/ingreso ('movimiento') o apoyo de Arca que lo creo. Vacio = registrado en Cuentas.
+    origen_tipo: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    origen_id: Mapped[int | None] = mapped_column(nullable=True)
+    # pendiente | confirmado | rechazado. Solo lo confirmado (y activo) suma al saldo.
+    estado: Mapped[str] = mapped_column(String(10), default="confirmado", server_default="confirmado")
+    confirmado_por: Mapped[int | None] = mapped_column(ForeignKey("usuarios.id"), nullable=True)
+    confirmado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    motivo_rechazo: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    hora_registrada: Mapped[time | None] = mapped_column(Time, nullable=True)  # la hora real, si al confirmar cambio

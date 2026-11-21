@@ -5,9 +5,10 @@ from pydantic import BaseModel
 
 from app.core.anulable import AuditoriaOut
 from app.core.tipos import Monto
+from app.modulos.cuentas.schemas import FuenteOut
 
 
-class ActividadItem(AuditoriaOut):
+class ActividadItem(FuenteOut, AuditoriaOut):
     """Una fila de la lista completa: un movimiento (gasto/ingreso) o un apoyo."""
 
     clase: Literal["movimiento", "apoyo"]

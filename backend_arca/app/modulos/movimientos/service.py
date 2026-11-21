@@ -18,6 +18,7 @@ from datetime import date
 from app.core.tipos import rango_filtro
 from app.modulos.categorias.models import Categoria
 from app.modulos.categorias.service import obtener_de_familia
+from app.modulos.cuentas import service as cuentas
 from app.modulos.historial import service as historial
 from app.modulos.movimientos.models import Movimiento
 from app.modulos.visibilidad import cambios as visib
@@ -28,7 +29,15 @@ from app.modulos.movimientos.schemas import MovimientoCrear, MovimientoEditar, M
 def _datos(db: Session, m: Movimiento) -> dict:
     """Foto de los campos editables (la categoria por nombre, para que el historial se entienda solo)."""
     cat = db.get(Categoria, m.categoria_id) if m.categoria_id else None
-    return {"tipo": m.tipo, "monto": m.monto, "fecha": m.fecha, "categoria": cat.nombre if cat else None, "nota": m.nota}
+    return {
+        "tipo": m.tipo, "monto": m.monto, "fecha": m.fecha, "categoria": cat.nombre if cat else None, "nota": m.nota,
+        "fuente": m.cuenta_id,  # id de cuenta (None = Efectivo): el historial lo muestra con el nombre que ve cada lector
+    }
+
+
+def _tipo_cuenta(tipo: str) -> str:
+    """Movimiento de cuenta vinculado: un gasto sale de la cuenta (retiro); un ingreso entra (deposito)."""
+    return "deposito" if tipo == "ingreso" else "retiro"
 
 
 def armar(db: Session, movs: list[Movimiento], ctx: Contexto) -> list[MovimientoOut]:
@@ -40,6 +49,7 @@ def armar(db: Session, movs: list[Movimiento], ctx: Contexto) -> list[Movimiento
     )
     cat_ids = {m.categoria_id for m in movs if m.categoria_id}
     cats = {c.id: c for c in db.scalars(select(Categoria).where(Categoria.id.in_(cat_ids)))} if cat_ids else {}
+    fuentes = cuentas.fuentes_de(db, ctx, "movimiento", movs)
     salida = []
     for m in movs:
         c = cats.get(m.categoria_id) if m.categoria_id else None
@@ -57,6 +67,7 @@ def armar(db: Session, movs: list[Movimiento], ctx: Contexto) -> list[Movimiento
                 usuario_nombre=nombres.get(m.usuario_id, ""),
                 visibilidad=m.visibilidad,
                 compartido_con=personas.get(m.id, []),
+                **fuentes.get(m.id, {}),
                 **auditoria(m, nombres),
             )
         )
@@ -144,6 +155,9 @@ def crear(db: Session, ctx: Contexto, datos: MovimientoCrear) -> tuple[Movimient
             raise HTTPException(status_code=422, detail="La categoría está desactivada")
     elif datos.categoria_id is not None:
         raise HTTPException(status_code=422, detail="El ingreso no lleva categoría")
+    if datos.cuenta_id is not None and datos.anulado:
+        raise HTTPException(status_code=422, detail="Un registro anulado sin conexión solo puede ser en efectivo")
+    cuentas.bloquear_cuentas(db, [datos.cuenta_id])  # orden fijo: la cuenta antes que el registro
     visibilidad, personas = visib.preparar_creacion(db, ctx, datos)
     m = Movimiento(
         visibilidad=visibilidad,
@@ -158,6 +172,8 @@ def crear(db: Session, ctx: Contexto, datos: MovimientoCrear) -> tuple[Movimient
     )
     db.add(m)
     db.flush()
+    if datos.cuenta_id is not None:
+        cuentas.crear_vinculado(db, ctx, "movimiento", m, datos.cuenta_id, _tipo_cuenta(m.tipo))
     visib.guardar_personas(db, ctx, "movimiento", m.id, personas)
     historial.registrar(
         db, ctx.familia_id, ctx.usuario.id, "movimiento", m.id, "crear", historial.creacion(_datos(db, m))
@@ -172,9 +188,16 @@ def crear(db: Session, ctx: Contexto, datos: MovimientoCrear) -> tuple[Movimient
     return armar(db, [m], ctx)[0], True
 
 
-def _obtener_modificable(db: Session, ctx: Contexto, movimiento_id: int) -> Movimiento:
-    m = _obtener(db, ctx, movimiento_id, bloquear=True)
+def _obtener_modificable(db: Session, ctx: Contexto, movimiento_id: int, cuenta_nueva: int | None = None) -> Movimiento:
+    """Lo ves (404) y lo puedes editar (403). Bloquea SIEMPRE en el mismo orden: primero la(s) cuenta(s) de su fuente
+    (la actual y la nueva), despues el registro (igual que confirmar/rechazar en Cuentas: sin interbloqueos)."""
+    m = _obtener(db, ctx, movimiento_id)
     vis.exigir_editar(ctx, m)  # (ya se comprobo que lo ves: aqui un 403 no revela nada)
+    previa = m.cuenta_id
+    cuentas.bloquear_cuentas(db, {previa, cuenta_nueva})
+    m = db.get(Movimiento, movimiento_id, with_for_update=True, populate_existing=True)
+    if m.cuenta_id != previa:  # su fuente cambio entre la lectura y el bloqueo (p. ej. la rechazaron): otra vez
+        raise HTTPException(status_code=409, detail="El movimiento cambió mientras tanto: vuelve a intentarlo")
     return m
 
 
@@ -184,7 +207,7 @@ def _ya_aplicada(db: Session, ctx: Contexto, m: Movimiento) -> bool:
 
 
 def editar(db: Session, ctx: Contexto, movimiento_id: int, datos: MovimientoEditar) -> MovimientoOut:
-    m = _obtener_modificable(db, ctx, movimiento_id)
+    m = _obtener_modificable(db, ctx, movimiento_id, datos.cuenta_id)
     if _ya_aplicada(db, ctx, m):
         return armar(db, [m], ctx)[0]
     if (datos.visibilidad is not None or datos.compartido_con is not None) and m.usuario_id != ctx.usuario.id:
@@ -197,6 +220,12 @@ def editar(db: Session, ctx: Contexto, movimiento_id: int, datos: MovimientoEdit
     antes = _datos(db, m)
 
     tipo = cambios.get("tipo") or m.tipo
+    cuenta_final = cambios["cuenta_id"] if "cuenta_id" in cambios else m.cuenta_id
+    if tipo != m.tipo and cuenta_final is not None:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Un {m.tipo} pagado con banco no se puede pasar a {tipo}: pásalo a efectivo primero",
+        )
     categoria_id = cambios["categoria_id"] if "categoria_id" in cambios else m.categoria_id
     if tipo == "ingreso":
         # al pasar a ingreso la categoria se limpia sola; pedirla explicitamente es un error
@@ -219,6 +248,8 @@ def editar(db: Session, ctx: Contexto, movimiento_id: int, datos: MovimientoEdit
         m.fecha = cambios["fecha"]
     if "nota" in cambios:
         m.nota = cambios["nota"]
+    if not m.anulado and (m.cuenta_id is not None or cuenta_final is not None):  # anulado: solo cambia quien lo ve
+        cuentas.sincronizar(db, ctx, "movimiento", m, cuenta_final, _tipo_cuenta(m.tipo))
     diferencias = historial.diferencias(antes, _datos(db, m))
     cambio_vis = visib.aplicar(db, ctx, m, datos.visibilidad, datos.compartido_con)
     if diferencias or not cambio_vis:
@@ -237,6 +268,7 @@ def anular(
     exigir_version(m, version_base, lambda: armar(db, [m], ctx)[0], "El movimiento")
     if m.anulado:
         raise HTTPException(status_code=400, detail="El movimiento ya está anulado")
+    cuentas.anular_de_origen(db, ctx, "movimiento", m)
     marcar_anulacion(m, ctx.usuario.id, motivo)
     historial.registrar(
         db, ctx.familia_id, ctx.usuario.id, "movimiento", m.id, "anular",
@@ -258,6 +290,12 @@ def reactivar(db: Session, ctx: Contexto, movimiento_id: int, version_base: int 
     historial.registrar(
         db, ctx.familia_id, ctx.usuario.id, "movimiento", m.id, "reactivar", {"anulado": historial.cambio(True, False)}
     )
+    cuenta_previa = m.cuenta_id
+    if motivo := cuentas.reactivar_de_origen(db, ctx, "movimiento", m, _tipo_cuenta(m.tipo)):
+        historial.registrar(
+            db, ctx.familia_id, ctx.usuario.id, "movimiento", m.id, "editar",
+            {"fuente": historial.cambio(cuenta_previa, None)}, motivo[:300],
+        )
     db.commit()
     return armar(db, [m], ctx)[0]
 

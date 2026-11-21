@@ -67,6 +67,51 @@ export interface MovimientoCuenta extends Auditoria {
   efecto: string | null; // solo en la lista de una cuenta
   saldo_resultante: string | null; // solo al crear o reactivar
   deja_saldo_negativo: boolean | null;
+  // Fuente de pago (0010): creado por un gasto, ingreso o apoyo. De SOLO LECTURA en Cuentas: solo se confirma o rechaza.
+  estado?: EstadoPago; // sin dato = confirmado (solo lo confirmado suma al saldo)
+  vinculado?: boolean;
+  origen_tipo?: "gasto" | "ingreso" | "apoyo" | null;
+  origen_id?: number | null; // solo si ves el registro de origen
+  origen_clase?: "movimiento" | "apoyo" | null;
+  origen_detalle?: string | null; // categoría o beneficiario (solo si ves el registro)
+  origen_fecha?: string | null;
+  hora_registrada?: string | null;
+  confirmado_por_nombre?: string | null;
+  confirmado_en?: string | null;
+  motivo_rechazo?: string | null;
+  puede_confirmar?: boolean;
+  confirma_nombre?: string | null; // pendiente: quién debe confirmarlo
+}
+
+export type EstadoPago = "pendiente" | "confirmado" | "rechazado";
+
+/** Cuenta que se puede elegir como "Banco" al registrar (activa, en Bs, de banco, que ves). */
+export interface CuentaFuente {
+  id: number;
+  nombre: string;
+  tipo: TipoCuenta;
+  banco: string | null;
+  banco_otro: string | null;
+  ultimos4: string | null;
+  directo: boolean; // eres dueño o encargado: se registra directo
+  confirma_nombre: string | null; // si no: quién debe confirmarlo
+}
+
+export interface RechazoAviso {
+  id: number;
+  origen_clase: "movimiento" | "apoyo";
+  origen_id: number;
+  origen_tipo: "gasto" | "ingreso" | "apoyo";
+  monto: string;
+  fecha: string;
+  cuenta_nombre: string;
+  rechazado_por_nombre: string;
+  motivo: string | null;
+  rechazado_en: string;
+}
+export interface ResumenPorConfirmar {
+  cantidad: number;
+  rechazos: RechazoAviso[];
 }
 
 export interface Catalogo {
@@ -149,3 +194,15 @@ export const cambiarFechaMovimientoCuenta = (m: MovimientoCuenta, fecha: string,
   api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}`, { metodo: "PATCH", cuerpo: { fecha, hora, version_base: m.version } });
 export const reactivarMovimientoCuenta = (m: MovimientoCuenta) =>
   api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/reactivar`, { metodo: "POST", cuerpo: { version_base: m.version } });
+
+// ------------------------------------------------------------------ fuente de pago (0010)
+export const listarFuentes = () => api<CuentaFuente[]>("/cuentas/fuentes");
+export const listarPorConfirmar = () => api<MovimientoCuenta[]>("/cuentas/por-confirmar");
+export const resumenPorConfirmar = () => api<ResumenPorConfirmar>("/cuentas/por-confirmar/resumen");
+export const confirmarPago = (m: MovimientoCuenta) =>
+  api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/confirmar`, { metodo: "POST", cuerpo: { version_base: m.version } });
+export const rechazarPago = (m: MovimientoCuenta, motivo: string) =>
+  api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/rechazar`, {
+    metodo: "POST",
+    cuerpo: { motivo: motivo || null, version_base: m.version },
+  });

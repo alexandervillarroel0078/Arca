@@ -1,4 +1,4 @@
-import {
+import { abrirNuevo,
   alturaMinima, crearAdmin, entrarRapido, expect, filaLista, abrirLista, movimientosApi, saldo, sinDesborde, test,
 } from "./ayudas";
 
@@ -9,7 +9,7 @@ test.describe("Crear gastos e ingresos", () => {
     await expect(saldo(page)).toHaveText("Bs 0.00");
 
     const inicio = Date.now();
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByLabel("Monto").fill("45.50");
     await page.getByRole("radio", { name: /Comida/ }).click();
     await page.getByLabel("Nota (opcional)").fill("Almuerzo");
@@ -29,7 +29,7 @@ test.describe("Crear gastos e ingresos", () => {
   test("crear un ingreso: sube el saldo y no pide categoria", async ({ page, request }) => {
     const admin = await crearAdmin(request);
     await entrarRapido(page, admin);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByRole("tab", { name: "Ingreso" }).click();
     await expect(page.getByRole("radiogroup", { name: "Categoría" })).toHaveCount(0);
     await page.getByLabel("Monto").fill("1000");
@@ -43,7 +43,7 @@ test.describe("Crear gastos e ingresos", () => {
     const admin = await crearAdmin(request);
     await entrarRapido(page, admin);
     for (const [tipo, monto] of [["Ingreso", "1000"], ["Gasto", "45,25"], ["Gasto", "54.75"]] as const) {
-      await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+      await abrirNuevo(page);
       await page.getByRole("tab", { name: tipo }).click();
       await page.getByLabel("Monto").fill(monto);
       if (tipo === "Gasto") await page.getByRole("radio", { name: /Transporte/ }).click();
@@ -59,7 +59,7 @@ test.describe("Crear gastos e ingresos", () => {
   test("las validaciones impiden guardar y no crean nada", async ({ page, request }) => {
     const admin = await crearAdmin(request);
     await entrarRapido(page, admin);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByRole("button", { name: "Guardar" }).click();
     await expect(page.getByRole("alert")).toHaveText("Escribe un monto mayor a cero");
     await page.getByLabel("Monto").fill("10");
@@ -79,7 +79,7 @@ test.describe("Crear gastos e ingresos", () => {
   test("la pantalla es tactil: categorias, pestanas y boton miden 44px o mas, sin desborde a 390px", async ({ page, request }) => {
     const admin = await crearAdmin(request);
     await entrarRapido(page, admin);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await expect(page.getByRole("radio", { name: /Comida/ })).toBeVisible();
     await alturaMinima(page.getByRole("radio"));
     await alturaMinima(page.getByRole("tab"));
@@ -91,7 +91,7 @@ test.describe("Crear gastos e ingresos", () => {
   test("lo que se crea aparece en la lista completa con su fecha y quien lo hizo", async ({ page, request }) => {
     const admin = await crearAdmin(request);
     await entrarRapido(page, admin);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByLabel("Monto").fill("12");
     await page.getByRole("radio", { name: /Antojos/ }).click();
     await page.getByLabel("Nota (opcional)").fill("Helado");

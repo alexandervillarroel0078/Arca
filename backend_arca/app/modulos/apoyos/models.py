@@ -21,6 +21,8 @@ class Apoyo(ConVisibilidad, Anulable, Base):
     fecha: Mapped[date] = mapped_column(Date, index=True)
     nota: Mapped[str | None] = mapped_column(String(500), nullable=True)
     monto_consumido: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0"), server_default="0")
+    # Fuente de pago: NULL = Efectivo; si no, la cuenta (Banco) del retiro vinculado
+    cuenta_id: Mapped[int | None] = mapped_column(ForeignKey("cuentas.id"), nullable=True)
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

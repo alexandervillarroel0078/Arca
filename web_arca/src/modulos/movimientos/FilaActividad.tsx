@@ -13,6 +13,7 @@ import { EtiquetaPrivacidad } from "../privacidad/Etiquetas";
 import { puedeEditar } from "../privacidad/visibilidad";
 import type { ItemActividad } from "./actividad";
 import { anularMovimiento, reactivarMovimiento } from "./api";
+import { EtiquetaFuente } from "./fuente";
 
 /**
  * Acciones del menu "..." de una fila (Editar, Anular o Reactivar, Ver historial) con los permisos de siempre:
@@ -132,6 +133,7 @@ export default function FilaActividad({
         {/* etiquetas del registro (quien lo ve, sin enviar, en conflicto); un registro normal no muestra nada */}
         <div className="mt-1 flex flex-wrap items-center gap-1.5 empty:hidden">
           <EtiquetaPrivacidad registro={i} />
+          <EtiquetaFuente registro={i} />
           <EtiquetaSync sinSincronizar={i.sinSincronizar} enConflicto={i.enConflicto} />
         </div>
         {i.anulado ? (

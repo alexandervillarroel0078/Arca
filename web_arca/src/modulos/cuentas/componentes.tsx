@@ -12,6 +12,25 @@ import { ICONO_TIPO, NOMBRE_TIPO } from "./matriz";
 import { aMonto, esNegativo, formatear, formatearTexto, type Moneda } from "./montos";
 import { puedeCambiarFecha } from "./permisos";
 
+export const NOMBRE_ORIGEN = { gasto: "Gasto", ingreso: "Ingreso", apoyo: "Apoyo" } as const;
+
+/** Estado de un pago con banco que todavía no suma al saldo (pendiente o rechazado); null si suma. */
+export function estadoSinEfecto(m: Pick<MovimientoCuenta, "estado" | "motivo_rechazo" | "confirma_nombre">): string | null {
+  if (m.estado === "pendiente") return `Por confirmar${m.confirma_nombre ? ` por ${m.confirma_nombre}` : ""} · no suma al saldo`;
+  if (m.estado === "rechazado") return `Rechazado${m.motivo_rechazo ? ` · ${m.motivo_rechazo}` : ""} · no suma al saldo`;
+  return null;
+}
+
+/** Enlace al gasto, ingreso o apoyo que creó el movimiento (solo si el lector lo ve). */
+export function EnlaceOrigen({ m }: { m: MovimientoCuenta }) {
+  if (!m.origen_id || !m.origen_clase || !m.origen_tipo) return null;
+  return (
+    <Link to={`/editar/${m.origen_clase}/${m.origen_id}`} className="font-semibold text-arca underline underline-offset-2">
+      Ver {m.origen_tipo}
+    </Link>
+  );
+}
+
 export const NOMBRE_MOVIMIENTO: Record<TipoMovimiento, string> = {
   deposito: "Depósito",
   retiro: "Retiro",
@@ -89,6 +108,7 @@ export function personaIdentificada(m: Pick<MovimientoCuenta, "persona_tipo" | "
 
 /** Título de la fila: el tipo, o "Traspaso a X" / "Traspaso desde X" según la cuenta que se está viendo. */
 export function tituloMovimiento(m: MovimientoCuenta, cuentaRef?: number): string {
+  if (m.vinculado && m.origen_tipo) return `${NOMBRE_MOVIMIENTO[m.tipo]} · ${NOMBRE_ORIGEN[m.origen_tipo]}`;
   if (m.tipo !== "traspaso") return NOMBRE_MOVIMIENTO[m.tipo];
   const dondeEstoy = cuentaRef !== undefined && m.cuenta_destino_id === cuentaRef;
   return dondeEstoy ? `Traspaso desde ${m.cuenta_nombre}` : `Traspaso a ${m.cuenta_destino_nombre}`;
@@ -98,6 +118,9 @@ export function tituloMovimiento(m: MovimientoCuenta, cuentaRef?: number): strin
 export function detallesMovimiento(m: MovimientoCuenta, cuentaRef?: number): string[] {
   return [
     cuentaRef === undefined ? m.cuenta_nombre : null, // lista global: de qué cuenta es
+    // pago con banco: de quién y, solo si ves el registro, su categoría o beneficiario (nunca la nota)
+    m.vinculado ? [m.origen_detalle, `de ${m.usuario_nombre}`].filter(Boolean).join(" ") : null,
+    m.vinculado && m.hora_registrada ? `registrado a las ${m.hora_registrada}` : null,
     personaIdentificada(m),
     m.tipo === "retiro" && m.comision && aMonto(m.comision) !== 0n ? `comisión ${formatearTexto(m.comision, m.moneda)}` : null,
     m.tipo === "ajuste" && m.saldo_declarado ? `saldo contado ${formatearTexto(m.saldo_declarado, m.moneda)}` : null,
@@ -154,9 +177,11 @@ export function FilaMovimiento({
   const detalles = detallesMovimiento(m, cuentaRef);
   const conMenu = !!(alAnular || alReactivar || alHistorial || alCambiarFecha);
   const acciones = conMenu ? accionesMovimiento(m, { alHistorial, alCambiarFecha, alAnular, alReactivar }) : [];
+  const sinEfecto = m.anulado ? null : estadoSinEfecto(m);
   const tachado = m.anulado ? "line-through text-stone-500" : "";
+  const colorMonto = m.anulado ? tachado : sinEfecto ? "text-stone-500" : efecto !== null ? (esNegativo(efecto) ? "text-red-700" : "text-arca") : "";
   return (
-    <li data-testid="fila-movimiento" data-tipo={m.tipo} data-anulado={m.anulado || undefined} className={m.anulado ? "text-stone-500" : ""}>
+    <li data-testid="fila-movimiento" data-tipo={m.tipo} data-anulado={m.anulado || undefined} data-estado={m.estado ?? "confirmado"} className={m.anulado ? "text-stone-500" : ""}>
       <div className="flex items-center gap-2 min-h-[52px]">
         <span data-testid="fecha-movimiento" className={`${COL_FECHA} monto whitespace-nowrap text-xs text-stone-600`}>
           {fechaCorta(m.fecha, { hoy: ahoraLaPaz().fecha })}{m.hora ? ` ${m.hora}` : ""}
@@ -165,7 +190,7 @@ export function FilaMovimiento({
         <p className={`flex-1 min-w-0 truncate break-words font-semibold ${tachado}`} title={titulo} data-truncado="a-proposito">
           {titulo}
         </p>
-        <p data-testid="monto-movimiento" className={`shrink-0 whitespace-nowrap monto font-titulo font-bold ${m.anulado ? tachado : efecto !== null ? (esNegativo(efecto) ? "text-red-700" : "text-arca") : ""}`}>
+        <p data-testid="monto-movimiento" className={`shrink-0 whitespace-nowrap monto font-titulo font-bold ${colorMonto}`}>
           {efecto !== null ? `${esNegativo(efecto) ? "" : "+"}${formatear(efecto, m.moneda)}` : formatearTexto(m.monto, m.moneda)}
         </p>
         {conMenu && (
@@ -174,14 +199,26 @@ export function FilaMovimiento({
           </div>
         )}
       </div>
-      {(m.anulado || detalles.length > 0) && (
+      {(m.anulado || detalles.length > 0 || m.vinculado) && (
         <p data-testid="detalle-movimiento" className={`-mt-1.5 pb-2 pl-20 text-xs text-stone-600 break-words ${conMenu ? "pr-11" : ""}`}>
           {m.anulado && (
             <span className="font-semibold text-red-700">
               Anulado{m.motivo_anulacion ? ` · ${m.motivo_anulacion}` : ""}{detalles.length > 0 ? " · " : ""}
             </span>
           )}
+          {sinEfecto && (
+            <span data-testid="estado-pago" className="font-semibold text-apoyo-texto">
+              {sinEfecto}{detalles.length > 0 ? " · " : ""}
+            </span>
+          )}
           {detalles.join(" · ")}
+          {m.vinculado && (
+            <>
+              {" · "}
+              <span className="text-stone-500">solo lectura</span>
+              {m.origen_id ? <> · <EnlaceOrigen m={m} /></> : null}
+            </>
+          )}
         </p>
       )}
     </li>

@@ -610,9 +610,45 @@ pytest **971**, Vitest **1222**, E2E dev **107**, E2E PWA **4** antes de la hora
 Con la hora (0009): pytest **993**, Vitest **1266** (1 falla ajena a la hora: `PaginaMiFamilia` "muestra como quedaria el mes de hoy" depende del reloj real), E2E dev **109**, E2E PWA **4**. Hora: `tests/test_etapa5_cuentas_hora.py`, `src/modulos/cuentas/fechaHora.test.ts` y los casos nuevos en `fechaMovimiento.test.tsx`, `filaMovimiento.test.tsx`, `pantallas.test.tsx` y `e2e/cuentas.spec.ts`.
 
 ### Fuera de alcance por ahora
-Valorización de cripto, conversión entre monedas, enlazar gastos con cuentas ("fuente de pago": analizada, irá en la migración **0010**), exportar CSV de cuentas y cola offline para cuentas.
+Valorización de cripto, conversión entre monedas, exportar CSV de cuentas y cola offline para cuentas.
+
+## Fuente de pago (migración 0010, opción B con confirmación)
+
+### Qué es
+Gastos, ingresos y apoyos se registran con **Efectivo** o con **Banco** (una cuenta en Bs). Con Banco se crea, en la misma transacción, un movimiento vinculado en Cuentas (gasto/apoyo → retiro, ingreso → depósito). Si la cuenta es de otra persona queda **por confirmar** y no suma al saldo hasta que su dueño o encargado lo confirme. Reglas completas en `SPEC.md` (sección "Fuente de pago").
+
+### Dónde está
+- Backend: sección "fuente de pago (0010)" al final de `cuentas/service.py` (`crear_vinculado`, `sincronizar`, `anular_de_origen`, `reactivar_de_origen`, `confirmar`, `rechazar`, `por_confirmar`, `resumen_por_confirmar`, `fuentes_de`, `cuentas_fuente`). Sin commit dentro: lo hace el servicio de `movimientos`/`apoyos`.
+- Orden de bloqueo fijo **cuenta → registro** (`_obtener_modificable` lee sin bloquear, bloquea la cuenta actual y la nueva, luego el registro; si su fuente cambió en medio, 409). Confirmar/rechazar bloquean cuenta → movimiento → registro.
+- El historial del registro guarda `fuente` como **id de cuenta** (None = Efectivo); `cuentas/nombres.resolver_cambios` lo muestra como el nombre que ve cada lector ("otra cuenta" si no la ve) o "Efectivo".
+- `saldos()` y `resumen.ts` (detalle de la cuenta) solo suman lo **confirmado**.
+- Frontend: `movimientos/HojaFuente.tsx` (hoja del "+" y del chip), `movimientos/fuente.tsx` (envío directo con banco y marcas), `movimientos/AvisoRechazo.tsx`, `cuentas/BandejaPorConfirmar.tsx`, `cuentas/porConfirmar.ts` (contador en memoria), `reportes/fuente.ts` (cálculos de "Te queda").
+
+### Decisiones que tomé
+- **Solo cuentas de banco** (ahorro o corriente) en Bs: las de tipo "efectivo" no se ofrecen como Banco, para no mezclarlas con la fuente "Efectivo".
+- **La nota del gasto nunca se copia** al movimiento de cuenta (evita filtrar texto privado a quien ve la cuenta pero no el gasto). Por eso "editar nota" no toca el vínculo.
+- **Reactivar** un registro crea un vínculo **nuevo** (el anulado queda de rastro). Si la cuenta ya no se puede usar (anulada, ya no la ves), el registro vuelve a Efectivo y el historial lo explica.
+- Editar la **fecha** de un gasto ya confirmado por el dueño no mueve la fecha de confirmación; mientras está pendiente o si se registró directo, sí se copia.
+- Gasto con banco → ingreso: 422, **salvo** que la misma edición lo pase a Efectivo.
+- Un registro **creado y anulado sin conexión** con banco es imposible (la cola solo acepta Efectivo); el servidor lo rechaza con 422 por si acaso.
+- El aviso de rechazo se muestra 30 días, mientras el registro siga activo y en Efectivo; cerrarlo guarda solo el id (`recordar.ts`, se borra al cerrar sesión).
+- `saldo` de los reportes **no cambió** (sigue siendo todo); se agregó `saldo_efectivo` y la interfaz ("Saldo de efectivo", "Te queda") usa ese. Las devoluciones no tienen fuente: cuentan como efectivo.
+- El contador "Por confirmar" va sobre la pestaña **Familia** (por ahí se entra a Cuentas) y en la descripción de "Cuentas" del menú.
+- Con el filtro **Banco** en Reportes no se muestra "Te queda" (el efectivo no se mueve).
+
+### Avisos
+- Los registros de gastos guardados en el aparato (cache de pantallas y la copia de registros, como siempre) ahora traen `cuenta_nombre` (el nombre visible de la cuenta). **No** se guarda nada de `/api/cuentas` (sigue `sinAlmacenLocal.test.ts`).
+- Sin conexión, "Te queda" superpone solo lo pendiente en Efectivo; pasar un registro de banco a Efectivo sin conexión se refleja en el saldo de efectivo recién al sincronizar.
+- El downgrade de la 0010 anula los pendientes/rechazados para no alterar saldos (ver `DESPLIEGUE.md`).
+
+### Pruebas
+pytest **1024** (31 nuevas en `tests/test_fuente_pago.py`: confirmado directo, solo lectura en Cuentas, sincronización, opción B, permisos, fugas entre visibilidades, uuid, reportes y filtro), Vitest **1292** (nuevas: `movimientos/fuente.test.tsx`, `cuentas/porConfirmar.test.tsx`, `reportes/fuente.test.tsx`; sigue fallando solo `PaginaMiFamilia` "muestra como quedaria el mes de hoy", que depende del reloj real y ya fallaba antes), E2E dev **114** (nueva `e2e/fuente.spec.ts` con dos usuarios; las que tocaban el "+" ahora usan `abrirNuevo`, que elige Efectivo en la hoja), E2E PWA **4**. Migración 0010 probada subir/bajar/subir en `arca_test` y el esquema migrado coincide con los modelos.
 
 ## Pendientes
+### Antes de desplegar la fuente de pago (0010)
+- [ ] Pruebas manuales en local con **dos usuarios**: pagar con cuenta propia, con cuenta ajena (confirmar y rechazar), editar/anular/reactivar, sin conexión.
+- [ ] Respaldo de Supabase y despliegue en el orden de `DESPLIEGUE.md` ("Despliegue de la fuente de pago (0010)").
+
 ### Antes del merge de `modulo-cuentas` a `main`
 - [ ] Pruebas manuales con **dos usuarios** (visibilidad por cuenta, encargado, traspasos entre cuentas con y sin permiso).
 - [ ] Respaldo `pg_dump` de Supabase (`DESPLIEGUE.md`, sección 4c) y después aplicar la 0008 (sección "Despliegue del módulo Cuentas").

@@ -27,6 +27,8 @@ def _rutas_con_ids(a, d, b):
         ("POST", f"/api/cuentas/movimientos/{d}/anular", {}),
         ("POST", f"/api/cuentas/movimientos/{d}/reactivar", {}),
         ("PATCH", f"/api/cuentas/movimientos/{d}", {"fecha": "2020-01-01"}),
+        ("POST", f"/api/cuentas/movimientos/{d}/confirmar", {}),
+        ("POST", f"/api/cuentas/movimientos/{d}/rechazar", {}),
         ("POST", "/api/cuentas/traspasos", {"cuenta_id": a, "cuenta_destino_id": b, "monto": "1"}),
     ]
 

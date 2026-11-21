@@ -30,6 +30,7 @@ beforeEach(() => {
   m.listarCuentas.mockReset();
   m.obtenerCuenta.mockReset();
   m.listarMovimientosCuentas.mockReset().mockResolvedValue([]);
+  m.listarPorConfirmar.mockReset().mockResolvedValue([]); // bandeja "Por confirmar" vacia: no se dibuja
   m.catalogo.mockReset().mockRejectedValue(new Error("sin catálogo")); // se usan las listas locales
 });
 

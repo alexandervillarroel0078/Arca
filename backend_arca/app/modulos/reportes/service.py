@@ -1,8 +1,13 @@
-"""Agregaciones de solo lectura. Reglas: devolucion no es ingreso; consumido va aparte."""
+"""Agregaciones de solo lectura. Reglas: devolucion no es ingreso; consumido va aparte.
+
+Fuente de pago (0010): ingresos, gastos, categorias y miembros cuentan TODO sin importar la fuente (un gasto por confirmar
+tambien: el gasto ocurrio). `saldo_efectivo` ("Te queda") usa SOLO lo registrado en Efectivo:
+ingresos_efectivo - gastos_efectivo - apoyos_efectivo + devoluciones (las devoluciones siempre son en efectivo).
+`fuente` = efectivo | banco filtra cada reporte por la fuente del registro (sin filtro = todos)."""
 from datetime import date, timedelta
 from decimal import Decimal
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, true
 from sqlalchemy.orm import Session
 
 from app.core.deps import Contexto
@@ -39,25 +44,36 @@ def _suma(db: Session, columna, *condiciones) -> Decimal:
     return Decimal(db.scalar(select(func.coalesce(func.sum(columna), 0)).where(*condiciones)))
 
 
-def _totales_mes(db: Session, ctx: Contexto, inicio: date, fin: date) -> dict[str, Decimal]:
+def de_fuente(modelo, fuente: str | None):
+    """Condicion de la fuente de pago: efectivo (sin cuenta), banco (con cuenta) o todos."""
+    if fuente == "efectivo":
+        return modelo.cuenta_id.is_(None)
+    if fuente == "banco":
+        return modelo.cuenta_id.is_not(None)
+    return true()
+
+
+def _totales_mes(db: Session, ctx: Contexto, inicio: date, fin: date, fuente: str | None = None) -> dict[str, Decimal]:
     """Todo se calcula SOLO con lo que `ctx` puede ver (vis.condicion): lo privado de otros no suma."""
-    def mov(tipo: str) -> Decimal:
+    def mov(tipo: str, f: str | None) -> Decimal:
         return _suma(
             db, Movimiento.monto,
             vis.condicion(ctx, Movimiento), Movimiento.tipo == tipo, Movimiento.anulado.is_(False),
-            Movimiento.fecha >= inicio, Movimiento.fecha < fin,
+            Movimiento.fecha >= inicio, Movimiento.fecha < fin, de_fuente(Movimiento, fuente), de_fuente(Movimiento, f),
         )
 
-    ingresos, gastos = mov("ingreso"), mov("gasto")
-    apoyos = _suma(
-        db, Apoyo.monto, vis.condicion(ctx, Apoyo), Apoyo.anulado.is_(False),
-        Apoyo.fecha >= inicio, Apoyo.fecha < fin,
-    )
-    consumido = _suma(
-        db, Apoyo.monto_consumido, vis.condicion(ctx, Apoyo), Apoyo.anulado.is_(False),
-        Apoyo.fecha >= inicio, Apoyo.fecha < fin,
-    )
-    devoluciones = Decimal(
+    def apo(columna, f: str | None) -> Decimal:
+        return _suma(
+            db, columna, vis.condicion(ctx, Apoyo), Apoyo.anulado.is_(False), Apoyo.fecha >= inicio, Apoyo.fecha < fin,
+            de_fuente(Apoyo, fuente), de_fuente(Apoyo, f),
+        )
+
+    ingresos, gastos = mov("ingreso", None), mov("gasto", None)
+    ingresos_banco, gastos_banco = mov("ingreso", "banco"), mov("gasto", "banco")
+    apoyos, apoyos_banco = apo(Apoyo.monto, None), apo(Apoyo.monto, "banco")
+    consumido = apo(Apoyo.monto_consumido, None)
+    # las devoluciones no tienen fuente: son efectivo (con el filtro "banco" no aparecen)
+    devoluciones = CERO if fuente == "banco" else Decimal(
         db.scalar(
             select(func.coalesce(func.sum(Devolucion.monto), 0))
             .join(Apoyo, Apoyo.id == Devolucion.apoyo_id)
@@ -74,6 +90,10 @@ def _totales_mes(db: Session, ctx: Contexto, inicio: date, fin: date) -> dict[st
         "devoluciones": devoluciones,
         "consumido": consumido,
         "saldo": ingresos - gastos - apoyos + devoluciones,
+        "ingresos_banco": ingresos_banco,
+        "gastos_banco": gastos_banco,
+        "apoyos_banco": apoyos_banco,
+        "saldo_efectivo": (ingresos - ingresos_banco) - (gastos - gastos_banco) - (apoyos - apoyos_banco) + devoluciones,
     }
 
 
@@ -117,14 +137,14 @@ def contar_privados(db: Session, ctx: Contexto, inicio: date, fin: date) -> int:
     return (n_mov or 0) + (n_apo or 0)
 
 
-def _gastos_por_categoria(db: Session, ctx: Contexto, inicio: date, fin: date):
+def _gastos_por_categoria(db: Session, ctx: Contexto, inicio: date, fin: date, fuente: str | None = None):
     return db.execute(
         select(Categoria.id, Categoria.nombre, Categoria.icono, func.sum(Movimiento.monto))
         .join(Movimiento, Movimiento.categoria_id == Categoria.id)
         .where(
             Categoria.familia_id == ctx.familia_id,
             vis.condicion(ctx, Movimiento), Movimiento.tipo == "gasto", Movimiento.anulado.is_(False),
-            Movimiento.fecha >= inicio, Movimiento.fecha < fin,
+            Movimiento.fecha >= inicio, Movimiento.fecha < fin, de_fuente(Movimiento, fuente),
         )
         .group_by(Categoria.id, Categoria.nombre, Categoria.icono)
         .order_by(func.sum(Movimiento.monto).desc())
@@ -132,12 +152,13 @@ def _gastos_por_categoria(db: Session, ctx: Contexto, inicio: date, fin: date):
 
 
 def resumen(
-    db: Session, ctx: Contexto, mes: str | None, desde: date | None = None, hasta: date | None = None, tipo: str | None = None
+    db: Session, ctx: Contexto, mes: str | None, desde: date | None = None, hasta: date | None = None,
+    tipo: str | None = None, fuente: str | None = None,
 ) -> ResumenOut:
     inicio, fin = rango_completo(mes, desde, hasta)
-    t = _totales_mes(db, ctx, inicio, fin)
+    t = _totales_mes(db, ctx, inicio, fin, fuente)
     d_ant, h_ant, i_ant, f_ant, et_ant = _periodo_anterior(db, ctx, inicio, fin, tipo, mes)
-    ant = _totales_mes(db, ctx, i_ant, f_ant)
+    ant = _totales_mes(db, ctx, i_ant, f_ant, fuente)
     pendientes = resumen_apoyos(db, ctx)
     con_saldo = [b for b in pendientes.beneficiarios if b.pendiente > 0]
     return ResumenOut(
@@ -149,6 +170,7 @@ def resumen(
             ingresos=comparar(t["ingresos"], ant["ingresos"]),
             gastos=comparar(t["gastos"], ant["gastos"]),
             saldo=comparar(t["saldo"], ant["saldo"]),
+            saldo_efectivo=comparar(t["saldo_efectivo"], ant["saldo_efectivo"]),
         ),
         gasto_familiar_total=t["gastos"] + t["consumido"],
         apoyos_pendientes_total=pendientes.total_pendiente,
@@ -159,13 +181,14 @@ def resumen(
 
 
 def por_categoria(
-    db: Session, ctx: Contexto, mes: str | None, desde: date | None = None, hasta: date | None = None, tipo: str | None = None
+    db: Session, ctx: Contexto, mes: str | None, desde: date | None = None, hasta: date | None = None,
+    tipo: str | None = None, fuente: str | None = None,
 ) -> PorCategoriaOut:
     inicio, fin = rango_completo(mes, desde, hasta)
-    filas = _gastos_por_categoria(db, ctx, inicio, fin)
+    filas = _gastos_por_categoria(db, ctx, inicio, fin, fuente)
     total = sum((Decimal(f[3]) for f in filas), CERO)
     d_ant, h_ant, i_ant, f_ant, et_ant = _periodo_anterior(db, ctx, inicio, fin, tipo, mes)
-    previas = {f[0]: Decimal(f[3]) for f in _gastos_por_categoria(db, ctx, i_ant, f_ant)}
+    previas = {f[0]: Decimal(f[3]) for f in _gastos_por_categoria(db, ctx, i_ant, f_ant, fuente)}
     total_ant = sum(previas.values(), CERO)
     categorias = [
         CategoriaTotal(
@@ -177,7 +200,7 @@ def por_categoria(
     ]
     consumido = _suma(
         db, Apoyo.monto_consumido, vis.condicion(ctx, Apoyo), Apoyo.anulado.is_(False),
-        Apoyo.fecha >= inicio, Apoyo.fecha < fin,
+        Apoyo.fecha >= inicio, Apoyo.fecha < fin, de_fuente(Apoyo, fuente),
     )
     return PorCategoriaOut(
         incluye_privados=contar_privados(db, ctx, inicio, fin),
@@ -188,7 +211,8 @@ def por_categoria(
 
 
 def por_miembro(
-    db: Session, ctx: Contexto, mes: str | None, desde: date | None = None, hasta: date | None = None
+    db: Session, ctx: Contexto, mes: str | None, desde: date | None = None, hasta: date | None = None,
+    fuente: str | None = None,
 ) -> PorMiembroOut:
     inicio, fin = rango_completo(mes, desde, hasta)
     miembros = db.execute(
@@ -204,13 +228,13 @@ def por_miembro(
                 db, Movimiento.monto,
                 vis.condicion(ctx, Movimiento), Movimiento.usuario_id == uid,
                 Movimiento.tipo == tipo, Movimiento.anulado.is_(False),
-                Movimiento.fecha >= inicio, Movimiento.fecha < fin,
+                Movimiento.fecha >= inicio, Movimiento.fecha < fin, de_fuente(Movimiento, fuente),
             )
 
         apoyos = _suma(
             db, Apoyo.monto,
             vis.condicion(ctx, Apoyo), Apoyo.usuario_id == uid, Apoyo.anulado.is_(False),
-            Apoyo.fecha >= inicio, Apoyo.fecha < fin,
+            Apoyo.fecha >= inicio, Apoyo.fecha < fin, de_fuente(Apoyo, fuente),
         )
         salida.append(
             MiembroTotal(usuario_id=uid, nombre=nombre, ingresos=mov("ingreso"), gastos=mov("gasto"), apoyos_entregados=apoyos)
@@ -221,7 +245,7 @@ def por_miembro(
     )
 
 
-def tendencia_mensual(db: Session, ctx: Contexto, meses: int = 6) -> TendenciaOut:
+def tendencia_mensual(db: Session, ctx: Contexto, meses: int = 6, fuente: str | None = None) -> TendenciaOut:
     hoy = hoy_la_paz()
     anio, mes = hoy.year, hoy.month
     lista = []
@@ -233,6 +257,6 @@ def tendencia_mensual(db: Session, ctx: Contexto, meses: int = 6) -> TendenciaOu
     salida = []
     for inicio in reversed(lista):
         _, fin = rango_mes(_etiqueta(inicio))
-        salida.append(MesTotal(mes=_etiqueta(inicio), **_totales_mes(db, ctx, inicio, fin)))
+        salida.append(MesTotal(mes=_etiqueta(inicio), **_totales_mes(db, ctx, inicio, fin, fuente)))
     primero = lista[-1]
     return TendenciaOut(meses=salida, incluye_privados=contar_privados(db, ctx, primero, rango_mes(_etiqueta(lista[0]))[1]))

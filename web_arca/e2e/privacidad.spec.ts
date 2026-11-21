@@ -3,7 +3,7 @@
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
-import {
+import { abrirNuevo,
   API, abrirLista, almacenLocal, apoyoApi, crearAdmin, crearMiembro, entrarRapido, expect, filaLista, filasLista, gastoApi,
   irA, irAOpcionFamilia, menu, opcionesDelMenu, saldo, sinDesborde, alturaMinima, test, volverEnLinea,
 } from "./ayudas";
@@ -32,7 +32,7 @@ test.describe("Privacidad", () => {
 
     // Beto registra un gasto "Solo yo" desde la pantalla Nuevo movimiento
     await entrarRapido(page, beto);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await expect(page.getByTestId("selector-visibilidad")).toBeVisible();
     await page.getByLabel("Monto").fill("200");
     await page.getByRole("radio", { name: /Comida/ }).click();

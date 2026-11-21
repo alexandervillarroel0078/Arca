@@ -131,7 +131,7 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     const leyenda = await screen.findByTestId("leyenda-meses");
     expect(leyenda).toHaveAccessibleName("Leyenda de las barras");
     const items = within(leyenda).getAllByRole("listitem");
-    expect(items.map((i) => i.textContent?.trim())).toEqual(["Gastos", "Apoyos", "Te queda"]);
+    expect(items.map((i) => i.textContent?.trim())).toEqual(["Gastos en efectivo", "Apoyos", "Te queda"]);
     expect(items[0].querySelector("span")!.className).toMatch(/bg-stone-500/);
     expect(items[1].querySelector("span")!.className).toMatch(/bg-apoyo/);
     expect(items[2].querySelector("span")!.className).toMatch(/bg-arca/);
@@ -144,7 +144,7 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     const [gris, naranja, verde] = within(leyenda).getAllByRole("listitem").map((i) => i.querySelector("span")!.className);
     const fila = screen.getAllByTestId("fila-mes")[0];
     expect(fila.querySelectorAll(".h-2\\.5")).toHaveLength(1);
-    expect(within(fila).getByRole("img", { name: "Gastos Bs 400.00" }).className).toContain(gris.match(/bg-\S+/)![0]);
+    expect(within(fila).getByRole("img", { name: "Gastos en efectivo Bs 400.00" }).className).toContain(gris.match(/bg-\S+/)![0]);
     expect(within(fila).getByRole("img", { name: "Te queda Bs 600.00" }).className).toContain(verde.match(/bg-\S+/)![0]);
     expect(naranja).toContain("bg-apoyo");
   });
@@ -160,9 +160,9 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     await screen.findByTestId("leyenda-meses");
     const [ago, sep] = screen.getAllByTestId("fila-mes");
     // max = 1600 + 400 = 2000 (si no sumara devoluciones seria 1600)
-    expect(tramos(ago)).toEqual([["Gastos Bs 300.00", "15%"], ["Apoyos Bs 200.00", "10%"], ["Te queda Bs 500.00", "25%"]]);
-    expect(tramos(sep)).toEqual([["Gastos Bs 800.00", "40%"], ["Apoyos Bs 200.00", "10%"], ["Te queda Bs 1,000.00", "50%"]]);
-    const pista = within(ago).getByRole("img", { name: "Gastos Bs 300.00" }).parentElement!;
+    expect(tramos(ago)).toEqual([["Gastos en efectivo Bs 300.00", "15%"], ["Apoyos Bs 200.00", "10%"], ["Te queda Bs 500.00", "25%"]]);
+    expect(tramos(sep)).toEqual([["Gastos en efectivo Bs 800.00", "40%"], ["Apoyos Bs 200.00", "10%"], ["Te queda Bs 1,000.00", "50%"]]);
+    const pista = within(ago).getByRole("img", { name: "Gastos en efectivo Bs 300.00" }).parentElement!;
     expect(within(pista).getAllByRole("img")).toHaveLength(3); // una sola pista
     expect(within(ago).getByRole("img", { name: "Te queda Bs 500.00" })).toHaveAttribute("title", "Te queda Bs 500.00");
   });
@@ -177,9 +177,9 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     abrir();
     await screen.findByTestId("leyenda-meses");
     const [oct] = screen.getAllByTestId("fila-mes");
-    expect(tramos(oct)).toEqual([["Gastos Bs 600.00", "60%"], ["Apoyos Bs 400.00", "40%"]]);
+    expect(tramos(oct)).toEqual([["Gastos en efectivo Bs 600.00", "60%"], ["Apoyos Bs 400.00", "40%"]]);
     expect(within(oct).queryByRole("img", { name: /^Te queda/ })).not.toBeInTheDocument();
-    expect(within(oct).getByText("Saldo -Bs 500.00").className).toMatch(/text-red-700/);
+    expect(within(oct).getByText("Te queda -Bs 500.00").className).toMatch(/text-red-700/);
   });
 
   it("mes en 0: tira minima gris de 2 %, sin naranja ni verde", async () => {
@@ -187,7 +187,7 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     abrir();
     await screen.findByTestId("leyenda-meses");
     const [, nov] = screen.getAllByTestId("fila-mes");
-    expect(tramos(nov)).toEqual([["Gastos Bs 0.00", "2%"]]);
+    expect(tramos(nov)).toEqual([["Gastos en efectivo Bs 0.00", "2%"]]);
     expect(nov.querySelector(".bg-apoyo, .bg-arca")).toBeNull();
   });
 
@@ -209,7 +209,7 @@ describe("Reportes: leyenda de las barras de 'Ultimos 6 meses'", () => {
     const [mes, saldo] = Array.from(cabecera.children) as HTMLElement[];
     expect(mes).toHaveTextContent("nov 2026"); // (la mayuscula es del estilo `capitalize`)
     expect(mes.className).toMatch(/whitespace-nowrap/);
-    expect(saldo).toHaveTextContent("Saldo -Bs 123,456.78");
+    expect(saldo).toHaveTextContent("Te queda -Bs 123,456.78");
     expect(saldo.className).toMatch(/whitespace-nowrap/);
   });
 

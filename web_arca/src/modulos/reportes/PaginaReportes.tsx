@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { describirComparacion, type Comparacion } from "../../core/comparacion";
 import { bs, iconoDe, nombreMes } from "../../core/formato";
 import { usePeriodo } from "../../core/PeriodoContext";
@@ -5,7 +6,22 @@ import SelectorPeriodo from "../../core/SelectorPeriodo";
 import { NotaPrivados } from "../privacidad/Etiquetas";
 import { Cargando, ErrorCaja, SinDatosPeriodo, Tarjeta, Titulo, Vacio, useCarga } from "../../core/ui";
 import { useEnCola } from "../sync/useSync";
-import { porCategoria, porMiembro, resumenPeriodo, tendencia, type MesTotal } from "./api";
+import { porCategoria, porMiembro, resumenPeriodo, tendencia, type FiltroFuente, type MesTotal } from "./api";
+import { ingresadoAlBanco, pagadoConBanco, saldoEfectivo } from "./fuente";
+
+const FILTROS: { id: FiltroFuente; texto: string }[] = [
+  { id: "todos", texto: "Todos" },
+  { id: "efectivo", texto: "Efectivo" },
+  { id: "banco", texto: "Banco" },
+];
+
+/** Lo del mes en Efectivo: la barra muestra gastos en efectivo + apoyos en efectivo + te queda (= ingresos en efectivo + devoluciones). */
+const efectivoDe = (m: MesTotal) => ({
+  ingresos: m.ingresos - ingresadoAlBanco(m),
+  gastos: m.gastos - (m.gastos_banco ?? 0),
+  apoyos: m.apoyos_entregados - (m.apoyos_banco ?? 0),
+  queda: saldoEfectivo(m),
+});
 
 /** No hay base para comparar: el periodo anterior estaba en cero (no se divide por cero). */
 const sinBase = (c: Comparacion) => c.porcentaje === null;
@@ -51,8 +67,11 @@ function Barra({ valor, maximo, clase }: { valor: number; maximo: number; clase:
   );
 }
 
-/** Largo de la barra de un mes: lo que entro (ingresos + devoluciones) o lo que salio (gastos + apoyos), lo mayor. */
-const largoMes = (m: MesTotal) => Math.max(m.ingresos + m.devoluciones, m.gastos + m.apoyos_entregados);
+/** Largo de la barra de un mes (en efectivo): lo que entro (ingresos + devoluciones) o lo que salio (gastos + apoyos), lo mayor. */
+const largoMes = (m: MesTotal) => {
+  const e = efectivoDe(m);
+  return Math.max(e.ingresos + m.devoluciones, e.gastos + e.apoyos);
+};
 
 /**
  * UNA barra por mes: gris (gastos), naranja (apoyos) y verde (lo que queda = saldo). Con saldo >= 0 los tres
@@ -60,12 +79,13 @@ const largoMes = (m: MesTotal) => Math.max(m.ingresos + m.devoluciones, m.gastos
  * tira minima gris (2 %). Cada tramo dice su monto (aria-label y title): el color nunca es lo unico que informa.
  */
 function BarraMes({ m, maximo }: { m: MesTotal; maximo: number }) {
+  const e = efectivoDe(m);
   const tramos = [
-    { texto: "Gastos", monto: m.gastos, clase: "bg-stone-500" },
-    { texto: "Apoyos", monto: m.apoyos_entregados, clase: "bg-apoyo" },
-    { texto: "Te queda", monto: m.saldo, clase: "bg-arca" },
+    { texto: "Gastos en efectivo", monto: e.gastos, clase: "bg-stone-500" },
+    { texto: "Apoyos", monto: e.apoyos, clase: "bg-apoyo" },
+    { texto: "Te queda", monto: e.queda, clase: "bg-arca" },
   ].filter((t) => t.monto > 0);
-  const visibles = tramos.length ? tramos : [{ texto: "Gastos", monto: 0, clase: "bg-stone-500" }];
+  const visibles = tramos.length ? tramos : [{ texto: "Gastos en efectivo", monto: 0, clase: "bg-stone-500" }];
   return (
     <div className="h-2.5 rounded-full bg-stone-100 overflow-hidden flex">
       {visibles.map((t, i) => (
@@ -83,23 +103,25 @@ function BarraMes({ m, maximo }: { m: MesTotal; maximo: number }) {
 export default function PaginaReportes() {
   const { periodo } = usePeriodo();
   const rango = { desde: periodo.desde, hasta: periodo.hasta };
+  const [fuente, setFuente] = useState<FiltroFuente>("todos");
   const { datos, error, cargando, sinConexion } = useCarga(
     async () => {
       const [resumen, categorias, miembros, meses] = await Promise.all([
-        resumenPeriodo(rango, periodo.tipo),
-        porCategoria(rango, periodo.tipo),
-        porMiembro(rango),
-        tendencia(),
+        resumenPeriodo(rango, periodo.tipo, fuente),
+        porCategoria(rango, periodo.tipo, fuente),
+        porMiembro(rango, fuente),
+        tendencia(fuente),
       ]);
       return {
         resumen, categorias, miembros: miembros.miembros, meses: meses.meses,
         privados: { miembros: miembros.incluye_privados, meses: meses.incluye_privados },
       };
     },
-    [periodo.desde, periodo.hasta, periodo.tipo],
+    [periodo.desde, periodo.hasta, periodo.tipo, fuente],
     true,
   );
   const sinEnviar = useEnCola();
+  const conEfectivo = fuente !== "banco"; // con el filtro Banco no hay "Te queda" (el efectivo no se mueve)
   // Si NINGUNA comparacion tiene base (el periodo anterior esta vacio) no se repite el mismo mensaje en cada tarjeta: sale una sola vez
   const comparacion = datos?.resumen.comparacion;
   const hayBase = !!comparacion && [comparacion.ingresos, comparacion.gastos, comparacion.saldo].some((c) => !sinBase(c));
@@ -109,6 +131,22 @@ export default function PaginaReportes() {
       <Titulo>Reportes</Titulo>
 
       <SelectorPeriodo />
+
+      {/* Fuente de pago: Todos (como siempre), solo Efectivo o solo Banco */}
+      <div role="radiogroup" aria-label="Fuente de pago" data-testid="filtro-fuente" className="grid grid-cols-3 gap-1 bg-stone-200 rounded-xl p-1">
+        {FILTROS.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            role="radio"
+            aria-checked={fuente === f.id}
+            onClick={() => setFuente(f.id)}
+            className={`min-h-[44px] rounded-lg text-sm font-semibold ${fuente === f.id ? "bg-arca text-white" : "text-stone-700"}`}
+          >
+            {f.texto}
+          </button>
+        ))}
+      </div>
 
       {sinEnviar > 0 && (
         <p role="status" data-testid="aviso-pendientes-reportes" className="rounded-xl bg-apoyo-claro text-apoyo text-sm px-4 py-2">
@@ -130,7 +168,12 @@ export default function PaginaReportes() {
               <TarjetaComparacion id="ingresos" titulo="Ingresos" valor={datos.resumen.ingresos} c={datos.resumen.comparacion.ingresos} masEsBueno />
               <TarjetaComparacion id="gastos" titulo="Gastos" valor={datos.resumen.gastos} c={datos.resumen.comparacion.gastos} masEsBueno={false} />
             </div>
-            <TarjetaComparacion id="saldo" titulo="Saldo de efectivo" valor={datos.resumen.saldo} c={datos.resumen.comparacion.saldo} masEsBueno />
+            {conEfectivo && (
+              <TarjetaComparacion
+                id="saldo" titulo="Saldo de efectivo" valor={saldoEfectivo(datos.resumen)}
+                c={datos.resumen.comparacion.saldo_efectivo ?? datos.resumen.comparacion.saldo} masEsBueno
+              />
+            )}
           </section>
           )}
 
@@ -147,16 +190,21 @@ export default function PaginaReportes() {
                 ["Gastos", -datos.resumen.gastos],
                 ["Apoyos entregados", -datos.resumen.apoyos_entregados],
                 ["Devoluciones", datos.resumen.devoluciones],
+                // para que cuadre: lo de banco esta en gastos/apoyos/ingresos pero no mueve el efectivo
+                ...(conEfectivo && pagadoConBanco(datos.resumen) > 0 ? [["Pagado con banco", pagadoConBanco(datos.resumen)]] : []),
+                ...(conEfectivo && ingresadoAlBanco(datos.resumen) > 0 ? [["Ingresado al banco", -ingresadoAlBanco(datos.resumen)]] : []),
               ].map(([t, v]) => (
                 <div key={t as string} className="flex justify-between">
                   <dt className="text-stone-600">{t}</dt>
                   <dd className="font-medium">{bs(v as number)}</dd>
                 </div>
               ))}
-              <div className="flex justify-between border-t border-stone-200 pt-1 mt-1 font-bold">
-                <dt>Saldo de efectivo</dt>
-                <dd className="text-arca">{bs(datos.resumen.saldo)}</dd>
-              </div>
+              {conEfectivo && (
+                <div className="flex justify-between border-t border-stone-200 pt-1 mt-1 font-bold">
+                  <dt>Saldo de efectivo</dt>
+                  <dd className="text-arca" data-testid="saldo-efectivo-reportes">{bs(saldoEfectivo(datos.resumen))}</dd>
+                </div>
+              )}
               <div className="flex justify-between text-apoyo pt-1">
                 <dt>Apoyos consumidos (gasto familiar)</dt>
                 <dd className="font-medium">{bs(datos.resumen.consumido)}</dd>
@@ -219,7 +267,7 @@ export default function PaginaReportes() {
             <ul aria-label="Leyenda de las barras" data-testid="leyenda-meses" className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-stone-700">
               <li className="flex items-center gap-1.5">
                 <span aria-hidden className="inline-block h-2.5 w-5 rounded-full bg-stone-500" />
-                Gastos
+                Gastos en efectivo
               </li>
               <li className="flex items-center gap-1.5">
                 <span aria-hidden className="inline-block h-2.5 w-5 rounded-full bg-apoyo" />
@@ -238,13 +286,23 @@ export default function PaginaReportes() {
                     <div key={m.mes} data-testid="fila-mes">
                       <div className="flex items-baseline justify-between gap-3 text-sm mb-1">
                         <span className="font-medium capitalize whitespace-nowrap">{nombreMes(m.mes, true)} {m.mes.slice(0, 4)}</span>
-                        <span className={`monto whitespace-nowrap ${m.saldo < 0 ? "text-red-700" : "text-stone-600"}`}>Saldo {bs(m.saldo)}</span>
+                        <span className={`monto whitespace-nowrap ${saldoEfectivo(m) < 0 ? "text-red-700" : "text-stone-600"}`}>Te queda {bs(saldoEfectivo(m))}</span>
                       </div>
                       <BarraMes m={m} maximo={max} />
                       <p className="monto text-sm text-stone-600 mt-0.5">
                         Ingresos {bs(m.ingresos)} · Gastos {bs(m.gastos)} · Apoyos {bs(m.apoyos_entregados)}
                         {m.devoluciones > 0 && ` · Devoluciones ${bs(m.devoluciones)}`}
                       </p>
+                      {pagadoConBanco(m) > 0 && (
+                        <p className="monto text-xs text-stone-600" data-testid="pagado-banco-mes">
+                          Pagado con banco {bs(pagadoConBanco(m))} (incluido en {(m.apoyos_banco ?? 0) > 0 ? "gastos y apoyos" : "gastos"})
+                        </p>
+                      )}
+                      {ingresadoAlBanco(m) > 0 && (
+                        <p className="monto text-xs text-stone-600" data-testid="ingresado-banco-mes">
+                          Ingresado al banco {bs(ingresadoAlBanco(m))} (incluido en ingresos)
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>

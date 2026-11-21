@@ -406,6 +406,10 @@ CUENTAS_RUTAS = {
     ("PATCH", "/api/cuentas/{cuenta_id}/visibilidad"), ("GET", "/api/cuentas/{cuenta_id}/movimientos"),
     ("POST", "/api/cuentas/{cuenta_id}/depositos"), ("POST", "/api/cuentas/{cuenta_id}/retiros"),
     ("POST", "/api/cuentas/{cuenta_id}/ajustes"),
+    # fuente de pago (0010): listas con su filtro propio (test_fuente_pago_*) y acciones con caso de 404
+    ("GET", "/api/cuentas/fuentes"), ("GET", "/api/cuentas/por-confirmar"), ("GET", "/api/cuentas/por-confirmar/resumen"),
+    ("POST", "/api/cuentas/movimientos/{movimiento_id}/confirmar"),
+    ("POST", "/api/cuentas/movimientos/{movimiento_id}/rechazar"),
 }
 
 

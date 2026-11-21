@@ -73,12 +73,26 @@ describe("Layout: barra de navegacion con el + en el centro", () => {
     expect(circulo).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("tocar el + lleva a /nuevo", async () => {
+  it("tocar el + abre la hoja «¿Efectivo o Banco?» sobre la pantalla actual; Efectivo lleva a /nuevo", async () => {
     const u = userEvent.setup();
     abrir("/apoyos");
     await u.click(mas());
+    const hoja = screen.getByRole("dialog", { name: "¿Efectivo o Banco?" });
+    expect(screen.getByTestId("ruta")).toHaveTextContent("/apoyos"); // no es una pantalla nueva
+    expect(screen.getByText("Pantalla apoyos")).toBeInTheDocument();
+    await u.click(within(hoja).getByRole("button", { name: /Efectivo/ }));
     expect(screen.getByTestId("ruta")).toHaveTextContent("/nuevo");
     expect(screen.getByText("Pantalla nuevo")).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("la hoja se cierra con ✕ sin navegar", async () => {
+    const u = userEvent.setup();
+    abrir("/reportes");
+    await u.click(mas());
+    await u.click(screen.getByRole("button", { name: "Cerrar hoja" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByTestId("ruta")).toHaveTextContent("/reportes");
   });
 
   it("en /nuevo el + queda marcado (aria-current, aria-disabled, atenuado) y tocarlo no navega", async () => {

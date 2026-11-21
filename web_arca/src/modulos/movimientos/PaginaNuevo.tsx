@@ -1,16 +1,27 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAviso } from "../../core/Aviso";
-import { ErrorApi } from "../../core/api";
+import { ErrorApi, ErrorRed } from "../../core/api";
 import { AccionFija } from "../../core/Encabezado";
 import { ayerISO, hoyISO, iconoDe } from "../../core/formato";
 import { Boton, Campo, Cargando, ErrorCaja, claseInput } from "../../core/ui";
+import { nuevoUuid } from "../../core/uuid";
 import { editarApoyo, listarApoyos, obtenerApoyo } from "../apoyos/api";
 import { useUsuarioOpcional } from "../auth/AuthContext";
+import { refrescarPorConfirmar } from "../cuentas/porConfirmar";
+import { guardarUltimaFuente } from "../cuentas/recordar";
 import { listarCategorias, type Categoria } from "../familia/api";
 import SelectorVisibilidad, { type Seleccion } from "../privacidad/SelectorVisibilidad";
-import { editarMovimiento, obtenerMovimiento } from "./api";
+import { editarMovimiento, obtenerMovimiento, type CamposFuente, type NuevoApoyo, type NuevoMovimiento } from "./api";
+import { crearConBanco, editarConBanco, EtiquetaFuente, type FuenteElegida } from "./fuente";
+import HojaFuente from "./HojaFuente";
 import { registrar } from "./registrar";
+
+/** La fuente con la que se abrió un registro guardado: null = Efectivo; -1 = una cuenta que no ves ("otra cuenta"). */
+function fuenteDeRegistro(r: CamposFuente): FuenteElegida | null {
+  if (r.fuente !== "banco") return null;
+  return { id: r.cuenta_id ?? -1, nombre: r.cuenta_nombre ?? "Banco", directo: true, confirma_nombre: null };
+}
 
 const CACHE_CATEGORIAS = "arca-categorias";
 
@@ -44,6 +55,14 @@ export default function PaginaNuevo() {
   // Fase 17: "Quien lo ve". Un registro nuevo hereda tu preferencia; al editar, el selector solo lo ve el dueno.
   const [quien, setQuien] = useState<Seleccion>({ visibilidad: usuario?.visibilidad_defecto ?? "familia", compartido_con: [] });
   const [esDueno, setEsDueno] = useState(!editando);
+  // Fuente de pago (0010): la elegida en la hoja del "+" (null = Efectivo) o, al editar, la del registro.
+  const estadoNav = useLocation().state as { fuente?: FuenteElegida | null; cambiarFuente?: boolean } | null;
+  const [fuente, setFuente] = useState<FuenteElegida | null>(editando ? null : estadoNav?.fuente ?? null);
+  const [fuenteOriginal, setFuenteOriginal] = useState<number | null>(null); // id con que se abrio (al editar)
+  const [registro, setRegistro] = useState<CamposFuente | null>(null); // marcas del registro guardado
+  const [tipoOriginal, setTipoOriginal] = useState<Tipo | null>(null);
+  const [version, setVersion] = useState<number | undefined>(undefined);
+  const [hojaFuente, setHojaFuente] = useState(false);
 
   useEffect(() => {
     listarCategorias()
@@ -82,6 +101,7 @@ export default function PaginaNuevo() {
         setNota(a.nota ?? "");
         setQuien({ visibilidad: a.visibilidad ?? "familia", compartido_con: a.compartido_con ?? [] });
         setEsDueno(a.usuario_id === usuario?.id);
+        cargarFuente(a, "apoyo", a.version);
       } else {
         const m = await obtenerMovimiento(num);
         if (!vivo) return;
@@ -93,7 +113,17 @@ export default function PaginaNuevo() {
         setNota(m.nota ?? "");
         setQuien({ visibilidad: m.visibilidad ?? "familia", compartido_con: m.compartido_con ?? [] });
         setEsDueno(m.usuario_id === usuario?.id);
+        cargarFuente(m, m.tipo, m.version);
       }
+    };
+    const cargarFuente = (r: CamposFuente, t: Tipo, v: number | undefined) => {
+      const f = fuenteDeRegistro(r);
+      setFuente(f);
+      setFuenteOriginal(f?.id ?? null);
+      setRegistro(r);
+      setTipoOriginal(t);
+      setVersion(v);
+      if (estadoNav?.cambiarFuente) setHojaFuente(true); // viene del aviso de rechazo: "Cambiar fuente"
     };
     cargar()
       .catch((e: Error) => vivo && setError(e.message))
@@ -129,45 +159,58 @@ export default function PaginaNuevo() {
     const vis = esDueno
       ? { visibilidad: quien.visibilidad, compartido_con: quien.visibilidad === "elegidas" ? quien.compartido_con : [] }
       : {};
+    const cuentaId = fuente?.id ?? null;
+    const cambioFuente = editando && cuentaId !== fuenteOriginal;
+    if (editando && tipoOriginal && tipo !== tipoOriginal && cuentaId !== null)
+      return setError(`Un ${tipoOriginal} pagado con banco no se puede pasar a ${tipo}: cámbialo a Efectivo primero`);
+    const esApoyo = tipo === "apoyo";
+    const datosApoyo: NuevoApoyo = { beneficiario: beneficiario.trim(), monto: valor, fecha, nota: nota.trim() || null, ...vis };
+    const datosMov: NuevoMovimiento = {
+      tipo: tipo === "ingreso" ? "ingreso" : "gasto",
+      monto: valor,
+      fecha,
+      categoria_id: tipo === "gasto" ? categoriaId : null,
+      nota: nota.trim() || null,
+      ...vis,
+    };
 
     setEnviando(true);
     try {
       if (editando) {
-        if (tipo === "apoyo") {
-          await editarApoyo(Number(id), { beneficiario: beneficiario.trim(), monto: valor, fecha, nota: nota.trim() || null, ...vis });
+        if (cambioFuente && cuentaId !== null) {
+          // a una cuenta de banco: directo y en linea (nunca por la cola)
+          const cambios = esApoyo ? { ...datosApoyo } : { ...datosMov, ...(tipo === "gasto" ? {} : { categoria_id: undefined }) };
+          await editarConBanco(esApoyo ? "apoyo" : "movimiento", Number(id), { ...cambios, cuenta_id: cuentaId }, version);
+          void refrescarPorConfirmar();
+        } else if (esApoyo) {
+          await editarApoyo(Number(id), { ...datosApoyo, ...(cambioFuente ? { cuenta_id: null } : {}) });
         } else {
+          const { categoria_id, ...resto } = datosMov;
           await editarMovimiento(Number(id), {
-            tipo,
-            monto: valor,
-            fecha,
-            ...(tipo === "gasto" ? { categoria_id: categoriaId } : {}),
-            nota: nota.trim() || null,
-            ...vis,
+            ...resto,
+            ...(tipo === "gasto" ? { categoria_id } : {}),
+            ...(cambioFuente ? { cuenta_id: null } : {}), // pasar a Efectivo si puede ir por la cola
           });
         }
+        if (cambioFuente) guardarUltimaFuente(cuentaId ?? "efectivo");
         avisar("Cambios guardados");
         navegar(-1); // vuelve a donde estaba (Inicio, lista o Apoyos)
         return;
       }
-      const resultado = await registrar(
-        tipo === "apoyo"
-          ? { clase: "apoyo", datos: { beneficiario: beneficiario.trim(), monto: valor, fecha, nota: nota.trim() || null, ...vis } }
-          : {
-              clase: "movimiento",
-              datos: {
-                tipo,
-                monto: valor,
-                fecha,
-                categoria_id: tipo === "gasto" ? categoriaId : null,
-                nota: nota.trim() || null,
-                ...vis,
-              },
-            },
-      );
+      if (fuente) {
+        const conBanco = { cuenta_id: fuente.id, uuid_cliente: nuevoUuid() };
+        await (esApoyo ? crearConBanco("apoyo", { ...datosApoyo, ...conBanco }) : crearConBanco("movimiento", { ...datosMov, ...conBanco }));
+        guardarUltimaFuente(fuente.id);
+        avisar(fuente.directo ? "Guardado" : `Guardado. Queda por confirmar de ${fuente.confirma_nombre ?? "su dueño"}`);
+        navegar("/");
+        return;
+      }
+      const resultado = await registrar(esApoyo ? { clase: "apoyo", datos: datosApoyo } : { clase: "movimiento", datos: datosMov });
+      guardarUltimaFuente("efectivo");
       avisar(resultado === "enviado" ? "Guardado" : "Sin internet: se guardó en el teléfono y se enviará luego", resultado === "enviado" ? "ok" : "info");
       navegar("/");
     } catch (err) {
-      setError(err instanceof ErrorApi ? err.message : "No se pudo guardar");
+      setError(err instanceof ErrorApi || err instanceof ErrorRed ? err.message : "No se pudo guardar");
     } finally {
       setEnviando(false);
     }
@@ -216,6 +259,42 @@ export default function PaginaNuevo() {
             </button>
           ))}
         </div>
+      )}
+
+      {/* Fuente de pago: chip tocable que abre la misma hoja del "+" para cambiarla */}
+      <div className="space-y-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-semibold text-stone-600">{tipo === "ingreso" ? "Entra a" : "Pagado con"}</span>
+          <button
+            type="button"
+            data-testid="chip-fuente"
+            aria-label={`${tipo === "ingreso" ? "Entra a" : "Pagado con"}: ${fuente ? fuente.nombre : "Efectivo"}. Cambiar`}
+            aria-haspopup="dialog"
+            onClick={() => setHojaFuente(true)}
+            className="min-h-[44px] max-w-full rounded-full border-[1.5px] border-arca bg-arca-claro px-4 font-semibold text-arca break-words active:bg-white"
+          >
+            <span aria-hidden>{fuente ? "🏦 " : "💵 "}</span>
+            {fuente ? fuente.nombre : "Efectivo"}
+            <span aria-hidden className="ml-1 text-xs">▼</span>
+          </button>
+        </div>
+        {/* al editar sin cambiar la fuente: su estado; con una cuenta ajena recien elegida: que no suma hasta confirmar */}
+        {editando && registro && (fuente?.id ?? null) === fuenteOriginal && <EtiquetaFuente registro={registro} />}
+        {fuente && !fuente.directo && (fuente.id !== fuenteOriginal || !editando) && (
+          <p data-testid="aviso-confirmacion" className="text-xs font-medium text-apoyo-texto">
+            Requiere confirmación de {fuente.confirma_nombre ?? "su dueño"}: no se descuenta de la cuenta hasta que lo confirme.
+          </p>
+        )}
+      </div>
+      {hojaFuente && (
+        <HojaFuente
+          actual={fuente ? fuente.id : "efectivo"}
+          alCerrar={() => setHojaFuente(false)}
+          alElegir={(f) => {
+            setFuente(f);
+            setHojaFuente(false);
+          }}
+        />
       )}
 
       {tipo === "gasto" && (

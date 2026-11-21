@@ -1,5 +1,5 @@
 """Esquemas de Cuentas. Los montos ENTRAN como numero o texto y SALEN siempre como texto (sin perder decimales)."""
-from datetime import date, time
+from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Literal
 from uuid import UUID
@@ -169,6 +169,76 @@ class MovimientoCuentaOut(AuditoriaOut):
     efecto: str | None = None  # solo en la lista de una cuenta: lo que suma (+) o resta (-) a ESA cuenta
     saldo_resultante: str | None = None  # solo al crear o reactivar: saldo de la cuenta de origen despues
     deja_saldo_negativo: bool | None = None  # solo al crear o reactivar: aviso, no bloquea
+    # Fuente de pago (0010). Un movimiento con origen lo creo un gasto/ingreso/apoyo: es de SOLO LECTURA en Cuentas.
+    estado: str = "confirmado"  # pendiente | confirmado | rechazado: solo lo confirmado suma al saldo
+    vinculado: bool = False
+    origen_tipo: str | None = None  # gasto | ingreso | apoyo
+    origen_id: int | None = None  # SOLO si el lector ve el registro de origen (si no: None, sin nota ni categoria)
+    origen_clase: str | None = None  # movimiento | apoyo (para armar el enlace), con la misma regla que origen_id
+    origen_detalle: str | None = None  # categoria o beneficiario, con la misma regla que origen_id
+    origen_fecha: date | None = None  # fecha del registro de origen, con la misma regla que origen_id
+    hora_registrada: str | None = None  # la hora real del registro cuando la confirmacion movio fecha/hora
+    confirmado_por: int | None = None  # quien lo confirmo o lo rechazo
+    confirmado_por_nombre: str | None = None
+    confirmado_en: datetime | None = None
+    motivo_rechazo: str | None = None
+    puede_confirmar: bool = False  # pendiente y el lector es dueno o encargado de la cuenta
+    confirma_nombre: str | None = None  # pendiente: quien debe confirmarlo (dueno de la cuenta)
+
+
+class FuenteOut(BaseModel):
+    """Fuente de pago de un gasto, ingreso o apoyo, vista por ESTE lector (mixin de sus salidas)."""
+
+    fuente: Literal["efectivo", "banco"] = "efectivo"
+    cuenta_id: int | None = None  # solo si el lector ve la cuenta
+    cuenta_nombre: str | None = None  # "otra cuenta" si no la ve
+    estado_cuenta: str | None = None  # pendiente | confirmado (del vinculo vigente)
+    confirma_nombre: str | None = None  # pendiente: el dueno de la cuenta, que debe confirmarlo
+    rechazado_por_nombre: str | None = None  # paso a Efectivo porque rechazaron el pago
+    rechazo_motivo: str | None = None
+    rechazo_cuenta_nombre: str | None = None
+
+
+class ConfirmarIn(BaseModel):
+    version_base: int | None = Field(default=None, ge=1)
+
+
+class RechazarIn(BaseModel):
+    motivo: str | None = Field(default=None, max_length=300)
+    version_base: int | None = Field(default=None, ge=1)
+
+
+class CuentaFuenteOut(BaseModel):
+    """Cuenta que se puede elegir como fuente de pago (activa, en Bs, banco, visible)."""
+
+    id: int
+    nombre: str
+    tipo: str
+    banco: str | None
+    banco_otro: str | None
+    ultimos4: str | None
+    directo: bool  # el usuario es dueno o encargado: se registra confirmado
+    confirma_nombre: str | None  # si no es directo: el dueno, que debe confirmarlo
+
+
+class RechazoAviso(BaseModel):
+    """Aviso al autor: rechazaron su pago con banco y el registro paso a Efectivo."""
+
+    id: int  # id del movimiento de cuenta rechazado
+    origen_clase: str  # movimiento | apoyo
+    origen_id: int
+    origen_tipo: str  # gasto | ingreso | apoyo
+    monto: str
+    fecha: date
+    cuenta_nombre: str
+    rechazado_por_nombre: str
+    motivo: str | None
+    rechazado_en: datetime
+
+
+class PorConfirmarResumen(BaseModel):
+    cantidad: int  # pendientes que ESTE usuario puede confirmar
+    rechazos: list[RechazoAviso]  # rechazos recientes de sus registros que siguen en Efectivo
 
 
 class Catalogo(BaseModel):

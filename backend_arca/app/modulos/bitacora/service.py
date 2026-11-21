@@ -49,11 +49,13 @@ ETIQUETA_DATOS = {
     "crear": "Creado", "editar": "Editado", "anular": "Anulado", "reactivar": "Reactivado", "consumir": "Consumido",
     "reabrir": "Reabierto", "cambiar_rol": "Cambio de rol", "desactivar": "Desactivado",
     "restablecer_clave": "Clave restablecida", "cambiar_clave": "Clave cambiada", "cambiar_visibilidad": "Visibilidad",
+    "confirmar": "Confirmado", "rechazar": "Rechazado",
 }
 VERBO = {
     "crear": "Creó", "editar": "Editó", "anular": "Anuló", "reactivar": "Reactivó", "consumir": "Marcó como consumido",
     "reabrir": "Reabrió", "desactivar": "Desactivó", "cambiar_rol": "Cambió el rol de",
     "restablecer_clave": "Restableció la clave de", "cambiar_visibilidad": "Cambió quién puede ver",
+    "confirmar": "Confirmó", "rechazar": "Rechazó",
 }
 NOMBRE_VISIBILIDAD = {"solo_yo": "Solo yo", "familia": "Familia", "elegidas": "Personas elegidas"}
 CAMPOS = {
@@ -63,6 +65,7 @@ CAMPOS = {
     "moneda": "Moneda", "banco": "Banco", "banco_otro": "Otro banco", "saldo_inicial": "Saldo inicial",
     "comision": "Comisión de red", "sentido": "Sentido", "saldo_previo": "Saldo antes", "saldo_declarado": "Saldo contado",
     "cuenta": "Cuenta", "cuenta_destino": "Cuenta destino", "persona": "Persona", "encargado": "Encargado",
+    "fuente": "Pagado con", "origen": "Origen", "estado": "Estado",
 }
 CAMPOS_DINERO = {"monto", "monto_consumido"}
 

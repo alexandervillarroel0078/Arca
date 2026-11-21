@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { useAviso } from "../../core/Aviso";
 import { ErrorApi, token } from "../../core/api";
+import { olvidarPorConfirmar } from "../cuentas/porConfirmar";
 import { olvidarUltimo } from "../cuentas/recordar";
 import { borrarTodoLocal, olvidarCacheDeSesionVencida, prepararSesion } from "../sync/sesion";
 import * as authApi from "./api";
@@ -44,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const cerrar = useCallback(() => {
     token.borrar();
+    olvidarPorConfirmar(); // el contador "Por confirmar" (solo en memoria) no pasa a la siguiente sesión
     localStorage.removeItem(CLAVE_USUARIO);
     localStorage.removeItem("arca-categorias");
     setUsuario(null);

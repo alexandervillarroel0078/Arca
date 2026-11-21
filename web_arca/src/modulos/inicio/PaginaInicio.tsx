@@ -8,6 +8,7 @@ import { NotaPrivados } from "../privacidad/Etiquetas";
 import FilaActividad, { useAccionesFila } from "../movimientos/FilaActividad";
 import { listarMovimientos } from "../movimientos/api";
 import { resumenPeriodo } from "../reportes/api";
+import { ingresadoAlBanco, pagadoConBanco, saldoEfectivo } from "../reportes/fuente";
 import { movimientoAItem } from "../sync/superponer";
 
 function Fila({ texto, valor, signo }: { texto: string; valor: number; signo: "+" | "-" }) {
@@ -80,14 +81,18 @@ export default function PaginaInicio() {
 
       <section className="rounded-tarjeta bg-arca text-white p-5" aria-label="Saldo del periodo">
         <p className="text-sm text-white/85">Saldo de efectivo · <span data-testid="etiqueta-saldo">{periodo.etiqueta}</span></p>
-        <p className="monto font-titulo text-4xl font-bold my-1" data-testid="saldo">{bs(r.saldo)}</p>
+        <p className="monto font-titulo text-4xl font-bold my-1" data-testid="saldo">{bs(saldoEfectivo(r))}</p>
         <div className="flex gap-2 mt-3">
           <Cifra texto="Ingresos" valor={r.ingresos} icono="⬆" />
           <Cifra texto="Gastos" valor={r.gastos} icono="⬇" />
         </div>
-        <div className="border-t border-white/20 mt-3 pt-2">
+        {/* para que la cuenta cuadre: lo pagado con banco esta en Gastos/Apoyos pero no sale del efectivo, y lo
+            ingresado al banco esta en Ingresos pero no entra al efectivo */}
+        <div className="border-t border-white/20 mt-3 pt-2" data-testid="cuadre-saldo">
           <Fila texto="Apoyos entregados" valor={r.apoyos_entregados} signo="-" />
           <Fila texto="Devoluciones" valor={r.devoluciones} signo="+" />
+          {pagadoConBanco(r) > 0 && <Fila texto="Pagado con banco" valor={pagadoConBanco(r)} signo="+" />}
+          {ingresadoAlBanco(r) > 0 && <Fila texto="Ingresado al banco" valor={ingresadoAlBanco(r)} signo="-" />}
         </div>
         {!periodo.esActual && (
           <p role="status" data-testid="aviso-periodo-anterior" className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">

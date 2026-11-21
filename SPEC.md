@@ -221,5 +221,29 @@ Una sola pantalla con DOS origenes en orden cronologico: (a) **accesos y segurid
 
 **Pruebas**: backend (casos concretos y una MATRIZ que recorre todas las rutas y verifica que ninguna marca de un registro oculto aparece en ninguna respuesta, para dueno, admin, otro miembro, elegido y otra familia, con visibilidad solo_yo, familia y elegidas; una prueba falla si aparece una ruta nueva sin clasificar); unitarias (selector, etiquetas, preferencia, copia local) y E2E (`e2e/privacidad.spec.ts`: lo privado no lo ve el admin ni por URL, compartir y dejar de compartir, apoyo privado, pantalla Privacidad, copia sin conexion, dos familias); capturas 37 a 42 en `capturas/`.
 
+## Fuente de pago (migración 0010)
+Gastos, ingresos y apoyos se pagan con **Efectivo** o con **Banco** (una cuenta de Cuentas). Con Banco, el registro crea en la MISMA transacción un movimiento vinculado en la cuenta: gasto y apoyo → **retiro**; ingreso → **depósito**. Cuentas no cambia su lógica ni su pantalla de registro: Arca llama a funciones internas de `cuentas/service.py` (`crear_vinculado`, `sincronizar`, `anular_de_origen`, `reactivar_de_origen`), que no hacen commit.
+
+**Modelo (0010, solo columnas nuevas y opcionales):** `movimientos.cuenta_id` y `apoyos.cuenta_id` (NULL = Efectivo; todo lo existente queda en Efectivo). En `cuenta_movimientos`: `origen_tipo` ('movimiento'|'apoyo') y `origen_id` (las dos o ninguna; índice único parcial: un solo vínculo **vigente** —activo y no rechazado— por registro), `estado` (pendiente|confirmado|rechazado, por defecto confirmado), `confirmado_por`, `confirmado_en`, `motivo_rechazo`, `hora_registrada`.
+
+**Reglas**
+- Solo cuentas **activas, en Bs y de banco** (ahorro o corriente) que el usuario **ve**. La fuente "Efectivo" no es una cuenta de tipo efectivo; esas no se ofrecen. Sin conversión de monedas.
+- Dueño o encargado de la cuenta → **confirmado** directo. Cuenta de otra persona (visible) → **pendiente**: no suma al saldo hasta que el dueño o encargado lo confirme. El admin no es excepción. Las cuentas `solo_yo` de otros no se ofrecen ni se aceptan (422 sin revelar nada).
+- **Saldo de una cuenta** = saldo inicial + movimientos activos **y confirmados**.
+- **Confirmar**: la fecha y hora pasan a las de la confirmación (La Paz); la hora real queda en `hora_registrada`. La interfaz avisa si cambia el día o el mes.
+- **Rechazar**: el movimiento queda `rechazado` (visible, sin efecto en el saldo) y el registro vuelve a **Efectivo** (no se anula), con historial "Fuente cambiada por rechazo" y aviso al autor.
+- El vinculado es de **solo lectura** en Cuentas: anular, reactivar o cambiar fecha → 422 "Se gestiona desde el gasto/ingreso/apoyo". Solo se confirma o rechaza. Enlaza a su registro solo si el lector lo ve; nunca copia la nota; categoría/beneficiario solo a quien ve el registro.
+- **Sincronización** (misma transacción; bloqueo siempre cuenta → registro): editar monto/fecha copia al vínculo (la fecha solo mientras está pendiente o si se registró directo); cambiar de cuenta o pasar a Efectivo anula el vínculo anterior y crea otro; anular el registro anula el vínculo; reactivar crea un vínculo nuevo (pendiente otra vez si la cuenta es ajena; si la cuenta ya no sirve, vuelve a Efectivo). Editar el **monto** de un confirmado en cuenta ajena lo **devuelve a pendiente**. Gasto con banco → ingreso (o al revés): 422 salvo que pase a Efectivo en la misma edición.
+- Anular una cuenta con pendientes: **400** "tiene movimientos por confirmar". Confirmar algo cuyo registro se anuló o cambió de fuente: **409** "Ya no aplica".
+- **Sin conexión**: Banco deshabilitado; la cola solo acepta `cuenta_id` vacío. Cuentas sigue sin guardar nada en el aparato.
+
+**Reportes**: ingresos, gastos, categorías y gasto por persona cuentan **todo** sin importar la fuente (un pendiente también: el gasto ocurrió). **"Saldo de efectivo" / "Te queda"** = ingresos_efectivo − gastos_efectivo − apoyos_efectivo + devoluciones (`saldo_efectivo`; las devoluciones son siempre efectivo). Campos nuevos `ingresos_banco`, `gastos_banco`, `apoyos_banco`, `saldo_efectivo` y filtro `fuente=efectivo|banco` en `/reportes/*`.
+
+**API nueva**: `GET /cuentas/fuentes`, `GET /cuentas/por-confirmar`, `GET /cuentas/por-confirmar/resumen` (contador y rechazos recientes del autor), `POST /cuentas/movimientos/{id}/confirmar`, `POST /cuentas/movimientos/{id}/rechazar`; `cuenta_id` en el alta y la edición de `/movimientos` y `/apoyos` (en la edición: ausente = se conserva, `null` = Efectivo).
+
+**Frontend**: el "+" abre una hoja sobre la pantalla actual ("Efectivo" / "Banco" desplegable con las cuentas y su marca "Se registra directo" o "Requiere confirmación de …"); el formulario lleva el chip "Pagado con" para cambiarla; marcas "Pendiente de confirmar · X", "Confirmado · X", "Rechazado por X · ahora Efectivo"; bandeja **"Por confirmar"** arriba de Cuentas con Confirmar/Rechazar; contador sobre Familia (leído al abrir la app, sin push); aviso al autor con "Cambiar fuente"; Inicio con "+ Pagado con banco" y "− Ingresado al banco"; filtro Todos/Efectivo/Banco en Reportes.
+
+**Fuera de esta fase**: conversión de monedas, devoluciones hacia cuentas, notificaciones push, que el admin confirme, editar el vínculo desde Cuentas, rellenar la fuente de datos antiguos, traspasos banco ↔ efectivo (retiro de cajero).
+
 ## Fuera de v1
 Notificaciones, presupuestos por categoria, fotos de facturas, exportar a Excel, multi-moneda.

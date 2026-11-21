@@ -4,7 +4,7 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import { anterior, calcular, hoyLaPaz, sumarDias } from "../src/core/periodo";
-import {
+import { abrirNuevo,
   abrirLista, apoyoApi, crearAdmin, crearMiembro, devolucionApi, entrar, entrarRapido, expect, gastoApi, ingresoApi, irA, irAFamilia,
   irAOpcionFamilia, menu, sinDesborde, test, API,
 } from "./ayudas";
@@ -154,7 +154,7 @@ test.describe("Prueba visual a 390px", () => {
 
     // ---- Nuevo movimiento
     await irA(page, "Inicio");
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await expect(page.getByRole("radio", { name: /Comida/ })).toBeVisible();
     await page.getByLabel("Monto").fill("45.50");
     await captura(page, "08-nuevo-movimiento");

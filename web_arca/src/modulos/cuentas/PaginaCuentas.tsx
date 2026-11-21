@@ -4,6 +4,7 @@ import { ChipInterruptor } from "../../core/ChipFiltro";
 import Encabezado from "../../core/Encabezado";
 import { Boton, Cargando, ErrorCaja, Tarjeta, Vacio, claseBotonPrimario, useCarga } from "../../core/ui";
 import { listarCuentas, listarMovimientosCuentas } from "./api";
+import BandejaPorConfirmar from "./BandejaPorConfirmar";
 import { BloqueMoneda, CabeceraMovimientos, FilaCuenta, FilaMovimiento } from "./componentes";
 import { cuentasRegistrables } from "./permisos";
 
@@ -18,6 +19,8 @@ export default function PaginaCuentas() {
     <div className="space-y-4">
       <Encabezado titulo="Cuentas" volverA="/familia" />
       <p className="text-sm text-stone-600">Cuánto entra y sale de las cuentas bancarias, cripto y efectivo de la familia. No cuenta como ingreso ni gasto.</p>
+
+      <BandejaPorConfirmar alCambiar={() => { recargar(); movs.recargar(); }} />
 
       <ErrorCaja mensaje={error} />
       {cargando && !datos && <Cargando />}

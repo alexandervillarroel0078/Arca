@@ -1,7 +1,7 @@
 // Bloque E de las mejoras de UX: navegacion coherente (Inicio activa en /todos, /nuevo y /editar; Volver en /todos)
 // y confirmaciones propias (Marcar consumido, Restablecer clave) en lugar del confirm() del navegador.
 import type { Page } from "@playwright/test";
-import { abrirLista, apoyoApi, crearAdmin, crearMiembro, entrarRapido, expect, gastoApi, irA, irAOpcionFamilia, menu, nav, test, volver } from "./ayudas";
+import { abrirLista, abrirNuevo, apoyoApi, crearAdmin, crearMiembro, entrarRapido, expect, gastoApi, irA, irAOpcionFamilia, menu, nav, test, volver } from "./ayudas";
 
 const conAriaCurrent = (page: Page) => page.locator('[aria-current="page"]');
 const mas = (page: Page) => page.getByRole("link", { name: "Nuevo movimiento" });
@@ -28,7 +28,7 @@ test.describe("Navegacion coherente", () => {
     await gastoApi(request, admin, { monto: 30, nota: "Taxi", categoria: "Transporte" });
     await entrarRapido(page, admin);
 
-    await mas(page).click();
+    await abrirNuevo(page); // el + abre la hoja «¿Efectivo o Banco?»; Efectivo lleva a /nuevo
     await expect(page.getByRole("heading", { name: "Nuevo movimiento" })).toBeVisible();
     await expect(nav(page, "Inicio")).not.toHaveAttribute("aria-current", /.*/);
     await expect(mas(page)).toHaveAttribute("aria-current", "page");

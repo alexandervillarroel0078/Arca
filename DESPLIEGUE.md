@@ -172,7 +172,7 @@ cd backend_arca
 .venv\Scripts\alembic.exe current
 Remove-Item Env:DATABASE_URL
 ```
-Haz un respaldo antes (sección 4c). El head del repo es **0009** (hora de los movimientos de cuenta). Antes de migrar, mira con `alembic current` en qué versión está Supabase (0007 si nunca se aplicó Cuentas, 0008 si sí): `upgrade head` aplica en orden todo lo que falte.
+Haz un respaldo antes (sección 4c). El head del repo es **0010** (fuente de pago). Antes de migrar, mira con `alembic current` en qué versión está Supabase (0007 si nunca se aplicó Cuentas, 0008 si sí, 0009 si ya tiene la hora): `upgrade head` aplica en orden todo lo que falte.
 
 ### Despliegue del módulo Cuentas
 Orden obligatorio (la migración va **antes** de desplegar el código nuevo):
@@ -195,6 +195,16 @@ Agrega `cuenta_movimientos.hora time NULL`. **No rellena nada**: los movimientos
 5. **Probar en producción:** registrar un movimiento de cuenta con fecha de hoy (debe salir "Hoy HH:MM" con la hora de La Paz) y cambiarle la hora.
 
 **Rollback:** `alembic downgrade 0008` (probado subir/bajar/subir en `arca_test`). Borra la columna y con ella las horas guardadas; el historial conserva las fotos con hora.
+
+### Despliegue de la fuente de pago (0010)
+Agrega columnas **opcionales**: `movimientos.cuenta_id`, `apoyos.cuenta_id` (NULL = Efectivo) y en `cuenta_movimientos` `origen_tipo`, `origen_id`, `estado` (default `confirmado`), `confirmado_por`, `confirmado_en`, `motivo_rechazo`, `hora_registrada`, con sus CHECK y dos índices parciales. **No rellena nada**: todo lo existente queda en Efectivo y todo movimiento de cuenta existente queda confirmado (los saldos no cambian). Necesita la 0009. No toca `historial`, `bitacora` ni sus triggers.
+1. **Respaldo** de Supabase (sección 4c).
+2. **Push** a `main` del código con la fuente de pago.
+3. **Migrar Supabase** desde la PC (como en "Migraciones a Supabase"): `alembic upgrade head`; `alembic current` debe decir **0010 (head)**. La migración va **antes** del código nuevo: el backend nuevo lee las columnas nuevas. El backend viejo con la 0010 ya aplicada sigue funcionando (no las conoce; son opcionales o con default).
+4. **Deploy manual** del backend y luego del frontend en Render.
+5. **Probar en producción con dos usuarios:** un gasto en efectivo (como siempre); uno con una cuenta propia (debe restar del saldo de la cuenta y mostrar "Confirmado"); uno con la cuenta de otra persona (queda "Pendiente de confirmar", no resta), que el dueño lo confirme desde Familia › Cuentas › "Por confirmar"; y uno que el dueño rechace (el gasto vuelve a Efectivo y su autor ve el aviso).
+
+**Rollback:** `alembic downgrade 0009` (probado subir/bajar/subir en `arca_test`). Antes de borrar las columnas **anula** los movimientos de cuenta pendientes o rechazados (motivo "Sin confirmar al quitar la fuente de pago") para que los saldos no cambien; los vinculados confirmados quedan como depósitos/retiros normales y los gastos vuelven a no tener fuente (todo se ve como Efectivo). El historial conserva las fotos.
 
 ### Regla de oro de las pruebas
 El `.env` local **siempre apunta a localhost**. Nunca correr `pytest` con la URL de Supabase: las pruebas hacen `TRUNCATE ... CASCADE` y borrarían los datos reales.

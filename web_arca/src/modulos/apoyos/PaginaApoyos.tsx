@@ -14,6 +14,7 @@ import { useAnular } from "../../core/useAnular";
 import { Boton, Campo, Cargando, ErrorCaja, Interruptor, SinDatosPeriodo, Tarjeta, Titulo, Vacio, claseInput, useCarga } from "../../core/ui";
 import { useAuth } from "../auth/AuthContext";
 import DialogoCompartir, { type PedidoCompartir } from "../privacidad/DialogoCompartir";
+import { EtiquetaFuente } from "../movimientos/fuente";
 import { EtiquetaPrivacidad, NotaPrivados } from "../privacidad/Etiquetas";
 import { puedeEditar, puedeRegistrarDevolucion } from "../privacidad/visibilidad";
 import DialogoHistorial, { type PedidoHistorial } from "../historial/DialogoHistorial";
@@ -223,6 +224,7 @@ export default function PaginaApoyos() {
           {fechaCorta(a.fecha, { conDia: true })} · {bs(a.monto)} entregado por {a.usuario_nombre}
           {a.consumido > 0 && ` · consumido ${bs(a.consumido)}`}
           <span className="ml-1 align-middle"><EtiquetaPrivacidad registro={a} /></span>
+          <span className="ml-1 align-middle"><EtiquetaFuente registro={a} /></span>
           {(a.sinSincronizar || a.enConflicto) && (
             <span className="ml-1 inline-flex flex-wrap gap-1.5 align-middle"><EtiquetaSync sinSincronizar={a.sinSincronizar} enConflicto={a.enConflicto} /></span>
           )}

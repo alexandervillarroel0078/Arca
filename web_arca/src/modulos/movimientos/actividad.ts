@@ -3,10 +3,11 @@ import type { Auditoria } from "../../core/tipos";
 import * as ent from "../sync/entidades";
 import { leerPantalla } from "../sync/lecturas";
 import { superponerActividad } from "../sync/superponer";
+import type { CamposFuente } from "./api";
 import type { Visibilidad } from "../privacidad/visibilidad";
 
 /** Una fila de la lista completa: movimiento (gasto/ingreso) o apoyo. */
-export interface ItemActividad extends Auditoria {
+export interface ItemActividad extends Auditoria, CamposFuente {
   clase: "movimiento" | "apoyo";
   id: number;
   tipo: "gasto" | "ingreso" | "apoyo";

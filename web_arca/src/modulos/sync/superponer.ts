@@ -6,7 +6,7 @@
 import type { Apoyo, Beneficiario, Devolucion, ResumenApoyos } from "../apoyos/api";
 import type { Categoria } from "../familia/api";
 import type { FiltrosActividad, ItemActividad } from "../movimientos/actividad";
-import type { Movimiento } from "../movimientos/api";
+import type { CamposFuente, Movimiento } from "../movimientos/api";
 import { recomparar } from "../../core/comparacion";
 import { enRango, type Rango } from "../../core/periodo";
 import type { Resumen } from "../reportes/api";
@@ -210,6 +210,12 @@ export function superponerApoyos(lista: Apoyo[], ap: Aplicado, verAnulados: bool
   return verAnulados ? r : r.map((a) => ({ ...a, devoluciones: a.devoluciones.filter((d) => !d.anulado) }));
 }
 
+/** Fuente de pago (0010): las marcas de la fila (sin dato = Efectivo). */
+const camposFuente = (r: CamposFuente): CamposFuente => ({
+  fuente: r.fuente, cuenta_id: r.cuenta_id, cuenta_nombre: r.cuenta_nombre, estado_cuenta: r.estado_cuenta, confirma_nombre: r.confirma_nombre,
+  rechazado_por_nombre: r.rechazado_por_nombre, rechazo_motivo: r.rechazo_motivo, rechazo_cuenta_nombre: r.rechazo_cuenta_nombre,
+});
+
 export function movimientoAItem(m: Movimiento): ItemActividad {
   return {
     clase: "movimiento", id: m.id, tipo: m.tipo, titulo: m.nota?.trim() || m.categoria_nombre || "Ingreso", monto: m.monto,
@@ -218,7 +224,7 @@ export function movimientoAItem(m: Movimiento): ItemActividad {
     categoria_nombre: m.categoria_nombre, categoria_icono: m.categoria_icono, beneficiario: null, estado: null, pendiente: null,
     devoluciones_activas: null, version: m.version, uuid_cliente: m.uuid_cliente, sinSincronizar: m.sinSincronizar, enConflicto: m.enConflicto,
     anulado: m.anulado, anulado_por_nombre: m.anulado_por_nombre, anulado_en: m.anulado_en, motivo_anulacion: m.motivo_anulacion,
-    editado_por_nombre: m.editado_por_nombre, editado_en: m.editado_en,
+    editado_por_nombre: m.editado_por_nombre, editado_en: m.editado_en, ...camposFuente(m),
   };
 }
 
@@ -229,7 +235,7 @@ export function apoyoAItem(a: Apoyo): ItemActividad {
     beneficiario: a.beneficiario, estado: a.estado, pendiente: a.pendiente, devuelto: a.devuelto, consumido: a.consumido,
     devoluciones_activas: a.devoluciones_activas, version: a.version, uuid_cliente: a.uuid_cliente, sinSincronizar: a.sinSincronizar,
     enConflicto: a.enConflicto, anulado: a.anulado, anulado_por_nombre: a.anulado_por_nombre, anulado_en: a.anulado_en,
-    motivo_anulacion: a.motivo_anulacion, editado_por_nombre: a.editado_por_nombre, editado_en: a.editado_en,
+    motivo_anulacion: a.motivo_anulacion, editado_por_nombre: a.editado_por_nombre, editado_en: a.editado_en, ...camposFuente(a),
   };
 }
 
@@ -287,6 +293,11 @@ function contribucion(x: Local | undefined, rango: Rango): Contribucion {
   return { ingresos: 0, gastos: 0, apoyos: enPeriodo ? x.monto : 0, devoluciones: devueltoEn(x, rango), consumido: enPeriodo ? x.consumido : 0, pendiente: x.pendiente };
 }
 
+/** Un registro pagado con banco no mueve el efectivo: para el saldo de efectivo cuenta como si no estuviera. */
+function soloEfectivo<T>(x: T): T | undefined {
+  return x && (x as { fuente?: string }).fuente === "banco" ? undefined : x;
+}
+
 export function superponerResumen(r: Resumen, ap: Aplicado, rango: Rango): Resumen {
   const d = { ...CERO };
   for (const [k, final] of ap.finales) {
@@ -300,6 +311,14 @@ export function superponerResumen(r: Resumen, ap: Aplicado, rango: Rango): Resum
   const ingresos = r2(r.ingresos + d.ingresos);
   const gastos = r2(r.gastos + d.gastos);
   const saldo = r2(r.saldo + d.ingresos - d.gastos - d.apoyos + d.devoluciones);
+  // "Te queda" (saldo de efectivo): solo cambia por lo que es Efectivo antes y despues (lo de banco no sale del efectivo)
+  const e = { ...CERO };
+  for (const [k, final] of ap.finales) {
+    const a = contribucion(soloEfectivo(ap.bases.get(k)), rango);
+    const b = contribucion(soloEfectivo(final), rango);
+    for (const c of Object.keys(e) as (keyof Contribucion)[]) e[c] += b[c] - a[c];
+  }
+  const saldoEf = r2((r.saldo_efectivo ?? r.saldo) + e.ingresos - e.gastos - e.apoyos + e.devoluciones);
   return {
     ...r,
     ingresos,
@@ -308,9 +327,11 @@ export function superponerResumen(r: Resumen, ap: Aplicado, rango: Rango): Resum
     devoluciones: r2(r.devoluciones + d.devoluciones),
     consumido: r2(r.consumido + d.consumido),
     saldo,
+    saldo_efectivo: saldoEf,
     // el periodo anterior no cambia: solo se recalcula la diferencia con lo nuevo de este periodo
     comparacion: r.comparacion
-      ? { ...r.comparacion, ingresos: recomparar(r.comparacion.ingresos, ingresos), gastos: recomparar(r.comparacion.gastos, gastos), saldo: recomparar(r.comparacion.saldo, saldo) }
+      ? { ...r.comparacion, ingresos: recomparar(r.comparacion.ingresos, ingresos), gastos: recomparar(r.comparacion.gastos, gastos), saldo: recomparar(r.comparacion.saldo, saldo),
+          ...(r.comparacion.saldo_efectivo ? { saldo_efectivo: recomparar(r.comparacion.saldo_efectivo, saldoEf) } : {}) }
       : r.comparacion,
     gasto_familiar_total: r2(r.gasto_familiar_total + d.gastos + d.consumido),
     apoyos_pendientes_total: total,

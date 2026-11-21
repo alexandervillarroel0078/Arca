@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import {
+import { abrirNuevo,
   API, WEB, cerrarSesion, crearAdmin, crearMiembro, entrar, entrarRapido, expect, irA, irAFamilia, irAOpcionFamilia, menu,
   opcionesDelMenu, saldo, sinDesborde, test, unico, volver,
 } from "./ayudas";
@@ -169,7 +169,7 @@ test.describe("Familia: categorias", () => {
     await expect(filaCategoria(page, "Antojos")).toHaveAttribute("data-activa", "false");
 
     await irA(page, "Inicio");
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await expect(page.getByRole("radio", { name: /Comida/ })).toBeVisible();
     await expect(page.getByRole("radio", { name: /Antojos/ })).toHaveCount(0);
     await page.getByLabel("Cerrar").click();
@@ -178,7 +178,7 @@ test.describe("Familia: categorias", () => {
     await irAOpcionFamilia(page, "Categorías");
     await menu(page, "Acciones de Antojos", "Reactivar");
     await irA(page, "Inicio");
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await expect(page.getByRole("radio", { name: /Antojos/ })).toBeVisible();
   });
 });

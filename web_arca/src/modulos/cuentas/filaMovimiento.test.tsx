@@ -16,6 +16,7 @@ vi.mock("../auth/AuthContext", () => ({ useAuth: () => sesion, useUsuarioOpciona
 const m = vi.mocked(api);
 beforeEach(() => {
   sesion.usuario = admin;
+  m.listarPorConfirmar.mockResolvedValue([]); // bandeja "Por confirmar" vacia: no se dibuja
 });
 
 const ESPIA = () => {};

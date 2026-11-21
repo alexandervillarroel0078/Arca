@@ -9,8 +9,19 @@ import * as ent from "./entidades";
 import { registroLocal } from "./lecturas";
 import type { Accion, NuevaOperacion } from "./tipos";
 
+/**
+ * La cola SOLO acepta registros en Efectivo: un pago con banco (cuenta_id con valor) crea un movimiento en Cuentas, que
+ * no guarda nada en el aparato, asi que va directo al servidor y en linea. Defensa: aqui se rechaza antes de encolar.
+ */
+export const MENSAJE_BANCO_SIN_COLA = "El pago con banco necesita conexión: cámbialo a Efectivo o inténtalo cuando tengas internet";
+function exigirEfectivo(datos: unknown) {
+  const cuenta = (datos as { cuenta_id?: unknown } | undefined)?.cuenta_id;
+  if (cuenta !== undefined && cuenta !== null) throw new ErrorApi(400, MENSAJE_BANCO_SIN_COLA);
+}
+
 /** Envia la operacion. Devuelve la respuesta del servidor, o null si quedo pendiente (sin conexion). Lanza si se rechazo. */
 export async function operar(n: NuevaOperacion): Promise<unknown | null> {
+  exigirEfectivo(n.datos);
   const { resultado } = await ejecutar(n);
   switch (resultado.tipo) {
     case "aplicada":

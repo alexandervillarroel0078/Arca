@@ -1,4 +1,4 @@
-import {
+import { abrirNuevo,
   API, AVISO_SIN_INTERNET, cambiosPendientes, categoriaId, colaLocal, crearAdmin, entrarRapido, expect, movimientosApi,
   cerrarSesion, prepararCategoriasLocales, registrarGasto, saldo, test, volverEnLinea,
 } from "./ayudas";
@@ -74,13 +74,13 @@ test.describe("Registro sin internet y sincronizacion", () => {
 
     await registrarGasto(page, "10", /Comida/, "Gasto offline");
     await expect(page.getByText(AVISO_SIN_INTERNET)).toBeVisible();
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByRole("tab", { name: "Ingreso" }).click();
     await page.getByLabel("Monto").fill("200");
     await page.getByLabel("Nota (opcional)").fill("Ingreso offline");
     await page.getByRole("button", { name: "Guardar" }).click();
     await expect(cambiosPendientes(page)).toHaveText("2 cambios pendientes");
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByRole("tab", { name: "Apoyo" }).click();
     await page.getByLabel("Monto").fill("80");
     await page.getByLabel(/Beneficiario/).fill("Tia Rosa");

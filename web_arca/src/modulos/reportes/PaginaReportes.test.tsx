@@ -74,20 +74,20 @@ describe("Reportes", () => {
     const u = userEvent.setup();
     abrir();
     await screen.findByRole("heading", { name: "Resumen" });
-    expect(A.resumenPeriodo).toHaveBeenLastCalledWith(NOV, "mes");
-    expect(A.porCategoria).toHaveBeenLastCalledWith(NOV, "mes");
+    expect(A.resumenPeriodo).toHaveBeenLastCalledWith(NOV, "mes", "todos");
+    expect(A.porCategoria).toHaveBeenLastCalledWith(NOV, "mes", "todos");
     await u.click(screen.getByRole("button", { name: "Semana" }));
-    await waitFor(() => expect(A.resumenPeriodo).toHaveBeenLastCalledWith({ desde: "2026-11-02", hasta: "2026-11-08" }, "semana"));
+    await waitFor(() => expect(A.resumenPeriodo).toHaveBeenLastCalledWith({ desde: "2026-11-02", hasta: "2026-11-08" }, "semana", "todos"));
     await u.click(screen.getByRole("button", { name: "Año" }));
-    await waitFor(() => expect(A.resumenPeriodo).toHaveBeenLastCalledWith({ desde: "2026-01-01", hasta: "2026-12-31" }, "anio"));
+    await waitFor(() => expect(A.resumenPeriodo).toHaveBeenLastCalledWith({ desde: "2026-01-01", hasta: "2026-12-31" }, "anio", "todos"));
   });
 
   it("usa el mes actual al abrir y lo muestra con su nombre; pide desde y hasta del periodo", async () => {
     abrir();
     expect(await screen.findByTestId("etiqueta-periodo")).toHaveTextContent("Noviembre 2026");
-    expect(A.resumenPeriodo).toHaveBeenCalledWith(NOV, "mes");
-    expect(A.porCategoria).toHaveBeenCalledWith(NOV, "mes");
-    expect(A.porMiembro).toHaveBeenCalledWith(NOV);
+    expect(A.resumenPeriodo).toHaveBeenCalledWith(NOV, "mes", "todos");
+    expect(A.porCategoria).toHaveBeenCalledWith(NOV, "mes", "todos");
+    expect(A.porMiembro).toHaveBeenCalledWith(NOV, "todos");
   });
 
   it("gastos por categoria: porcentaje, monto y el consumido en linea aparte", async () => {
@@ -129,9 +129,9 @@ describe("Reportes", () => {
     abrir();
     await waitFor(() => expect(screen.getAllByTestId("fila-mes")).toHaveLength(6));
     const filas = screen.getAllByTestId("fila-mes");
-    expect(filas[5]).toHaveTextContent("Saldo Bs 1,150.00");
-    expect(filas[2]).toHaveTextContent("Saldo -Bs 70.00");
-    expect(within(filas[2]).getByText("Saldo -Bs 70.00").className).toMatch(/text-red-700/);
+    expect(filas[5]).toHaveTextContent("Te queda Bs 1,150.00");
+    expect(filas[2]).toHaveTextContent("Te queda -Bs 70.00");
+    expect(within(filas[2]).getByText("Te queda -Bs 70.00").className).toMatch(/text-red-700/);
     expect(filas[5]).toHaveTextContent("Ingresos Bs 1,500.00 · Gastos Bs 200.00");
   });
 
@@ -142,7 +142,7 @@ describe("Reportes", () => {
     abrir();
     await waitFor(() => expect(screen.getAllByTestId("fila-mes")).toHaveLength(6));
     const filas = screen.getAllByTestId("fila-mes");
-    expect(filas[5]).toHaveTextContent("Saldo Bs 118.00");
+    expect(filas[5]).toHaveTextContent("Te queda Bs 118.00");
     expect(filas[5]).toHaveTextContent("Ingresos Bs 561.50 · Gastos Bs 243.50 · Apoyos Bs 200.00");
     expect(filas[5]).not.toHaveTextContent("Devoluciones");
     expect(filas[0]).toHaveTextContent("Ingresos Bs 0.00 · Gastos Bs 0.00 · Apoyos Bs 0.00");
@@ -219,9 +219,9 @@ describe("Reportes: periodo (selector comun)", () => {
     await screen.findByTestId("etiqueta-periodo");
     await u.click(screen.getByLabelText("Periodo anterior"));
     await waitFor(() => expect(screen.getByTestId("etiqueta-periodo")).toHaveTextContent("Octubre 2026"));
-    expect(A.resumenPeriodo).toHaveBeenLastCalledWith(OCT, "mes");
-    expect(A.porCategoria).toHaveBeenLastCalledWith(OCT, "mes");
-    expect(A.porMiembro).toHaveBeenLastCalledWith(OCT);
+    expect(A.resumenPeriodo).toHaveBeenLastCalledWith(OCT, "mes", "todos");
+    expect(A.porCategoria).toHaveBeenLastCalledWith(OCT, "mes", "todos");
+    expect(A.porMiembro).toHaveBeenLastCalledWith(OCT, "todos");
     expect(screen.getByLabelText("Periodo siguiente")).toBeEnabled();
     await u.click(screen.getByLabelText("Periodo siguiente"));
     await waitFor(() => expect(screen.getByTestId("etiqueta-periodo")).toHaveTextContent("Noviembre 2026"));
@@ -230,7 +230,7 @@ describe("Reportes: periodo (selector comun)", () => {
   it("con el dia de inicio 15 el mes va del 15 al 14 y se pide asi", async () => {
     renderPantalla(<PaginaReportes />, { ruta: "/reportes", hoy: "2026-11-08", diaInicioMes: 15 });
     expect(await screen.findByTestId("etiqueta-periodo")).toHaveTextContent("15 oct - 14 nov");
-    expect(A.resumenPeriodo).toHaveBeenCalledWith({ desde: "2026-10-15", hasta: "2026-11-14" }, "mes");
+    expect(A.resumenPeriodo).toHaveBeenCalledWith({ desde: "2026-10-15", hasta: "2026-11-14" }, "mes", "todos");
   });
 
   it("si falla la carga muestra el error", async () => {

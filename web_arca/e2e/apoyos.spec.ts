@@ -1,4 +1,4 @@
-import { apoyoApi, crearAdmin, devolucionApi, entrarRapido, expect, irA, menu, saldo, sinDesborde, test } from "./ayudas";
+import { abrirNuevo, apoyoApi, crearAdmin, devolucionApi, entrarRapido, expect, irA, menu, saldo, sinDesborde, test } from "./ayudas";
 
 const tarjeta = (page: import("@playwright/test").Page, nombre: string) =>
   page.getByRole("heading", { name: nombre }).locator("xpath=ancestor::div[contains(@class,'rounded-tarjeta')][1]");
@@ -7,7 +7,7 @@ test.describe("Apoyos: crear, devolver, consumir y reabrir", () => {
   test("crear un apoyo desde Nuevo movimiento: queda Pendiente y resta del saldo", async ({ page, request }) => {
     const admin = await crearAdmin(request);
     await entrarRapido(page, admin);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByRole("tab", { name: "Apoyo" }).click();
     await page.getByLabel("Monto").fill("300");
     await page.getByLabel(/Beneficiario/).fill("Tia Rosa");

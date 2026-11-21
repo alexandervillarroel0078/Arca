@@ -6,6 +6,7 @@ import * as ent from "../sync/entidades";
 import { leerPantalla, leerRegistro } from "../sync/lecturas";
 import { exigirSinPendientes, operarApoyo, operarDevolucion } from "../sync/operaciones";
 import { superponerApoyos, superponerResumenApoyos } from "../sync/superponer";
+import type { CamposFuente } from "../movimientos/api";
 import type { Visibilidad } from "../privacidad/visibilidad";
 
 export type EstadoApoyo = "Pendiente" | "Saldado" | "Cerrado" | "Anulado";
@@ -20,7 +21,7 @@ export interface Devolucion extends Auditoria {
   usuario_nombre: string | null;
   anulada_con_apoyo: boolean;
 }
-export interface Apoyo extends Auditoria {
+export interface Apoyo extends Auditoria, CamposFuente {
   id: number;
   beneficiario: string;
   monto: number;
@@ -75,7 +76,7 @@ export const resumenApoyos = (r: Rango) =>
 // Escrituras: pasan por la cola de operaciones (se envian al instante si hay conexion; si no, quedan pendientes).
 export const editarApoyo = (
   id: number,
-  c: Partial<{ beneficiario: string; monto: number; fecha: string; nota: string | null; visibilidad: Visibilidad; compartido_con: number[] }>,
+  c: Partial<{ beneficiario: string; monto: number; fecha: string; nota: string | null; visibilidad: Visibilidad; compartido_con: number[]; cuenta_id: number | null }>,
 ) =>
   operarApoyo("editar", id, c);
 export const anularApoyo = (id: number, motivo?: string) => operarApoyo("anular", id, { motivo: motivo || null });

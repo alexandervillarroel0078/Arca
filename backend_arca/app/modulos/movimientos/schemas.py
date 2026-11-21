@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from app.core.anulable import AuditoriaOut
 from app.modulos.periodos.calculo import hoy_la_paz
 from app.core.tipos import MontoPositivo
+from app.modulos.cuentas.schemas import FuenteOut
 from app.modulos.visibilidad.cambios import VisibilidadIn
 
 
@@ -17,6 +18,8 @@ class MovimientoCrear(VisibilidadIn):
     categoria_id: int | None = None  # obligatoria en gasto, vacia en ingreso
     nota: str | None = Field(default=None, max_length=500)
     uuid_cliente: UUID | None = None  # hace idempotente el reenvio desde la cola offline
+    # Fuente de pago: vacio = Efectivo; si no, la cuenta (Banco, en Bs) donde se registra el retiro/deposito vinculado
+    cuenta_id: int | None = None
     # Fase 12: un registro creado Y anulado sin internet sale en una sola operacion (la creacion con el valor final)
     anulado: bool = False
     motivo_anulacion: str | None = Field(default=None, max_length=300)
@@ -29,10 +32,11 @@ class MovimientoEditar(VisibilidadIn):
     fecha: date | None = None
     categoria_id: int | None = None
     nota: str | None = Field(default=None, max_length=500)
+    cuenta_id: int | None = None  # ausente = se conserva la fuente; null = pasa a Efectivo
     version_base: int | None = Field(default=None, ge=1)  # version en la que se baso el cliente (409 si ya cambio)
 
 
-class MovimientoOut(AuditoriaOut):
+class MovimientoOut(FuenteOut, AuditoriaOut):
     id: int
     tipo: str
     monto: MontoPositivo

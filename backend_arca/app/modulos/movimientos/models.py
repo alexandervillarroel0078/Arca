@@ -24,4 +24,6 @@ class Movimiento(ConVisibilidad, Anulable, Base):
     fecha: Mapped[date] = mapped_column(Date, index=True)
     categoria_id: Mapped[int | None] = mapped_column(ForeignKey("categorias.id"), nullable=True)
     nota: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Fuente de pago: NULL = Efectivo; si no, la cuenta (Banco) donde se registro el retiro/deposito vinculado
+    cuenta_id: Mapped[int | None] = mapped_column(ForeignKey("cuentas.id"), nullable=True)
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

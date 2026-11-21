@@ -1,7 +1,7 @@
 // Fase 12: crear, editar, anular y reactivar SIN INTERNET (movimientos, apoyos y devoluciones), lecturas desde el cache,
 // conflictos entre dos usuarios, rechazos, idempotencia y reintento automatico de la cola.
 import type { Page } from "@playwright/test";
-import {
+import { abrirNuevo,
   API, abrirLista, almacenLocal, apoyoApi, cambiosPendientes, colaLocal, crearAdmin, crearMiembro, devolucionApi, entrarRapido, expect,
   filaLista, gastoApi, ingresoApi, irA, menu, movimientosApi, prepararCategoriasLocales, registrarGasto, saldo, test, volverEnLinea,
   type Sesion,
@@ -122,7 +122,7 @@ test.describe("Crear, editar y anular sin conexion", () => {
     await irA(page, "Inicio");
 
     await context.setOffline(true);
-    await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+    await abrirNuevo(page);
     await page.getByRole("tab", { name: "Apoyo" }).click();
     await page.getByLabel("Monto").fill("200");
     await page.getByLabel(/Beneficiario/).fill("Primo");

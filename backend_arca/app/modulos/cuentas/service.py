@@ -4,7 +4,7 @@ Reglas clave (ver tambien `monedas.py`, `nombres.py` y `visibilidad/service.py`)
 - Ver: dueno, toda la familia si es 'familia', los elegidos y SIEMPRE el encargado. Lo que no ves es 404 (nunca 403).
 - Registrar movimientos: dueno o encargado de la cuenta, NUNCA el admin por serlo. En un traspaso, de AMBAS cuentas.
 - Solo el dueno edita la cuenta, cambia su visibilidad y designa al encargado.
-- El saldo no se guarda: saldo_inicial + movimientos activos. Excluye movimientos anulados; los totales por moneda,
+- El saldo no se guarda: saldo_inicial + movimientos activos y CONFIRMADOS. Excluye anulados, pendientes y rechazados; los totales por moneda,
   ademas, excluyen cuentas anuladas. Saldo negativo permitido (se avisa, no se bloquea).
 - Todo registro de movimiento bloquea (SELECT ... FOR UPDATE, en orden de id) las cuentas que toca: el ajuste por
   conteo calcula su diferencia sobre un saldo que nadie mas puede cambiar mientras tanto.
@@ -15,7 +15,7 @@ Reglas clave (ver tambien `monedas.py`, `nombres.py` y `visibilidad/service.py`)
 - La hora es LOCAL de La Paz, sin zona, por minutos y opcional (nula en lo anterior a la 0009). `fecha` manda en
   filtros y periodos; la hora solo ordena dentro del dia (`ORDEN_MOVIMIENTOS`).
 """
-from datetime import date, time
+from datetime import date, time, timedelta
 from decimal import Decimal
 
 from fastapi import HTTPException
@@ -23,7 +23,7 @@ from sqlalchemy import and_, case, exists, func, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.anulable import (
-    auditoria, exigir_activo, exigir_version, limpiar_anulacion, marcar_anulacion, marcar_edicion, nombres_usuarios,
+    ahora as ahora_utc, auditoria, exigir_activo, exigir_version, limpiar_anulacion, marcar_anulacion, marcar_edicion, nombres_usuarios,
 )
 from app.core.deps import Contexto
 from app.modulos.cuentas import nombres
@@ -32,8 +32,9 @@ from app.modulos.cuentas.monedas import (
     BANCOS, DECIMALES, MONEDAS_POR_TIPO, PLATAFORMAS, AVISO_NOTA, con_moneda, texto, validar_cuenta, validar_monto,
 )
 from app.modulos.cuentas.schemas import (
-    AjusteCrear, Catalogo, CuentaCrear, CuentaEditar, CuentaOut, CuentasOut, DepositoCrear, MovimientoCuentaOut,
-    MovimientoFechaEditar, PersonaIn, RetiroCrear, TotalMoneda, TraspasoCrear,
+    AjusteCrear, Catalogo, CuentaCrear, CuentaEditar, CuentaFuenteOut, CuentaOut, CuentasOut, DepositoCrear,
+    MovimientoCuentaOut, MovimientoFechaEditar, PersonaIn, PorConfirmarResumen, RechazoAviso, RetiroCrear, TotalMoneda,
+    TraspasoCrear,
 )
 from app.modulos.familia.models import Miembro
 from app.modulos.historial import service as historial
@@ -67,18 +68,19 @@ def _efecto_origen():
 
 
 def saldos(db: Session, cuentas: list[Cuenta]) -> dict[int, Decimal]:
-    """saldo_inicial + movimientos activos (los anulados no cuentan). Un traspaso resta del origen y suma al destino."""
+    """saldo_inicial + movimientos activos Y confirmados (los anulados, pendientes y rechazados no cuentan). Un
+    traspaso resta del origen y suma al destino."""
     ids = [c.id for c in cuentas]
     if not ids:
         return {}
     total = {c.id: Decimal(c.saldo_inicial) for c in cuentas}
     for cid, suma in db.execute(
-        select(CM.cuenta_id, func.sum(_efecto_origen())).where(CM.cuenta_id.in_(ids), CM.anulado.is_(False)).group_by(CM.cuenta_id)
+        select(CM.cuenta_id, func.sum(_efecto_origen())).where(CM.cuenta_id.in_(ids), CM.anulado.is_(False), CM.estado == "confirmado").group_by(CM.cuenta_id)
     ):
         total[cid] += suma
     for cid, suma in db.execute(
         select(CM.cuenta_destino_id, func.sum(CM.monto))
-        .where(CM.cuenta_destino_id.in_(ids), CM.tipo == "traspaso", CM.anulado.is_(False))
+        .where(CM.cuenta_destino_id.in_(ids), CM.tipo == "traspaso", CM.anulado.is_(False), CM.estado == "confirmado")
         .group_by(CM.cuenta_destino_id)
     ):
         total[cid] += suma
@@ -86,7 +88,8 @@ def saldos(db: Session, cuentas: list[Cuenta]) -> dict[int, Decimal]:
 
 
 def efecto_en(m: CM, cuenta_id: int) -> Decimal:
-    """Lo que un movimiento suma (+) o resta (-) a UNA cuenta (misma regla que el SQL de `saldos`)."""
+    """Lo que un movimiento suma (+) o resta (-) a UNA cuenta (misma regla que el SQL de `saldos`). Es lo que haria si
+    estuviera confirmado: un pendiente o rechazado no suma al saldo (ver `estado` en la salida)."""
     if m.cuenta_destino_id == cuenta_id:
         return m.monto
     if m.tipo == "deposito" or (m.tipo == "ajuste" and m.sentido == "entrada"):
@@ -198,12 +201,16 @@ def armar_movimientos(
     cuentas = {c.id: c for c in db.scalars(select(Cuenta).where(Cuenta.id.in_(ve)))} if ve else {}
     nom = nombres_usuarios(
         db, {m.usuario_id for m in movs} | {m.persona_usuario_id for m in movs}
-        | {m.anulado_por for m in movs} | {m.editado_por for m in movs},
+        | {m.anulado_por for m in movs} | {m.editado_por for m in movs} | {m.confirmado_por for m in movs}
+        | {c.usuario_id for c in cuentas.values()},
     )
+    origen = _datos_origen(db, ctx, movs)
     salida = []
     for m in movs:
         tocadas = [m.cuenta_id] + ([m.cuenta_destino_id] if m.cuenta_destino_id else [])
-        registrable = all(i in cuentas and es_dueno_o_encargado(ctx, cuentas[i]) for i in tocadas)
+        duenio_de_todas = all(i in cuentas and es_dueno_o_encargado(ctx, cuentas[i]) for i in tocadas)
+        registrable = duenio_de_todas and m.origen_id is None  # un vinculado es de solo lectura en Cuentas
+        pendiente = m.estado == "pendiente" and not m.anulado
         persona = nom.get(m.persona_usuario_id) if m.persona_tipo == "miembro" else m.persona_nombre
         extra = {}
         if resultado is not None and m.id in resultado:
@@ -219,7 +226,12 @@ def armar_movimientos(
             persona_nombre=persona, usuario_id=m.usuario_id, usuario_nombre=nom.get(m.usuario_id, ""),
             puede_registrar=registrable,
             efecto=texto(efecto_en(m, cuenta_ref), m.moneda) if cuenta_ref is not None else None,
-            **extra, **auditoria(m, nom),
+            estado=m.estado, hora_registrada=hora_texto(m.hora_registrada), confirmado_por=m.confirmado_por,
+            confirmado_por_nombre=nom.get(m.confirmado_por) if m.confirmado_por else None,
+            confirmado_en=m.confirmado_en, motivo_rechazo=m.motivo_rechazo,
+            puede_confirmar=pendiente and duenio_de_todas,
+            confirma_nombre=nom.get(cuentas[m.cuenta_id].usuario_id) if pendiente and m.cuenta_id in cuentas else None,
+            **origen.get(m.id, {}), **extra, **auditoria(m, nom),
         ))
     return salida
 
@@ -375,6 +387,10 @@ def anular(db: Session, ctx: Contexto, cuenta_id: int, motivo: str | None, versi
     exigir_version(c, version_base, lambda: armar_cuentas(db, ctx, [c])[0], "La cuenta")
     if c.anulado:
         raise HTTPException(status_code=400, detail="La cuenta ya está anulada")
+    if db.scalar(select(exists().where(CM.cuenta_id == c.id, CM.estado == "pendiente", CM.anulado.is_(False)))):
+        raise HTTPException(
+            status_code=400, detail="La cuenta tiene movimientos por confirmar: confírmalos o recházalos antes de anularla"
+        )
     marcar_anulacion(c, ctx.usuario.id, motivo)
     historial.registrar(
         db, ctx.familia_id, ctx.usuario.id, "cuenta", c.id, "anular", {"anulado": historial.cambio(False, True)}, c.motivo_anulacion
@@ -564,12 +580,22 @@ def obtener_movimiento(db: Session, ctx: Contexto, mov_id: int) -> MovimientoCue
     return armar_movimientos(db, ctx, [_ver_movimiento(db, ctx, mov_id)])[0]
 
 
+def _exigir_no_vinculado(db: Session, m: CM) -> None:
+    """Un movimiento creado por un gasto, ingreso o apoyo solo se cambia desde ese registro (solo se confirma o rechaza)."""
+    if m.origen_id is not None:
+        o = db.get(_modelo_origen(m.origen_tipo), m.origen_id)
+        tipo = tipo_origen(m.origen_tipo, o) if o is not None else None
+        raise HTTPException(status_code=422, detail=f"Se gestiona desde {_articulo(tipo)}")
+
+
 def _tocar_movimiento(db: Session, ctx: Contexto, mov_id: int) -> tuple[CM, dict[int, Cuenta]]:
-    """Para anular, reactivar o corregir la fecha: lo ves (404), eres dueno o encargado de TODAS sus cuentas (403), todo bloqueado."""
+    """Para anular, reactivar o corregir la fecha: lo ves (404), eres dueno o encargado de TODAS sus cuentas (403), no
+    es un vinculado (422), todo bloqueado."""
     m = _ver_movimiento(db, ctx, mov_id)
     ids = [m.cuenta_id] + ([m.cuenta_destino_id] if m.cuenta_destino_id else [])
     # lo ves (por una de sus cuentas), pero si no eres dueno o encargado de TODAS (incluida una que no ves) es 403
     _exigir_registrar(ctx, [db.get(Cuenta, i) for i in ids])
+    _exigir_no_vinculado(db, m)
     bloqueadas = _bloquear(db, ids)
     m = db.scalars(select(CM).where(CM.id == mov_id).with_for_update().execution_options(populate_existing=True)).one()
     return m, bloqueadas
@@ -666,3 +692,400 @@ def listar_movimientos(
         q = q.where(CM.fecha <= hasta)
     q = q.order_by(*ORDEN_MOVIMIENTOS).limit(limite).offset(desplazamiento)
     return armar_movimientos(db, ctx, list(db.scalars(q)), cuenta_ref=cuenta_id)
+
+
+# ------------------------------------------------------------------ fuente de pago (0010)
+# Un gasto, ingreso o apoyo de Arca pagado con Banco crea UN movimiento de cuenta vinculado (retiro o deposito) en la
+# MISMA transaccion. Estas funciones NO hacen commit: las llama el servicio del registro (movimientos/apoyos), que ya
+# bloqueo la cuenta (`bloquear_cuentas`) ANTES que su registro: orden fijo cuenta -> registro (sin interbloqueos).
+# El movimiento vinculado es de solo lectura en Cuentas; solo se confirma o se rechaza.
+TIPOS_FUENTE = ("ahorro", "corriente")  # cuentas que pueden ser "Banco" (nunca las de tipo efectivo ni cripto)
+MONEDA_FUENTE = "BS"  # Arca registra en Bs: sin conversion de monedas
+ORIGEN_ENTIDAD = {"movimiento": "movimiento", "apoyo": "apoyo"}  # origen_tipo -> entidad del historial
+MOTIVO_CON_ORIGEN = "Anulado junto con su registro"
+MOTIVO_FUENTE = "Cambió la fuente de pago"
+MOTIVO_RECHAZO = "Fuente cambiada por rechazo"
+
+
+def _modelo_origen(clase: str):
+    from app.modulos.apoyos.models import Apoyo
+    from app.modulos.movimientos.models import Movimiento
+
+    return Movimiento if clase == "movimiento" else Apoyo
+
+
+def tipo_origen(clase: str, obj) -> str:
+    """gasto | ingreso | apoyo."""
+    return obj.tipo if clase == "movimiento" else "apoyo"
+
+
+def _articulo(tipo: str) -> str:
+    return {"gasto": "el gasto", "ingreso": "el ingreso", "apoyo": "el apoyo"}.get(tipo, "el registro")
+
+
+def _cargar_origenes(db: Session, movs: list[CM]) -> dict[tuple[str, int], object]:
+    out: dict[tuple[str, int], object] = {}
+    for clase in ORIGEN_ENTIDAD:
+        ids = {m.origen_id for m in movs if m.origen_tipo == clase}
+        if ids:
+            modelo = _modelo_origen(clase)
+            out |= {(clase, o.id): o for o in db.scalars(select(modelo).where(modelo.id.in_(ids)))}
+    return out
+
+
+def _datos_origen(db: Session, ctx: Contexto, movs: list[CM]) -> dict[int, dict]:
+    """{cm.id: campos de origen para la salida}. Sin nota NUNCA; id, fecha y categoria/beneficiario SOLO si el lector
+    ve el registro de origen (si no, solo se sabe que es un gasto/ingreso/apoyo de quien lo registro)."""
+    from app.modulos.categorias.models import Categoria
+
+    con_origen = [m for m in movs if m.origen_id is not None]
+    if not con_origen:
+        return {}
+    origenes = _cargar_origenes(db, con_origen)
+    cat_ids = {getattr(o, "categoria_id", None) for o in origenes.values()} - {None}
+    cats = {c.id: c.nombre for c in db.scalars(select(Categoria).where(Categoria.id.in_(cat_ids)))} if cat_ids else {}
+    out = {}
+    for m in con_origen:
+        o = origenes.get((m.origen_tipo, m.origen_id))
+        tipo = tipo_origen(m.origen_tipo, o) if o is not None else None
+        datos = {"vinculado": True, "origen_tipo": tipo}
+        if o is not None and vis.puede_ver(db, ctx, o):
+            detalle = o.beneficiario if m.origen_tipo == "apoyo" else cats.get(o.categoria_id)
+            datos |= {"origen_id": o.id, "origen_clase": m.origen_tipo, "origen_detalle": detalle, "origen_fecha": o.fecha}
+        out[m.id] = datos
+    return out
+
+
+def bloquear_cuentas(db: Session, ids) -> dict[int, Cuenta]:
+    """Bloquea (FOR UPDATE, en orden de id) las cuentas de los ids no nulos. Se llama ANTES de bloquear el registro."""
+    ids = [i for i in ids if i is not None]
+    return _bloquear(db, ids) if ids else {}
+
+
+def es_fuente_valida(c: Cuenta | None) -> bool:
+    return c is not None and not c.anulado and c.moneda == MONEDA_FUENTE and c.tipo in TIPOS_FUENTE
+
+
+def _cuenta_fuente(db: Session, ctx: Contexto, cuenta_id: int) -> Cuenta:
+    c = db.get(Cuenta, cuenta_id)
+    if c is None or not vis.puede_ver(db, ctx, c):  # otra familia, privada de otro o inexistente: el mismo mensaje
+        raise HTTPException(status_code=422, detail="Elige una cuenta de banco que puedas ver")
+    if c.anulado:
+        raise HTTPException(status_code=422, detail="La cuenta está anulada: elige otra o paga en efectivo")
+    if c.moneda != MONEDA_FUENTE or c.tipo not in TIPOS_FUENTE:
+        raise HTTPException(status_code=422, detail="Solo se puede usar una cuenta de banco en Bs")
+    return c
+
+
+def cuentas_fuente(db: Session, ctx: Contexto) -> list[CuentaFuenteOut]:
+    """Cuentas que el usuario puede elegir como "Banco": las que VE (nunca las solo_yo de otros), activas, en Bs y de
+    banco. `directo` si es dueno o encargado; si no, quedara por confirmar del dueno."""
+    q = (
+        vis.filtrar(select(Cuenta), ctx, Cuenta)
+        .where(Cuenta.anulado.is_(False), Cuenta.moneda == MONEDA_FUENTE, Cuenta.tipo.in_(TIPOS_FUENTE))
+        .order_by(Cuenta.id)
+    )
+    cuentas = list(db.scalars(q))
+    nom = nombres_usuarios(db, {c.usuario_id for c in cuentas})
+    nom_cuentas = nombres.nombres_para(db, ctx, [c.id for c in cuentas])
+    salida = [
+        CuentaFuenteOut(
+            id=c.id, nombre=nom_cuentas[c.id], tipo=c.tipo, banco=c.banco, banco_otro=c.banco_otro, ultimos4=c.ultimos4,
+            directo=es_dueno_o_encargado(ctx, c),
+            confirma_nombre=None if es_dueno_o_encargado(ctx, c) else nom.get(c.usuario_id),
+        )
+        for c in cuentas
+    ]
+    return sorted(salida, key=lambda x: (not x.directo, x.nombre.lower()))  # primero las propias
+
+
+def vigente(db: Session, clase: str, origen_id: int) -> CM | None:
+    """El vinculo VIGENTE (activo y no rechazado) de un registro de Arca: como mucho uno (indice unico parcial)."""
+    return db.scalars(
+        select(CM).where(
+            CM.origen_tipo == clase, CM.origen_id == origen_id, CM.anulado.is_(False), CM.estado != "rechazado",
+        ).with_for_update().execution_options(populate_existing=True)
+    ).one_or_none()
+
+
+def _log_mov(db: Session, ctx: Contexto, m: CM, accion: str, cambios: dict, motivo: str | None = None) -> None:
+    historial.registrar(db, ctx.familia_id, ctx.usuario.id, "cuenta_mov", m.id, accion, cambios, motivo)
+
+
+def _hora_de(fecha: date) -> time | None:
+    """Los registros de Arca no llevan hora: la de ahora si son de hoy (La Paz), ninguna si son de otro dia."""
+    ahora = ahora_la_paz()
+    return time(ahora.hour, ahora.minute) if fecha == ahora.date() else None
+
+
+def crear_vinculado(db: Session, ctx: Contexto, clase: str, obj, cuenta_id: int, tipo: str) -> CM:
+    """Crea el retiro/deposito vinculado a `obj` (ya guardado, con id). Confirmado si el usuario es dueno o encargado
+    de la cuenta; si no, pendiente (no suma al saldo hasta que lo confirmen). Sin commit."""
+    c = _cuenta_fuente(db, ctx, cuenta_id)
+    validar_monto(obj.monto, c.moneda)
+    directo = es_dueno_o_encargado(ctx, c)
+    m = CM(
+        familia_id=ctx.familia_id, usuario_id=ctx.usuario.id, cuenta_id=c.id, moneda=c.moneda, tipo=tipo,
+        monto=obj.monto, fecha=obj.fecha, hora=_hora_de(obj.fecha), nota=None, origen_tipo=clase, origen_id=obj.id,
+        estado="confirmado" if directo else "pendiente",
+        confirmado_por=ctx.usuario.id if directo else None, confirmado_en=ahora_utc() if directo else None,
+    )
+    db.add(m)
+    db.flush()
+    _log_mov(db, ctx, m, "crear", historial.creacion({
+        "tipo": m.tipo, "cuenta_id": m.cuenta_id, "monto": con_moneda(m.monto, m.moneda), "fecha": m.fecha,
+        "hora": hora_texto(m.hora), "origen": tipo_origen(clase, obj), "estado": m.estado,
+    }))
+    obj.cuenta_id = c.id
+    return m
+
+
+def _anular_vinculado(db: Session, ctx: Contexto, m: CM, motivo: str) -> None:
+    marcar_anulacion(m, ctx.usuario.id, motivo)
+    _log_mov(db, ctx, m, "anular", {"anulado": historial.cambio(False, True)}, motivo)
+
+
+def _volver_a_pendiente(m: CM, fecha: date) -> dict:
+    """Un confirmado en cuenta ajena cuyo monto cambio vuelve a esperar al dueno, con su fecha/hora de registro."""
+    cambios = {"estado": historial.cambio("confirmado", "pendiente")}
+    hora = m.hora_registrada if m.hora_registrada is not None else _hora_de(fecha)
+    m.estado, m.confirmado_por, m.confirmado_en, m.hora_registrada = "pendiente", None, None, None
+    if m.fecha != fecha:
+        cambios["fecha"] = historial.cambio(m.fecha, fecha)
+    if m.hora != hora:
+        cambios["hora"] = historial.cambio(hora_texto(m.hora), hora_texto(hora))
+    m.fecha, m.hora = fecha, hora
+    return cambios
+
+
+def sincronizar(db: Session, ctx: Contexto, clase: str, obj, cuenta_nueva: int | None, tipo: str) -> None:
+    """Deja el vinculo de `obj` (ACTIVO) al dia con su fuente: `cuenta_nueva` None = Efectivo. Sin commit.
+
+    - Otra cuenta (o pasa a Efectivo): el vinculo anterior se anula (queda como rastro) y, si hay cuenta, se crea otro.
+    - Misma cuenta: se copian monto y fecha. La fecha solo mientras esta pendiente o si se registro directo (la de un
+      confirmado por el dueno es la de su confirmacion). Si cambia el monto de un confirmado en una cuenta de la que
+      el usuario NO es dueno ni encargado, vuelve a pendiente. La nota nunca se copia (no se filtra a Cuentas)."""
+    v = vigente(db, clase, obj.id)
+    if v is not None and (cuenta_nueva is None or v.cuenta_id != cuenta_nueva or v.tipo != tipo):
+        _anular_vinculado(db, ctx, v, MOTIVO_FUENTE)
+        v = None
+    if cuenta_nueva is None:
+        obj.cuenta_id = None
+        return
+    if v is None:
+        crear_vinculado(db, ctx, clase, obj, cuenta_nueva, tipo)
+        return
+    obj.cuenta_id = v.cuenta_id
+    c = db.get(Cuenta, v.cuenta_id)
+    directo = v.estado == "pendiente" or v.confirmado_por == v.usuario_id
+    cambia_monto = v.monto != obj.monto
+    cambia_fecha = directo and v.fecha != obj.fecha
+    if not (cambia_monto or cambia_fecha):
+        return
+    if c.anulado:
+        raise HTTPException(
+            status_code=400, detail="La cuenta de este pago está anulada: pásalo a efectivo para poder cambiarlo"
+        )
+    validar_monto(obj.monto, v.moneda)
+    cambios: dict = {}
+    if cambia_monto:
+        cambios["monto"] = historial.cambio(con_moneda(v.monto, v.moneda), con_moneda(obj.monto, v.moneda))
+        v.monto = obj.monto
+    if cambia_monto and v.estado == "confirmado" and not es_dueno_o_encargado(ctx, c):
+        cambios |= _volver_a_pendiente(v, obj.fecha)
+    elif cambia_fecha:
+        hora = _hora_de(obj.fecha)
+        cambios["fecha"] = historial.cambio(v.fecha, obj.fecha)
+        if hora != v.hora:
+            cambios["hora"] = historial.cambio(hora_texto(v.hora), hora_texto(hora))
+        v.fecha, v.hora = obj.fecha, hora
+    marcar_edicion(v, ctx.usuario.id)
+    _log_mov(db, ctx, v, "editar", cambios)
+
+
+def anular_de_origen(db: Session, ctx: Contexto, clase: str, obj) -> None:
+    """El registro de Arca se anula: su vinculo vigente tambien (pendiente o confirmado; el saldo se restituye)."""
+    v = vigente(db, clase, obj.id)
+    if v is not None:
+        _anular_vinculado(db, ctx, v, MOTIVO_CON_ORIGEN)
+
+
+def reactivar_de_origen(db: Session, ctx: Contexto, clase: str, obj, tipo: str) -> str | None:
+    """El registro de Arca se reactiva con su fuente: se crea un vinculo NUEVO (confirmado si el usuario es dueno o
+    encargado; si no, por confirmar otra vez). Si la cuenta ya no se puede usar, el registro vuelve a Efectivo y se
+    devuelve el motivo (para el historial y el aviso)."""
+    if obj.cuenta_id is None:
+        return None
+    try:
+        crear_vinculado(db, ctx, clase, obj, obj.cuenta_id, tipo)
+    except HTTPException as e:
+        obj.cuenta_id = None
+        return f"La cuenta ya no se puede usar ({e.detail}): vuelve a efectivo"
+    return None
+
+
+# ------------------------------------------------------------------ confirmar / rechazar (dueno o encargado)
+def _tocar_por_confirmar(db: Session, ctx: Contexto, mov_id: int):
+    """Lo ves (404), tiene origen (400), eres dueno o encargado de la cuenta (403). Bloquea cuenta -> movimiento ->
+    registro, en ese orden (el mismo que usan los servicios de gastos y apoyos)."""
+    m = _ver_movimiento(db, ctx, mov_id)
+    if m.origen_id is None:
+        raise HTTPException(status_code=400, detail="Este movimiento se registró en Cuentas: no se confirma")
+    c = db.get(Cuenta, m.cuenta_id)
+    if not es_dueno_o_encargado(ctx, c):
+        raise HTTPException(
+            status_code=403, detail="Solo el dueño o el encargado de la cuenta puede confirmarlo o rechazarlo"
+        )
+    c = _bloquear(db, [c.id])[c.id]
+    m = db.scalars(select(CM).where(CM.id == mov_id).with_for_update().execution_options(populate_existing=True)).one()
+    modelo = _modelo_origen(m.origen_tipo)
+    obj = db.scalars(
+        select(modelo).where(modelo.id == m.origen_id).with_for_update().execution_options(populate_existing=True)
+    ).one()
+    return m, c, obj
+
+
+def _exigir_por_confirmar(m: CM, obj) -> None:
+    if m.anulado or obj.anulado or obj.cuenta_id != m.cuenta_id:
+        raise HTTPException(
+            status_code=409, detail="Ya no aplica: el registro se anuló o cambió de fuente de pago"
+        )
+    if m.estado != "pendiente":
+        raise HTTPException(status_code=400, detail="Este movimiento no está por confirmar")
+
+
+def confirmar(db: Session, ctx: Contexto, mov_id: int, version_base: int | None = None) -> MovimientoCuentaOut:
+    """Confirma un pago pendiente: desde ahora suma al saldo. Toma la fecha y hora de la confirmacion (La Paz); la hora
+    real del registro queda en `hora_registrada`."""
+    m, c, obj = _tocar_por_confirmar(db, ctx, mov_id)
+    if _ya_aplicada(db, ctx, "cuenta_mov", m.id):
+        return armar_movimientos(db, ctx, [m])[0]
+    exigir_version(m, version_base, lambda: armar_movimientos(db, ctx, [m])[0], "El movimiento")
+    _exigir_por_confirmar(m, obj)
+    _exigir_cuenta_activa(c)
+    ahora = ahora_la_paz()
+    fecha, hora = ahora.date(), time(ahora.hour, ahora.minute)
+    cambios = {"estado": historial.cambio("pendiente", "confirmado")}
+    if m.fecha != fecha:
+        cambios["fecha"] = historial.cambio(m.fecha, fecha)
+    if m.hora != hora:
+        cambios["hora"] = historial.cambio(hora_texto(m.hora), hora_texto(hora))
+    m.hora_registrada = m.hora
+    m.fecha, m.hora = fecha, hora
+    m.estado, m.confirmado_por, m.confirmado_en = "confirmado", ctx.usuario.id, ahora_utc()
+    _log_mov(db, ctx, m, "confirmar", cambios)
+    db.commit()
+    saldo = saldos(db, [c])[c.id]
+    return armar_movimientos(db, ctx, [m], resultado={m.id: saldo})[0]
+
+
+def rechazar(
+    db: Session, ctx: Contexto, mov_id: int, motivo: str | None, version_base: int | None = None
+) -> MovimientoCuentaOut:
+    """Rechaza un pago pendiente: queda visible como rechazado (sin efecto en el saldo) y el registro de Arca vuelve a
+    Efectivo (NO se anula: el gasto si ocurrio). Su autor lo ve en `resumen_por_confirmar().rechazos`."""
+    m, c, obj = _tocar_por_confirmar(db, ctx, mov_id)
+    if _ya_aplicada(db, ctx, "cuenta_mov", m.id):
+        return armar_movimientos(db, ctx, [m])[0]
+    exigir_version(m, version_base, lambda: armar_movimientos(db, ctx, [m])[0], "El movimiento")
+    _exigir_por_confirmar(m, obj)
+    motivo = (motivo or "").strip() or None
+    m.estado, m.confirmado_por, m.confirmado_en, m.motivo_rechazo = "rechazado", ctx.usuario.id, ahora_utc(), motivo
+    _log_mov(db, ctx, m, "rechazar", {"estado": historial.cambio("pendiente", "rechazado")}, motivo)
+    obj.cuenta_id = None
+    historial.registrar(
+        db, ctx.familia_id, ctx.usuario.id, ORIGEN_ENTIDAD[m.origen_tipo], obj.id, "editar",
+        {"fuente": historial.cambio(c.id, None)}, MOTIVO_RECHAZO,
+    )
+    db.commit()
+    return armar_movimientos(db, ctx, [m])[0]
+
+
+def _mis_cuentas(ctx: Contexto):
+    uid = ctx.usuario.id
+    return select(Cuenta.id).where(
+        Cuenta.familia_id == ctx.familia_id, or_(Cuenta.usuario_id == uid, Cuenta.encargado_id == uid)
+    )
+
+
+def _q_por_confirmar(ctx: Contexto):
+    return select(CM).where(
+        CM.familia_id == ctx.familia_id, CM.estado == "pendiente", CM.anulado.is_(False), CM.cuenta_id.in_(_mis_cuentas(ctx))
+    )
+
+
+def por_confirmar(db: Session, ctx: Contexto) -> list[MovimientoCuentaOut]:
+    """Bandeja "Por confirmar": pagos pendientes en cuentas de las que el usuario es dueno o encargado."""
+    return armar_movimientos(db, ctx, list(db.scalars(_q_por_confirmar(ctx).order_by(*ORDEN_MOVIMIENTOS))))
+
+
+DIAS_AVISO_RECHAZO = 30
+
+
+def resumen_por_confirmar(db: Session, ctx: Contexto) -> PorConfirmarResumen:
+    """Contador del menu y avisos al autor: rechazos recientes de SUS registros que siguen activos y en Efectivo."""
+    cantidad = db.scalar(select(func.count()).select_from(_q_por_confirmar(ctx).subquery())) or 0
+    desde = ahora_utc() - timedelta(days=DIAS_AVISO_RECHAZO)
+    rechazados = list(db.scalars(
+        select(CM).where(
+            CM.familia_id == ctx.familia_id, CM.usuario_id == ctx.usuario.id, CM.estado == "rechazado",
+            CM.confirmado_en >= desde,
+        ).order_by(CM.confirmado_en.desc()).limit(20)
+    ))
+    origenes = _cargar_origenes(db, rechazados)
+    nom = nombres_usuarios(db, {m.confirmado_por for m in rechazados})
+    nom_cuentas = nombres.nombres_para(db, ctx, {m.cuenta_id for m in rechazados})
+    avisos = []
+    for m in rechazados:
+        o = origenes.get((m.origen_tipo, m.origen_id))
+        if o is None or o.anulado or o.cuenta_id is not None:  # ya se anulo o ya eligio otra fuente: sin aviso
+            continue
+        avisos.append(RechazoAviso(
+            id=m.id, origen_clase=m.origen_tipo, origen_id=o.id, origen_tipo=tipo_origen(m.origen_tipo, o),
+            monto=texto(m.monto, m.moneda), fecha=o.fecha, cuenta_nombre=nom_cuentas[m.cuenta_id],
+            rechazado_por_nombre=nom.get(m.confirmado_por, ""), motivo=m.motivo_rechazo, rechazado_en=m.confirmado_en,
+        ))
+    return PorConfirmarResumen(cantidad=cantidad, rechazos=avisos)
+
+
+def fuentes_de(db: Session, ctx: Contexto, clase: str, objs: list) -> dict[int, dict]:
+    """Para la salida de gastos/ingresos/apoyos: {obj.id: campos de la fuente} vistos por ESTE lector.
+
+    `cuenta_nombre` sale por `nombres_para` ("otra cuenta" si no la ve) y `cuenta_id` solo si la ve. `estado_cuenta` es
+    el del vinculo vigente (o el del ultimo, si el registro esta anulado). Si el registro esta en Efectivo porque
+    rechazaron su pago, `rechazado_por_nombre`/`rechazo_motivo`/`rechazo_cuenta_nombre` lo explican."""
+    ids = [o.id for o in objs]
+    if not ids:
+        return {}
+    filas = list(db.scalars(
+        select(CM).where(CM.origen_tipo == clase, CM.origen_id.in_(ids)).order_by(CM.origen_id, CM.id)
+    ))
+    ultimo: dict[int, CM] = {}
+    for m in filas:  # en orden de id: queda el mas reciente de cada registro
+        ultimo[m.origen_id] = m
+    cuenta_ids = ({o.cuenta_id for o in objs} | {m.cuenta_id for m in ultimo.values()}) - {None}
+    ve = nombres.visibles(db, ctx, cuenta_ids)
+    nom_cuentas = nombres.nombres_para(db, ctx, cuenta_ids)
+    duenos = (
+        {c.id: c.usuario_id for c in db.scalars(select(Cuenta).where(Cuenta.id.in_(cuenta_ids)))} if cuenta_ids else {}
+    )
+    nom = nombres_usuarios(db, {m.confirmado_por for m in ultimo.values()} | set(duenos.values()))
+    out = {}
+    for o in objs:
+        m = ultimo.get(o.id)
+        d = {"fuente": "efectivo" if o.cuenta_id is None else "banco", "cuenta_id": None, "cuenta_nombre": None,
+             "estado_cuenta": None, "confirma_nombre": None, "rechazado_por_nombre": None, "rechazo_motivo": None,
+             "rechazo_cuenta_nombre": None}
+        if o.cuenta_id is not None:
+            d["cuenta_id"] = o.cuenta_id if o.cuenta_id in ve else None
+            d["cuenta_nombre"] = nom_cuentas[o.cuenta_id]
+            if m is not None and m.cuenta_id == o.cuenta_id:
+                d["estado_cuenta"] = m.estado
+                if m.estado == "pendiente":
+                    d["confirma_nombre"] = nom.get(duenos.get(m.cuenta_id))
+        elif m is not None and m.estado == "rechazado":
+            d["rechazado_por_nombre"] = nom.get(m.confirmado_por)
+            d["rechazo_motivo"] = m.motivo_rechazo
+            d["rechazo_cuenta_nombre"] = nom_cuentas[m.cuenta_id]
+        out[o.id] = d
+    return out

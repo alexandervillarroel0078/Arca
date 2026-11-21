@@ -18,6 +18,7 @@ from app.core.anulable import (
 )
 from app.core.deps import Contexto
 from app.core.tipos import rango_filtro
+from app.modulos.cuentas import service as cuentas
 from app.modulos.historial import service as historial
 from app.modulos.visibilidad import cambios as visib
 from app.modulos.visibilidad import service as vis
@@ -38,7 +39,7 @@ MOTIVO_CASCADA = "Anulada junto con el apoyo"
 
 
 def _datos_apoyo(a: Apoyo) -> dict:
-    return {"beneficiario": a.beneficiario, "monto": a.monto, "fecha": a.fecha, "nota": a.nota}
+    return {"beneficiario": a.beneficiario, "monto": a.monto, "fecha": a.fecha, "nota": a.nota, "fuente": a.cuenta_id}
 
 
 def _datos_dev(d: Devolucion) -> dict:
@@ -84,6 +85,7 @@ def _armar(db: Session, apoyos: list[Apoyo], ctx: Contexto) -> list[ApoyoOut]:
         | {d.anulado_por for lista in devs.values() for d in lista}
         | {d.editado_por for lista in devs.values() for d in lista},
     )
+    fuentes = cuentas.fuentes_de(db, ctx, "apoyo", apoyos)
     salida = []
     for a in apoyos:
         if a.anulado:
@@ -124,6 +126,7 @@ def _armar(db: Session, apoyos: list[Apoyo], ctx: Contexto) -> list[ApoyoOut]:
                     )
                     for d in todas
                 ],
+                **fuentes.get(a.id, {}),
                 **auditoria(a, nombres),
             )
         )
@@ -176,9 +179,15 @@ def obtener(db: Session, ctx: Contexto, apoyo_id: int) -> ApoyoOut:
     return _armar(db, [_obtener(db, ctx, apoyo_id)], ctx)[0]
 
 
-def _obtener_modificable(db: Session, ctx: Contexto, apoyo_id: int) -> Apoyo:
-    a = _obtener(db, ctx, apoyo_id, bloquear=True)
+def _obtener_modificable(db: Session, ctx: Contexto, apoyo_id: int, cuenta_nueva: int | None = None) -> Apoyo:
+    """Lo ves (404) y lo puedes editar (403). Bloquea primero la(s) cuenta(s) de su fuente y despues el apoyo."""
+    a = _obtener(db, ctx, apoyo_id)
     vis.exigir_editar(ctx, a)
+    previa = a.cuenta_id
+    cuentas.bloquear_cuentas(db, {previa, cuenta_nueva})
+    a = db.get(Apoyo, apoyo_id, with_for_update=True, populate_existing=True)
+    if a.cuenta_id != previa:  # su fuente cambio entre la lectura y el bloqueo (p. ej. la rechazaron): otra vez
+        raise HTTPException(status_code=409, detail="El apoyo cambió mientras tanto: vuelve a intentarlo")
     return a
 
 
@@ -207,6 +216,9 @@ def crear(db: Session, ctx: Contexto, datos: ApoyoCrear) -> tuple[ApoyoOut, bool
             if not vis.puede_ver(db, ctx, previo):
                 raise HTTPException(status_code=409, detail="Ese identificador ya fue usado")
             return _armar(db, [previo], ctx)[0], False  # si estaba anulado, sigue anulado
+    if datos.cuenta_id is not None and datos.anulado:
+        raise HTTPException(status_code=422, detail="Un registro anulado sin conexión solo puede ser en efectivo")
+    cuentas.bloquear_cuentas(db, [datos.cuenta_id])  # orden fijo: la cuenta antes que el registro
     visibilidad, personas = visib.preparar_creacion(db, ctx, datos)
     a = Apoyo(
         visibilidad=visibilidad,
@@ -221,6 +233,8 @@ def crear(db: Session, ctx: Contexto, datos: ApoyoCrear) -> tuple[ApoyoOut, bool
     )
     db.add(a)
     db.flush()
+    if datos.cuenta_id is not None:
+        cuentas.crear_vinculado(db, ctx, "apoyo", a, datos.cuenta_id, "retiro")
     visib.guardar_personas(db, ctx, "apoyo", a.id, personas)
     _log(db, ctx, "apoyo", a.id, "crear", historial.creacion(_datos_apoyo(a)))
     if datos.anulado:  # creado y anulado sin internet: una sola operacion
@@ -234,7 +248,7 @@ def crear(db: Session, ctx: Contexto, datos: ApoyoCrear) -> tuple[ApoyoOut, bool
 
 
 def editar(db: Session, ctx: Contexto, apoyo_id: int, datos: ApoyoEditar) -> ApoyoOut:
-    a = _obtener_modificable(db, ctx, apoyo_id)
+    a = _obtener_modificable(db, ctx, apoyo_id, datos.cuenta_id)
     if _ya_aplicada(db, ctx, "apoyo", a.id):
         return _armar(db, [a], ctx)[0]
     if (datos.visibilidad is not None or datos.compartido_con is not None) and a.usuario_id != ctx.usuario.id:
@@ -259,6 +273,9 @@ def editar(db: Session, ctx: Contexto, apoyo_id: int, datos: ApoyoEditar) -> Apo
         a.fecha = cambios["fecha"]
     if "nota" in cambios:
         a.nota = cambios["nota"]
+    cuenta_final = cambios["cuenta_id"] if "cuenta_id" in cambios else a.cuenta_id
+    if not a.anulado and (a.cuenta_id is not None or cuenta_final is not None):  # anulado: solo cambia quien lo ve
+        cuentas.sincronizar(db, ctx, "apoyo", a, cuenta_final, "retiro")
     diferencias = historial.diferencias(antes, _datos_apoyo(a))
     cambio_vis = visib.aplicar(db, ctx, a, datos.visibilidad, datos.compartido_con)
     if diferencias or not cambio_vis:
@@ -276,6 +293,7 @@ def anular(db: Session, ctx: Contexto, apoyo_id: int, motivo: str | None, versio
     exigir_version(a, version_base, _actual_apoyo(db, a, ctx), "El apoyo")
     if a.anulado:
         raise HTTPException(status_code=400, detail="El apoyo ya está anulado")
+    cuentas.anular_de_origen(db, ctx, "apoyo", a)
     for d in db.scalars(select(Devolucion).where(Devolucion.apoyo_id == a.id, Devolucion.anulado.is_(False))):
         marcar_anulacion(d, ctx.usuario.id, MOTIVO_CASCADA)
         d.anulada_con_apoyo = True
@@ -301,6 +319,9 @@ def reactivar(db: Session, ctx: Contexto, apoyo_id: int, version_base: int | Non
         _log(db, ctx, "devolucion", d.id, "reactivar", {"anulado": historial.cambio(True, False)}, "Reactivada junto con el apoyo")
     marcar_edicion(a, ctx.usuario.id)
     _log(db, ctx, "apoyo", a.id, "reactivar", {"anulado": historial.cambio(True, False)})
+    cuenta_previa = a.cuenta_id
+    if motivo := cuentas.reactivar_de_origen(db, ctx, "apoyo", a, "retiro"):
+        _log(db, ctx, "apoyo", a.id, "editar", {"fuente": historial.cambio(cuenta_previa, None)}, motivo[:300])
     db.commit()
     return _armar(db, [a], ctx)[0]
 

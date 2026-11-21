@@ -231,16 +231,22 @@ export async function volverEnLinea(ctx: import("@playwright/test").BrowserConte
   await page.evaluate(() => window.dispatchEvent(new Event("online")));
 }
 
+/** El "+" abre la hoja «¿Efectivo o Banco?» sobre la pantalla actual; elegir Efectivo abre Nuevo movimiento. */
+export async function abrirNuevo(page: Page) {
+  await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+  await page.getByRole("dialog", { name: "¿Efectivo o Banco?" }).getByRole("button", { name: /Efectivo/ }).click();
+}
+
 /** Abre Nuevo movimiento estando EN LINEA (la app guarda las categorias para usarlas sin internet) y vuelve a Inicio. */
 export async function prepararCategoriasLocales(page: Page) {
-  await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+  await abrirNuevo(page);
   await expect(page.getByRole("radio", { name: /Comida/ })).toBeVisible();
   await page.getByLabel("Cerrar").click();
   await expect(saldo(page)).toBeVisible();
 }
 
 export async function registrarGasto(page: Page, monto: string, categoria: RegExp, nota?: string) {
-  await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+  await abrirNuevo(page);
   await page.getByLabel("Monto").fill(monto);
   await page.getByRole("radio", { name: categoria }).click();
   if (nota) await page.getByLabel("Nota (opcional)").fill(nota);

@@ -18,6 +18,9 @@ OTRA_CUENTA = "otra cuenta"
 # Campos de `historial.cambios` que guardan un id de cuenta -> nombre del campo ya resuelto en la salida
 CAMPOS_CUENTA = {"cuenta_id": "cuenta", "cuenta_destino_id": "cuenta_destino"}
 ENTIDADES_CUENTAS = ("cuenta", "cuenta_mov")
+# Fuente de pago (0010): en gastos/ingresos/apoyos, `fuente` guarda el id de la cuenta (None = Efectivo)
+ENTIDADES_CON_FUENTE = ("movimiento", "apoyo")
+EFECTIVO = "Efectivo"
 
 
 def visibles(db: Session, ctx: Contexto, ids) -> set[int]:
@@ -53,10 +56,20 @@ def resolver_cambios(db: Session, ctx: Contexto, filas: list[Historial]) -> list
     for f in filas:
         if f.entidad == "cuenta_mov":
             ids |= _ids_de_cambios(f.cambios or {})
+        elif f.entidad in ENTIDADES_CON_FUENTE and isinstance((f.cambios or {}).get("fuente"), dict):
+            c = f.cambios["fuente"]
+            ids |= {v for v in (c.get("antes"), c.get("despues")) if isinstance(v, int)}
     nombres = nombres_para(db, ctx, ids)
     salida = []
     for f in filas:
         cambios = f.cambios or {}
+        if f.entidad in ENTIDADES_CON_FUENTE and isinstance(cambios.get("fuente"), dict):
+            c = cambios["fuente"]
+            fuente = {k: nombres.get(c.get(k)) if isinstance(c.get(k), int) else EFECTIVO for k in ("antes", "despues")}
+            if "antes" in c and c["antes"] is None and f.accion == "crear":
+                fuente["antes"] = None  # creacion: de nada -> cuenta
+            salida.append({**cambios, "fuente": fuente})
+            continue
         if f.entidad != "cuenta_mov":
             salida.append(cambios)
             continue

@@ -14,6 +14,8 @@ from app.modulos.movimientos.models import Movimiento
 from app.modulos.visibilidad import service as vis
 
 CAMPOS_AUDITORIA = {
+    "fuente", "cuenta_id", "cuenta_nombre", "estado_cuenta", "confirma_nombre", "rechazado_por_nombre", "rechazo_motivo",
+    "rechazo_cuenta_nombre",
     "visibilidad", "compartido_con", "version", "uuid_cliente", "anulado", "anulado_por_nombre", "anulado_en", "motivo_anulacion", "editado_por_nombre", "editado_en",
 }
 

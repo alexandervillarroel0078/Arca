@@ -26,6 +26,7 @@ class ComparacionResumen(BaseModel):
     ingresos: Comparacion
     gastos: Comparacion
     saldo: Comparacion
+    saldo_efectivo: Comparacion  # fuente de pago: "Te queda" solo con lo de Efectivo
 
 
 class ResumenOut(BaseModel):
@@ -42,6 +43,12 @@ class ResumenOut(BaseModel):
     gasto_familiar_total: Monto  # gastos + consumido
     apoyos_pendientes_total: Monto
     apoyos_pendientes_cantidad: int  # beneficiarios con saldo pendiente
+    # Fuente de pago (0010): ingresos/gastos/apoyos cuentan TODO; lo pagado con banco va aparte y "Te queda"
+    # (saldo_efectivo) usa solo Efectivo: ingresos_efectivo - gastos_efectivo - apoyos_efectivo + devoluciones
+    ingresos_banco: Monto = 0
+    gastos_banco: Monto = 0  # incluido en `gastos`
+    apoyos_banco: Monto = 0  # incluido en `apoyos_entregados`
+    saldo_efectivo: Monto = 0
     incluye_privados: int = 0  # "Incluye tus N registros privados": tus registros propios que no son de toda la familia
 
 
@@ -90,6 +97,12 @@ class MesTotal(BaseModel):
     devoluciones: Monto
     consumido: Monto
     saldo: Monto
+    # Fuente de pago (0010): ingresos/gastos/apoyos cuentan TODO; lo pagado con banco va aparte y "Te queda"
+    # (saldo_efectivo) usa solo Efectivo: ingresos_efectivo - gastos_efectivo - apoyos_efectivo + devoluciones
+    ingresos_banco: Monto = 0
+    gastos_banco: Monto = 0  # incluido en `gastos`
+    apoyos_banco: Monto = 0  # incluido en `apoyos_entregados`
+    saldo_efectivo: Monto = 0
 
 
 class TendenciaOut(BaseModel):

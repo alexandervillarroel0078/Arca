@@ -5,6 +5,7 @@ import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import { anterior, calcular, hoyLaPaz, sumarDias } from "../../src/core/periodo";
 import {
+  abrirNuevo,
   abrirLista, apoyoApi, crearAdmin, crearMiembro, categoriaId, cambiosPendientes, devolucionApi, entrarRapido, API, expect, gastoApi, ingresoApi, irA, irAOpcionFamilia, prepararCategoriasLocales, registrarGasto, test, volverEnLinea,
 } from "../ayudas";
 
@@ -43,7 +44,7 @@ test("capturas de las pantallas de los bloques A a E", async ({ page, request })
   await captura(page, "01b-inicio-abajo", true);
 
   // Nuevo movimiento: arriba, al final y con un error de validacion (monto sin categoria)
-  await page.getByRole("link", { name: "Nuevo movimiento" }).click();
+  await abrirNuevo(page);
   await expect(page.getByRole("radio", { name: /Comida/ })).toBeVisible();
   await page.getByLabel("Monto").fill("45.50");
   await captura(page, "02-nuevo-arriba");
@@ -97,7 +98,7 @@ test("capturas de una fila sin enviar (sin conexion)", async ({ page, request, c
   await gastoApi(request, admin, { monto: 30, nota: "Taxi", categoria: "Transporte" });
   await entrarRapido(page, admin);
   await expect(page.getByText("Taxi")).toBeVisible();
-  await page.getByRole("link", { name: "Nuevo movimiento" }).click(); // cachea las categorias
+  await abrirNuevo(page); // cachea las categorias
   await expect(page.getByRole("radio", { name: /Comida/ })).toBeVisible();
   await page.getByRole("link", { name: "Nuevo movimiento" }).count(); // (sigue en el formulario)
   await context.setOffline(true);

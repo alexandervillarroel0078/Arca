@@ -1,5 +1,9 @@
-import { useEffect } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { refrescarPorConfirmar, usePorConfirmar } from "../modulos/cuentas/porConfirmar";
+import { guardarUltimaFuente } from "../modulos/cuentas/recordar";
+import AvisoRechazo from "../modulos/movimientos/AvisoRechazo";
+import HojaFuente from "../modulos/movimientos/HojaFuente";
 import { olvidarLecturasDeCache } from "../modulos/sync/cache";
 import BarraSync from "../modulos/sync/BarraSync";
 import { useEnCola } from "../modulos/sync/useSync";
@@ -31,21 +35,55 @@ function InsigniaPendientes() {
 }
 
 /**
+ * Insignia "Por confirmar" sobre Familia (Cuentas se abre desde ahi): pagos con banco que esperan que TU los confirmes.
+ * Se lee al abrir la app (sin push). Como la otra insignia, va al lado del enlace y no cambia su nombre accesible.
+ */
+function InsigniaPorConfirmar() {
+  const { cantidad } = usePorConfirmar();
+  if (cantidad === 0) return null;
+  return (
+    <span
+      role="img"
+      aria-label={`${cantidad} ${cantidad === 1 ? "pago" : "pagos"} por confirmar`}
+      data-testid="insignia-por-confirmar"
+      className="pointer-events-none absolute left-1/2 top-1 ml-2 flex h-5 min-w-[20px] items-center justify-center rounded-full border-2 border-white bg-arca px-1 text-[11px] font-bold leading-none text-white"
+    >
+      {cantidad > 9 ? "9+" : cantidad}
+    </span>
+  );
+}
+
+/**
  * El "+" de la barra: registrar un movimiento desde cualquier pantalla. Un circulo verde que sobresale de la barra.
- * En "Nuevo" y "Editar" ya estas ahi: queda marcado (aria-current) y atenuado, y tocarlo no navega.
+ * Abre la hoja "¿Efectivo o Banco?" sobre la pantalla actual; al elegir, se abre el formulario con esa fuente.
+ * En "Nuevo" y "Editar" ya estas ahi: queda marcado (aria-current) y atenuado, y tocarlo no hace nada.
  */
 function BotonNuevo() {
   const { pathname } = useLocation();
+  const navegar = useNavigate();
+  const [hoja, setHoja] = useState(false);
   const aqui = pathname === "/nuevo" || pathname.startsWith("/editar/");
   return (
     <li>
+      {hoja && (
+        <HojaFuente
+          alCerrar={() => setHoja(false)}
+          alElegir={(f) => {
+            setHoja(false);
+            guardarUltimaFuente(f ? f.id : "efectivo");
+            navegar("/nuevo", { state: { fuente: f } });
+          }}
+        />
+      )}
       <Link
         to="/nuevo"
         aria-label="Nuevo movimiento"
         aria-current={aqui ? "page" : undefined}
         aria-disabled={aqui || undefined}
+        aria-haspopup={aqui ? undefined : "dialog"}
         onClick={(e) => {
-          if (aqui) e.preventDefault(); // no se navega a si mismo (ni se pierde lo que se esta editando)
+          e.preventDefault(); // en Nuevo/Editar no se navega a si mismo; en el resto se abre la hoja
+          if (!aqui) setHoja(true);
         }}
         className="group relative block h-nav"
       >
@@ -79,10 +117,20 @@ export default function Layout() {
   const { pathname } = useLocation();
   // el aviso "Datos de hace X min" habla solo de la pantalla que se esta viendo
   useEffect(() => olvidarLecturasDeCache(), [pathname]);
+  // "Por confirmar" y avisos de pagos rechazados: al abrir la app y al volver a ella (sin push)
+  useEffect(() => {
+    void refrescarPorConfirmar();
+    const alVolver = () => {
+      if (document.visibilityState === "visible") void refrescarPorConfirmar();
+    };
+    document.addEventListener("visibilitychange", alVolver);
+    return () => document.removeEventListener("visibilitychange", alVolver);
+  }, []);
   return (
     <div className="min-h-full flex flex-col items-center">
       <main className="w-full max-w-[480px] flex-1 px-4 pt-4 pb-[calc(env(safe-area-inset-bottom)+7rem)]">
         <BarraSync />
+        <AvisoRechazo />
         <Outlet />
       </main>
       <nav
@@ -102,6 +150,7 @@ export default function Layout() {
                 {i.texto}
               </Link>
               {i.a === "/" && <InsigniaPendientes />}
+              {i.a === "/familia" && <InsigniaPorConfirmar />}
             </li>,
           ])}
         </ul>

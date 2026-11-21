@@ -7,8 +7,9 @@ from app.core.anulable import AnulacionIn, ReactivacionIn
 from app.core.deps import Ctx, DbSession
 from app.modulos.cuentas import service
 from app.modulos.cuentas.schemas import (
-    AjusteCrear, Catalogo, CuentaCrear, CuentaEditar, CuentaOut, CuentasOut, DepositoCrear, MovimientoCuentaOut,
-    MovimientoFechaEditar, RetiroCrear, TraspasoCrear,
+    AjusteCrear, Catalogo, ConfirmarIn, CuentaCrear, CuentaEditar, CuentaFuenteOut, CuentaOut, CuentasOut,
+    DepositoCrear, MovimientoCuentaOut, MovimientoFechaEditar, PorConfirmarResumen, RechazarIn, RetiroCrear,
+    TraspasoCrear,
 )
 from app.modulos.visibilidad.cambios import VisibilidadCambiar
 
@@ -58,6 +59,36 @@ def traspaso(datos: TraspasoCrear, db: DbSession, ctx: Ctx, response: Response):
     if not creado:
         response.status_code = 200
     return salida
+
+
+@router.get("/fuentes", response_model=list[CuentaFuenteOut])
+def fuentes(db: DbSession, ctx: Ctx):
+    """Cuentas que se pueden elegir como "Banco" al registrar un gasto, ingreso o apoyo (activas, en Bs, que ves)."""
+    return service.cuentas_fuente(db, ctx)
+
+
+@router.get("/por-confirmar", response_model=list[MovimientoCuentaOut])
+def por_confirmar(db: DbSession, ctx: Ctx):
+    """Bandeja "Por confirmar": pagos con banco pendientes en tus cuentas (eres dueño o encargado)."""
+    return service.por_confirmar(db, ctx)
+
+
+@router.get("/por-confirmar/resumen", response_model=PorConfirmarResumen)
+def por_confirmar_resumen(db: DbSession, ctx: Ctx):
+    """Contador del menú y avisos de pagos rechazados de tus registros."""
+    return service.resumen_por_confirmar(db, ctx)
+
+
+@router.post("/movimientos/{movimiento_id}/confirmar", response_model=MovimientoCuentaOut)
+def confirmar(movimiento_id: int, db: DbSession, ctx: Ctx, datos: ConfirmarIn | None = None):
+    """Solo el dueño o el encargado. Desde ahora suma al saldo, con la fecha y hora de la confirmación."""
+    return service.confirmar(db, ctx, movimiento_id, datos.version_base if datos else None)
+
+
+@router.post("/movimientos/{movimiento_id}/rechazar", response_model=MovimientoCuentaOut)
+def rechazar(movimiento_id: int, db: DbSession, ctx: Ctx, datos: RechazarIn | None = None):
+    """Solo el dueño o el encargado. El registro de origen vuelve a Efectivo (no se anula)."""
+    return service.rechazar(db, ctx, movimiento_id, datos.motivo if datos else None, datos.version_base if datos else None)
 
 
 @router.get("/movimientos/{movimiento_id}", response_model=MovimientoCuentaOut)

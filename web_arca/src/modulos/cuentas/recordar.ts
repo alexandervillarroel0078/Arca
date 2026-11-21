@@ -37,7 +37,47 @@ export function guardarUltimo(u: Ultimo): void {
 export function olvidarUltimo(): void {
   try {
     localStorage.removeItem(CLAVE);
+    localStorage.removeItem(CLAVE_FUENTE);
+    localStorage.removeItem(CLAVE_RECHAZOS);
   } catch {
     /* nada que borrar */
+  }
+}
+
+// ------------------------------------------------------------------ fuente de pago (0010): solo ids
+const CLAVE_FUENTE = "arca-fuente-ultima"; // "efectivo" o el id de la cuenta usada la última vez
+const CLAVE_RECHAZOS = "arca-rechazos-vistos"; // ids de movimientos de cuenta rechazados cuyo aviso ya se cerró
+
+export function leerUltimaFuente(): "efectivo" | number | null {
+  try {
+    const v = JSON.parse(localStorage.getItem(CLAVE_FUENTE) ?? "null") as unknown;
+    return v === "efectivo" || typeof v === "number" ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+export function guardarUltimaFuente(f: "efectivo" | number): void {
+  try {
+    localStorage.setItem(CLAVE_FUENTE, JSON.stringify(f));
+  } catch {
+    /* sin almacenamiento: no se recuerda */
+  }
+}
+
+export function rechazosVistos(): number[] {
+  try {
+    const v = JSON.parse(localStorage.getItem(CLAVE_RECHAZOS) ?? "[]") as unknown;
+    return Array.isArray(v) ? v.filter((x): x is number => typeof x === "number") : [];
+  } catch {
+    return [];
+  }
+}
+
+export function marcarRechazoVisto(id: number): void {
+  try {
+    localStorage.setItem(CLAVE_RECHAZOS, JSON.stringify([...rechazosVistos(), id].slice(-50)));
+  } catch {
+    /* sin almacenamiento: el aviso volverá a salir */
   }
 }

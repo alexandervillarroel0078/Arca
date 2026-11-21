@@ -13,7 +13,8 @@ const efectoDe = (m: MovimientoCuenta): Monto => (m.efecto != null ? aMonto(m.ef
 
 /** Entró = depósitos; Salió = retiros + comisión; traspasos y ajustes van aparte, sin sumarse a ninguno. */
 export function resumenMes(movs: MovimientoCuenta[]): ResumenMes {
-  const vivos = movs.filter((m) => !m.anulado);
+  // un pago con banco por confirmar o rechazado no suma (igual que el saldo del servidor)
+  const vivos = movs.filter((m) => !m.anulado && (m.estado ?? "confirmado") === "confirmado");
   const de = (tipo: MovimientoCuenta["tipo"]) => sumar(vivos.filter((m) => m.tipo === tipo).map(efectoDe));
   return { entro: de("deposito"), salio: -de("retiro"), traspasos: de("traspaso"), ajustes: de("ajuste") };
 }

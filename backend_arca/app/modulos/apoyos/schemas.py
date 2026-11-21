@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from app.core.anulable import AuditoriaOut
 from app.modulos.periodos.calculo import hoy_la_paz
 from app.core.tipos import Monto, MontoPositivo
+from app.modulos.cuentas.schemas import FuenteOut
 from app.modulos.visibilidad.cambios import VisibilidadIn
 
 Estado = Literal["Pendiente", "Saldado", "Cerrado", "Anulado"]
@@ -18,6 +19,7 @@ class ApoyoCrear(VisibilidadIn):
     fecha: date = Field(default_factory=hoy_la_paz)
     nota: str | None = Field(default=None, max_length=500)
     uuid_cliente: UUID | None = None
+    cuenta_id: int | None = None  # fuente de pago: vacio = Efectivo; si no, la cuenta (Banco) del retiro vinculado
     # Fase 12: creado y anulado sin internet = una sola operacion
     anulado: bool = False
     motivo_anulacion: str | None = Field(default=None, max_length=300)
@@ -29,6 +31,7 @@ class ApoyoEditar(VisibilidadIn):
     monto: MontoPositivo | None = None
     fecha: date | None = None
     nota: str | None = Field(default=None, max_length=500)
+    cuenta_id: int | None = None  # ausente = se conserva la fuente; null = pasa a Efectivo
     version_base: int | None = Field(default=None, ge=1)
 
 
@@ -60,7 +63,7 @@ class DevolucionOut(AuditoriaOut):
     anulada_con_apoyo: bool
 
 
-class ApoyoOut(AuditoriaOut):
+class ApoyoOut(FuenteOut, AuditoriaOut):
     id: int
     beneficiario: str
     monto: Monto
