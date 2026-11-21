@@ -9,10 +9,13 @@ Reglas clave (ver tambien `monedas.py`, `nombres.py` y `visibilidad/service.py`)
 - Todo registro de movimiento bloquea (SELECT ... FOR UPDATE, en orden de id) las cuentas que toca: el ajuste por
   conteo calcula su diferencia sobre un saldo que nadie mas puede cambiar mientras tanto.
 - Los nombres de cuenta SOLO salen por `nombres.nombres_para`.
-- Un movimiento no se edita: se anula y se reactiva. La UNICA excepcion es su fecha (`cambiar_fecha_movimiento`), y
-  nunca la de un ajuste por conteo. Ninguna fecha (al crear ni al corregir) puede ser posterior a hoy en La Paz.
+- Un movimiento no se edita: se anula y se reactiva. La UNICA excepcion es su fecha y su hora
+  (`cambiar_fecha_movimiento`), y nunca las de un ajuste por conteo. Ninguna fecha/hora (al crear ni al corregir) puede
+  ser posterior al momento actual en La Paz (`_hora_valida`).
+- La hora es LOCAL de La Paz, sin zona, por minutos y opcional (nula en lo anterior a la 0009). `fecha` manda en
+  filtros y periodos; la hora solo ordena dentro del dia (`ORDEN_MOVIMIENTOS`).
 """
-from datetime import date
+from datetime import date, time
 from decimal import Decimal
 
 from fastapi import HTTPException
@@ -34,11 +37,20 @@ from app.modulos.cuentas.schemas import (
 )
 from app.modulos.familia.models import Miembro
 from app.modulos.historial import service as historial
-from app.modulos.periodos.calculo import hoy_la_paz
+from app.modulos.periodos.calculo import ahora_la_paz
 from app.modulos.visibilidad import cambios as visib
 from app.modulos.visibilidad import service as vis
 
 OTRA = nombres.OTRA_CUENTA
+
+
+def hora_texto(h: time | None) -> str | None:
+    """"HH:MM" (la hora se guarda y se muestra por minutos) o None."""
+    return h.strftime("%H:%M") if h is not None else None
+
+
+# Mas reciente primero: por dia, luego por hora (lo antiguo sin hora va al final de su dia) y por orden de registro.
+ORDEN_MOVIMIENTOS = (CM.fecha.desc(), CM.hora.desc().nulls_last(), CM.id.desc())
 
 
 # ------------------------------------------------------------------ saldos (calculados, nunca guardados)
@@ -127,10 +139,23 @@ def _exigir_cuenta_activa(c: Cuenta) -> None:
         raise HTTPException(status_code=400, detail="La cuenta está anulada: reactívala antes de usarla")
 
 
-def _exigir_fecha_valida(fecha: date) -> None:
-    """La fecha de un movimiento no puede ser posterior a hoy en La Paz (al crear y al corregirla)."""
-    if fecha > hoy_la_paz():
+def _hora_valida(fecha: date, hora: time | None, poner_actual: bool = True) -> time | None:
+    """Valida la fecha (nunca futura) y la hora LOCAL de La Paz (por minutos, sin zona). Si es hoy: una hora posterior a
+    la actual es 422 y, sin hora, `poner_actual` pone la de ahora. Un solo reloj para fecha y hora (sin saltos a medianoche)."""
+    if hora is not None and hora.tzinfo is not None:
+        raise HTTPException(status_code=422, detail="La hora va sin zona horaria: es la hora de La Paz")
+    ahora = ahora_la_paz()
+    if fecha > ahora.date():
         raise HTTPException(status_code=422, detail="La fecha no puede ser posterior a hoy")
+    actual = time(ahora.hour, ahora.minute)
+    if hora is not None:
+        hora = hora.replace(second=0, microsecond=0)
+    if fecha == ahora.date():
+        if hora is None and poner_actual:
+            return actual
+        if hora is not None and hora > actual:
+            raise HTTPException(status_code=422, detail="La hora no puede ser posterior a la hora actual")
+    return hora
 
 
 def _ya_aplicada(db: Session, ctx: Contexto, entidad: str, entidad_id: int) -> bool:
@@ -186,7 +211,7 @@ def armar_movimientos(
         salida.append(MovimientoCuentaOut(
             id=m.id, tipo=m.tipo, moneda=m.moneda, monto=texto(m.monto, m.moneda), comision=texto(m.comision, m.moneda),
             sentido=m.sentido, saldo_previo=texto(m.saldo_previo, m.moneda), saldo_declarado=texto(m.saldo_declarado, m.moneda),
-            fecha=m.fecha, nota=m.nota,
+            fecha=m.fecha, hora=hora_texto(m.hora), nota=m.nota,
             cuenta_id=m.cuenta_id if m.cuenta_id in ve else None, cuenta_nombre=nom_cuentas[m.cuenta_id],
             cuenta_destino_id=m.cuenta_destino_id if m.cuenta_destino_id in ve else None,
             cuenta_destino_nombre=nom_cuentas[m.cuenta_destino_id] if m.cuenta_destino_id else None,
@@ -433,7 +458,7 @@ def _cambios_mov(db: Session, m: CM, persona: str | None) -> dict:
         "tipo": m.tipo, "cuenta_id": m.cuenta_id, "cuenta_destino_id": m.cuenta_destino_id,
         "monto": con_moneda(m.monto, m.moneda), "comision": con_moneda(m.comision, m.moneda), "sentido": m.sentido,
         "saldo_previo": con_moneda(m.saldo_previo, m.moneda), "saldo_declarado": con_moneda(m.saldo_declarado, m.moneda),
-        "fecha": m.fecha, "nota": m.nota, "persona": persona,
+        "fecha": m.fecha, "hora": hora_texto(m.hora), "nota": m.nota, "persona": persona,
     })
 
 
@@ -461,9 +486,9 @@ def registrar_deposito(db: Session, ctx: Contexto, cuenta_id: int, d: DepositoCr
         return p
     c = _preparar(db, ctx, [cuenta_id])[cuenta_id]
     validar_monto(d.monto, c.moneda)
-    _exigir_fecha_valida(d.fecha)
+    hora = _hora_valida(d.fecha, d.hora)
     persona = _persona(db, ctx, d)
-    m = _nuevo(ctx, uuid_txt, c, "deposito", monto=d.monto, fecha=d.fecha, nota=d.nota, **persona)
+    m = _nuevo(ctx, uuid_txt, c, "deposito", monto=d.monto, fecha=d.fecha, hora=hora, nota=d.nota, **persona)
     return _guardar(db, ctx, m, persona, c)
 
 
@@ -477,9 +502,11 @@ def registrar_retiro(db: Session, ctx: Contexto, cuenta_id: int, d: RetiroCrear)
         if c.tipo != "cripto":
             raise HTTPException(status_code=422, detail="Solo los retiros de cuentas cripto llevan comisión de red")
         validar_monto(d.comision, c.moneda, "comision", positivo=False)
-    _exigir_fecha_valida(d.fecha)
+    hora = _hora_valida(d.fecha, d.hora)
     persona = _persona(db, ctx, d)
-    m = _nuevo(ctx, uuid_txt, c, "retiro", monto=d.monto, comision=d.comision, fecha=d.fecha, nota=d.nota, **persona)
+    m = _nuevo(
+        ctx, uuid_txt, c, "retiro", monto=d.monto, comision=d.comision, fecha=d.fecha, hora=hora, nota=d.nota, **persona
+    )
     return _guardar(db, ctx, m, persona, c)
 
 
@@ -491,7 +518,7 @@ def registrar_ajuste(db: Session, ctx: Contexto, cuenta_id: int, d: AjusteCrear)
         return p
     c = _preparar(db, ctx, [cuenta_id])[cuenta_id]
     validar_monto(d.saldo_declarado, c.moneda, "saldo_declarado", positivo=False, permitir_negativo=True)
-    _exigir_fecha_valida(d.fecha)
+    hora = _hora_valida(d.fecha, d.hora)
     previo = saldos(db, [c])[c.id]
     diferencia = d.saldo_declarado - previo
     if diferencia == 0:
@@ -499,7 +526,7 @@ def registrar_ajuste(db: Session, ctx: Contexto, cuenta_id: int, d: AjusteCrear)
     persona = _persona(db, ctx, d)
     m = _nuevo(
         ctx, uuid_txt, c, "ajuste", monto=abs(diferencia), sentido="entrada" if diferencia > 0 else "salida",
-        saldo_previo=previo, saldo_declarado=d.saldo_declarado, fecha=d.fecha, nota=d.nota, **persona,
+        saldo_previo=previo, saldo_declarado=d.saldo_declarado, fecha=d.fecha, hora=hora, nota=d.nota, **persona,
     )
     return _guardar(db, ctx, m, persona, c)
 
@@ -517,10 +544,11 @@ def registrar_traspaso(db: Session, ctx: Contexto, d: TraspasoCrear) -> tuple[Mo
     if origen.moneda != destino.moneda:
         raise HTTPException(status_code=422, detail="Solo se puede traspasar entre cuentas de la misma moneda")
     validar_monto(d.monto, origen.moneda)
-    _exigir_fecha_valida(d.fecha)
+    hora = _hora_valida(d.fecha, d.hora)
     persona = _persona(db, ctx, d)
     m = _nuevo(
-        ctx, uuid_txt, origen, "traspaso", cuenta_destino_id=destino.id, monto=d.monto, fecha=d.fecha, nota=d.nota, **persona
+        ctx, uuid_txt, origen, "traspaso", cuenta_destino_id=destino.id, monto=d.monto, fecha=d.fecha, hora=hora,
+        nota=d.nota, **persona,
     )
     return _guardar(db, ctx, m, persona, origen)
 
@@ -585,9 +613,11 @@ def reactivar_movimiento(db: Session, ctx: Contexto, mov_id: int, version_base: 
 
 
 def cambiar_fecha_movimiento(db: Session, ctx: Contexto, mov_id: int, d: MovimientoFechaEditar) -> MovimientoCuentaOut:
-    """Corrige SOLO la fecha. No toca el saldo (que no depende de la fecha): solo el mes en que aparece y el orden.
+    """Corrige SOLO la fecha y/o la hora. No toca el saldo (que no depende de ellas): solo el mes en que aparece y el orden.
 
-    Nunca en un ajuste por conteo: su saldo previo y su saldo contado son una foto del momento en que se registro."""
+    `hora` ausente = se conserva la que tenia; `hora: null` = queda sin hora. Lo que resulte no puede quedar en el
+    futuro de La Paz. Nunca en un ajuste por conteo: su saldo previo y su saldo contado son una foto del momento en que
+    se registro. El historial guarda solo lo que cambio ({fecha} y/o {hora})."""
     m, cuentas = _tocar_movimiento(db, ctx, mov_id)
     if _ya_aplicada(db, ctx, "cuenta_mov", m.id):
         return armar_movimientos(db, ctx, [m])[0]
@@ -596,18 +626,23 @@ def cambiar_fecha_movimiento(db: Session, ctx: Contexto, mov_id: int, d: Movimie
     if m.tipo == "ajuste":
         raise HTTPException(
             status_code=422,
-            detail="La fecha de un ajuste por conteo no se puede cambiar: el saldo contado corresponde al momento en que "
-            "se registró. Anúlalo y registra un ajuste nuevo",
+            detail="La fecha y la hora de un ajuste por conteo no se pueden cambiar: el saldo contado corresponde al "
+            "momento en que se registró. Anúlalo y registra un ajuste nuevo",
         )
     for c in cuentas.values():
         _exigir_cuenta_activa(c)
-    _exigir_fecha_valida(d.fecha)
-    if d.fecha == m.fecha:  # sin cambio real: no se toca nada (ni la version ni el historial)
+    hora = d.hora if "hora" in d.model_fields_set else m.hora
+    hora = _hora_valida(d.fecha, hora, poner_actual=False)
+    cambios = {}
+    if d.fecha != m.fecha:
+        cambios["fecha"] = historial.cambio(m.fecha, d.fecha)
+    if hora != m.hora:
+        cambios["hora"] = historial.cambio(hora_texto(m.hora), hora_texto(hora))
+    if not cambios:  # sin cambio real: no se toca nada (ni la version ni el historial)
         return armar_movimientos(db, ctx, [m])[0]
-    antes = m.fecha
-    m.fecha = d.fecha
+    m.fecha, m.hora = d.fecha, hora
     marcar_edicion(m, ctx.usuario.id)
-    historial.registrar(db, ctx.familia_id, ctx.usuario.id, "cuenta_mov", m.id, "editar", {"fecha": historial.cambio(antes, d.fecha)})
+    historial.registrar(db, ctx.familia_id, ctx.usuario.id, "cuenta_mov", m.id, "editar", cambios)
     db.commit()
     return armar_movimientos(db, ctx, [m])[0]
 
@@ -629,5 +664,5 @@ def listar_movimientos(
         q = q.where(CM.fecha >= desde)
     if hasta is not None:
         q = q.where(CM.fecha <= hasta)
-    q = q.order_by(CM.fecha.desc(), CM.id.desc()).limit(limite).offset(desplazamiento)
+    q = q.order_by(*ORDEN_MOVIMIENTOS).limit(limite).offset(desplazamiento)
     return armar_movimientos(db, ctx, list(db.scalars(q)), cuenta_ref=cuenta_id)

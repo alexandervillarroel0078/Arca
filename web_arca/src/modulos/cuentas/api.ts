@@ -52,6 +52,7 @@ export interface MovimientoCuenta extends Auditoria {
   saldo_previo: string | null;
   saldo_declarado: string | null;
   fecha: string;
+  hora: string | null; // "HH:MM", hora local de La Paz; nula en los movimientos registrados antes de la hora
   nota: string | null;
   cuenta_id: number | null; // nulo: una cuenta que no ves ("otra cuenta")
   cuenta_nombre: string;
@@ -125,6 +126,7 @@ export function listarMovimientosCuentas(f: FiltrosMovimientos = {}) {
 
 interface Comun extends Persona {
   fecha: string;
+  hora?: string; // "HH:MM" de La Paz; sin hora y con fecha de hoy, el servidor pone la actual
   nota?: string;
   uuid_cliente?: string;
 }
@@ -139,8 +141,11 @@ export const registrarTraspaso = (d: Comun & { cuenta_id: number; cuenta_destino
 
 export const anularMovimientoCuenta = (m: MovimientoCuenta, motivo: string) =>
   api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/anular`, { metodo: "POST", cuerpo: { motivo: motivo || null, version_base: m.version } });
-/** Corrige SOLO la fecha (nunca de un ajuste por conteo; el servidor lo rechaza). Un 409 = alguien lo cambió antes. */
-export const cambiarFechaMovimientoCuenta = (m: MovimientoCuenta, fecha: string) =>
-  api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}`, { metodo: "PATCH", cuerpo: { fecha, version_base: m.version } });
+/**
+ * Corrige SOLO la fecha y la hora (nunca de un ajuste por conteo; el servidor lo rechaza). `hora: null` la quita.
+ * Un 409 = alguien lo cambió antes.
+ */
+export const cambiarFechaMovimientoCuenta = (m: MovimientoCuenta, fecha: string, hora: string | null) =>
+  api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}`, { metodo: "PATCH", cuerpo: { fecha, hora, version_base: m.version } });
 export const reactivarMovimientoCuenta = (m: MovimientoCuenta) =>
   api<MovimientoCuenta>(`/cuentas/movimientos/${m.id}/reactivar`, { metodo: "POST", cuerpo: { version_base: m.version } });

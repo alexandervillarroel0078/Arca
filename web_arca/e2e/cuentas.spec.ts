@@ -108,6 +108,38 @@ test.describe("Cuentas", () => {
     await alturaMinima(page.getByRole("link", { name: /^(Nueva cuenta|Registrar movimiento)$/ }));
   });
 
+  test("hora: «Hoy HH:MM» en la fila, hora opcional al registrar y editable en «Cambiar fecha y hora»", async ({ page, request }) => {
+    const ana = await crearAdmin(request);
+    const c = await cuentaApi(request, ana, { nombre: "Caja hora", saldo_inicial: "100" });
+    const conHoraDelServidor = await depositoApi(request, ana, c.id, "40", { nota: "Sin hora elegida" }); // hoy: el servidor pone la hora
+    const r = await request.get(`${API}/cuentas/movimientos/${conHoraDelServidor.id}`, { headers: ana.headers });
+    expect((await r.json()).hora).toMatch(/^\d{2}:\d{2}$/);
+    await entrarRapido(page, ana);
+    await abrirCuenta(page, "Caja hora");
+    await expect(page.getByTestId("fila-movimiento").filter({ hasText: "Sin hora elegida" }).getByTestId("fecha-movimiento")).toHaveText(/^Hoy \d{2}:\d{2}$/);
+
+    // Registrar con hora elegida (00:00 de hoy nunca es futura)
+    await registrarEnEstaCuenta(page).click();
+    await expect(page.getByLabel("Hora (opcional)")).toHaveValue("");
+    await page.getByLabel("Monto (Bs)").fill("5");
+    await page.getByLabel("Hora (opcional)").fill("00:00");
+    await page.getByLabel("Nota (opcional)").fill("Madrugada");
+    await sinDesborde(page);
+    await guardar(page).click();
+    const madrugada = page.getByTestId("fila-movimiento").filter({ hasText: "Madrugada" });
+    await expect(madrugada.getByTestId("fecha-movimiento")).toHaveText("Hoy 00:00");
+    await sinDesborde(page);
+
+    // Cambiar fecha y hora: vaciar la hora la quita
+    await (await abrirMenuFila(madrugada)).getByRole("menuitem", { name: "Cambiar fecha y hora" }).click();
+    const dialogo = page.getByRole("dialog", { name: "Cambiar fecha y hora" });
+    await expect(dialogo.getByLabel("Hora (opcional)")).toHaveValue("00:00");
+    await dialogo.getByLabel("Hora (opcional)").fill("");
+    await dialogo.getByRole("button", { name: "Guardar" }).click();
+    await expect(dialogo).toHaveCount(0);
+    await expect(madrugada.getByTestId("fecha-movimiento")).toHaveText("Hoy");
+  });
+
   test("anular y reactivar un movimiento actualiza el saldo", async ({ page, request }) => {
     const ana = await crearAdmin(request);
     const c = await cuentaApi(request, ana, { nombre: "Caja chica", saldo_inicial: "100" });

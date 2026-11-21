@@ -172,7 +172,7 @@ cd backend_arca
 .venv\Scripts\alembic.exe current
 Remove-Item Env:DATABASE_URL
 ```
-Haz un respaldo antes (sección 4c). Estado actual de Supabase: **0007**. El head del repo en la rama `modulo-cuentas` es **0008** (ver "Despliegue del módulo Cuentas").
+Haz un respaldo antes (sección 4c). El head del repo es **0009** (hora de los movimientos de cuenta). Antes de migrar, mira con `alembic current` en qué versión está Supabase (0007 si nunca se aplicó Cuentas, 0008 si sí): `upgrade head` aplica en orden todo lo que falte.
 
 ### Despliegue del módulo Cuentas
 Orden obligatorio (la migración va **antes** de desplegar el código nuevo):
@@ -185,6 +185,16 @@ Orden obligatorio (la migración va **antes** de desplegar el código nuevo):
 **Rollback:** `alembic downgrade -1` (probado en `arca_test`). El downgrade borra solo las filas de `compartidos` cuya entidad es `cuenta`; el `historial` se conserva y queda oculto por el filtro cerrado de entidades desconocidas.
 
 **Aviso:** la 0008 crea tablas nuevas y **no modifica las existentes**.
+
+### Despliegue de la hora (0009)
+Agrega `cuenta_movimientos.hora time NULL`. **No rellena nada**: los movimientos existentes quedan sin hora. Necesita la 0008.
+1. **Respaldo** de Supabase (sección 4c).
+2. **Push** a `main` del código con la hora.
+3. **Migrar Supabase** desde la PC (como en "Migraciones a Supabase"): `alembic upgrade head`; `alembic current` debe decir **0009 (head)**. La migración va **antes** del código nuevo: el backend nuevo lee la columna `hora`. El backend viejo con la 0009 ya aplicada sigue funcionando (no conoce la columna y es nullable).
+4. **Deploy manual** del backend y luego del frontend en Render.
+5. **Probar en producción:** registrar un movimiento de cuenta con fecha de hoy (debe salir "Hoy HH:MM" con la hora de La Paz) y cambiarle la hora.
+
+**Rollback:** `alembic downgrade 0008` (probado subir/bajar/subir en `arca_test`). Borra la columna y con ella las horas guardadas; el historial conserva las fotos con hora.
 
 ### Regla de oro de las pruebas
 El `.env` local **siempre apunta a localhost**. Nunca correr `pytest` con la URL de Supabase: las pruebas hacen `TRUNCATE ... CASCADE` y borrarían los datos reales.

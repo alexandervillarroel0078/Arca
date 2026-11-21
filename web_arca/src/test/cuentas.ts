@@ -5,7 +5,7 @@ import { sinAuditoria } from "./ayudas";
 export function mov(c: Partial<MovimientoCuenta> = {}): MovimientoCuenta {
   return {
     id: 1, tipo: "deposito", moneda: "BS", monto: "10.00", comision: null, sentido: null, saldo_previo: null, saldo_declarado: null,
-    fecha: "2026-11-03", nota: null, cuenta_id: 1, cuenta_nombre: "Caja", cuenta_destino_id: null, cuenta_destino_nombre: null,
+    fecha: "2026-11-03", hora: null, nota: null, cuenta_id: 1, cuenta_nombre: "Caja", cuenta_destino_id: null, cuenta_destino_nombre: null,
     persona_tipo: "sin_identificar", persona_usuario_id: null, persona_nombre: null, usuario_id: 1, usuario_nombre: "Ana",
     puede_registrar: true, efecto: "10.00", saldo_resultante: null, deja_saldo_negativo: null, ...sinAuditoria, ...c,
   };

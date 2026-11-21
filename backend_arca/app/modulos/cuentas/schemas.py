@@ -1,5 +1,5 @@
 """Esquemas de Cuentas. Los montos ENTRAN como numero o texto y SALEN siempre como texto (sin perder decimales)."""
-from datetime import date
+from datetime import date, time
 from decimal import Decimal
 from typing import Literal
 from uuid import UUID
@@ -99,6 +99,8 @@ class PersonaIn(BaseModel):
 class MovimientoBase(PersonaIn):
     monto: Dinero = Field(allow_inf_nan=False)
     fecha: date = Field(default_factory=hoy_la_paz)
+    # hora LOCAL de La Paz ("HH:MM"), opcional. Si la fecha es hoy y no viene, el servidor pone la hora actual
+    hora: time | None = None
     nota: str | None = nota_campo()
     uuid_cliente: UUID | None = None
 
@@ -120,6 +122,8 @@ class AjusteCrear(PersonaIn):
     tipo: Literal["ajuste"] = "ajuste"
     saldo_declarado: Dinero = Field(allow_inf_nan=False)
     fecha: date = Field(default_factory=hoy_la_paz)
+    # hora LOCAL de La Paz ("HH:MM"), opcional. Si la fecha es hoy y no viene, el servidor pone la hora actual
+    hora: time | None = None
     nota: str | None = nota_campo()
     uuid_cliente: UUID | None = None
 
@@ -131,9 +135,12 @@ class TraspasoCrear(MovimientoBase):
 
 
 class MovimientoFechaEditar(BaseModel):
-    """Lo UNICO que se corrige de un movimiento: su fecha (nunca en un ajuste por conteo). Ni hoy en La Paz se pasa."""
+    """Lo UNICO que se corrige de un movimiento: su fecha y su hora (nunca en un ajuste por conteo). Nunca al futuro de La Paz.
+
+    `hora` ausente conserva la que tenia; `hora: null` la quita."""
 
     fecha: date
+    hora: time | None = None
     version_base: int | None = Field(default=None, ge=1)
 
 
@@ -147,6 +154,7 @@ class MovimientoCuentaOut(AuditoriaOut):
     saldo_previo: str | None
     saldo_declarado: str | None
     fecha: date
+    hora: str | None = None  # "HH:MM", hora local de La Paz; nula en los movimientos registrados antes de la hora
     nota: str | None
     cuenta_id: int | None  # nulo si es una cuenta que el lector no ve
     cuenta_nombre: str  # "otra cuenta" si no la ve

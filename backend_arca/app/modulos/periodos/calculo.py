@@ -41,6 +41,11 @@ def hoy_la_paz() -> date:
     return fecha_local(ahora_utc())
 
 
+def ahora_la_paz() -> datetime:
+    """Fecha y hora locales de La Paz (con zona). Las horas que se guardan son de este reloj, sin zona."""
+    return ahora_utc().astimezone(ZONA)
+
+
 def _exigir_dia_inicio(dia_inicio_mes: int) -> None:
     if not isinstance(dia_inicio_mes, int) or isinstance(dia_inicio_mes, bool) or not 1 <= dia_inicio_mes <= 28:
         raise PeriodoInvalido("El día de inicio del mes debe ser un numero de 1 a 28")

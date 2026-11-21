@@ -5,7 +5,7 @@
 2. **Dónde está:** backend `arca-backend-djl0.onrender.com` y frontend `arca-web-zn5s.onrender.com` (Render), base en Supabase (Session pooler), repo privado en GitHub. Producción corre `main`, **sin cambios y sin desplegar** desde el módulo Cuentas. El trabajo nuevo está en la rama `modulo-cuentas` (ya subida a GitHub).
 3. **Desplegar un cambio:** el auto-deploy está apagado: commit y push a `main`, luego deploy manual de cada servicio (dashboard de Render o MCP). Detalle en `DESPLIEGUE.md`, sección 6.
 4. **Pruebas:** `TEST_DATABASE_URL` siempre a `arca_test` en localhost (pytest hace `TRUNCATE CASCADE`: jamás con la URL de Supabase). Cómo correr pytest, Vitest y Playwright: ver Fase 11 y Fase 13 de este archivo.
-5. **Estado de las bases:** la migración **0008** (Cuentas) está aplicada solo en `arca_test` y en la base local. **Supabase sigue en 0007**. Orden de despliegue en `DESPLIEGUE.md`, "Despliegue del módulo Cuentas".
+5. **Estado de las bases:** la migración **0009** (hora de los movimientos de cuenta) está aplicada solo en `arca_test` y en la base local (`arca`). **Supabase no la tiene**: confirmar con `alembic current` en qué versión está antes de desplegar. Orden de despliegue en `DESPLIEGUE.md`, "Despliegue del módulo Cuentas" y "Despliegue de la hora (0009)".
 6. **Pendientes:** sección "Pendientes" al final de este archivo (incluye lo que falta antes del merge de `modulo-cuentas`).
 
 ## Decisiones tomadas (datos que faltaban en el SPEC)
@@ -562,9 +562,19 @@ Las cuentas de la familia (bancarias, cripto y efectivo) y cuánto entra y sale 
 - Comisión de red: solo en retiros cripto; se descuenta del saldo además del monto.
 - Saldo negativo permitido, con aviso.
 - **Sin DELETE**: se anula y se reactiva.
-- **Un movimiento no se edita; solo puede cambiar de fecha** (`PATCH /cuentas/movimientos/{id}` con `{fecha, version_base}`; en el detalle, "Cambiar fecha"). Lo hace el dueño o encargado de TODAS las cuentas que toca (404 si no la ves, 403 si la ves pero no registras), con 409 si la versión no coincide y 400 si está anulado. **Nunca en un ajuste por conteo** (422): su saldo previo y su saldo contado son una foto del momento en que se registró; se anula y se registra otro. La fecha no cambia el saldo (no depende de la fecha), solo el mes en que aparece y el orden. Queda en el historial como `editar` con `{"fecha": {antes, despues}}`; la misma fecha no registra nada. Para corregir monto, cuenta o persona: anular y registrar de nuevo.
+- **Un movimiento no se edita; solo puede cambiar de fecha y hora** (`PATCH /cuentas/movimientos/{id}` con `{fecha, hora?, version_base}`; en el detalle, "Cambiar fecha y hora"). Lo hace el dueño o encargado de TODAS las cuentas que toca (404 si no la ves, 403 si la ves pero no registras), con 409 si la versión no coincide y 400 si está anulado. **Nunca en un ajuste por conteo** (422): su saldo previo y su saldo contado son una foto del momento en que se registró; se anula y se registra otro. La fecha no cambia el saldo (no depende de la fecha), solo el mes en que aparece y el orden. Queda en el historial como `editar` con `{"fecha": {antes, despues}}`; la misma fecha no registra nada. Para corregir monto, cuenta o persona: anular y registrar de nuevo.
 - **Ninguna fecha posterior a hoy en La Paz** (`hoy_la_paz`): el servidor la rechaza con 422 al crear cualquier movimiento y al cambiar la fecha (antes solo lo impedía el `max` del campo).
+- **Hora** (migración **0009**, columna `cuenta_movimientos.hora time NULL`): ver "Hora de los movimientos" más abajo.
 - Persona = miembro de la familia; también "otra persona" con nombre libre, o sin identificar.
+
+### Hora de los movimientos (migración 0009)
+- `hora` es la **hora local de La Paz, sin zona**, por minutos (`"HH:MM"` en la API) y **opcional**. Los movimientos anteriores a la 0009 quedan **sin hora** (no se rellenó nada desde `creado_en`).
+- `fecha` sigue siendo la fuente de verdad (filtros, periodos, índices). La hora **solo ordena y se muestra**; no toca el saldo.
+- **Orden** (`ORDEN_MOVIMIENTOS` en `cuentas/service.py`): `fecha DESC, hora DESC NULLS LAST, id DESC`. Sin ninguna hora, es exactamente el orden de antes (`fecha DESC, id DESC`); un movimiento viejo sin hora va al final de su día.
+- **Alta** (depósito, retiro, ajuste, traspaso): si la fecha es hoy y no viene hora, el servidor pone la hora actual de La Paz; si es hoy y la hora es posterior a la actual, **422**. Los segundos se descartan; una hora con zona es 422. Todo con un solo reloj (`ahora_la_paz`, `_hora_valida`): a medianoche no hay saltos. La hora entra en la foto del historial (`crear`).
+- **Cambiar fecha y hora** (`PATCH /cuentas/movimientos/{id}` con `{fecha, hora?, version_base}`): `hora` ausente conserva la que tenía; `hora: null` la quita. El resultado no puede quedar en el futuro de La Paz (422). Historial `editar` solo con lo que cambió (`{fecha}`, `{hora}` o ambos); sin cambios no registra nada. Sigue prohibido en ajustes por conteo.
+- **Frontend**: hora opcional al lado de la fecha en "Nuevo movimiento" (vacía = la actual si es hoy); hora editable en el diálogo "Cambiar fecha y hora" (vacía = sin hora); la fila muestra "Hoy 14:30" o "3 nov 09:05" (solo la fecha si no tiene hora), en una línea; el historial muestra "Hora: 10:00 → 10:40".
+- **Zona horaria en el frontend**: Cuentas calcula "hoy" y "ahora" en America/La_Paz (`ahoraLaPaz`, `hoyLaPazISO` en `core/formato.ts`; reglas en `cuentas/fechaHora.ts`), no en la zona del aparato. `hoyISO` no cambió (los demás flujos siguen igual). El servidor valida al final.
 
 ### Permisos
 - Visibilidad **por cuenta**: solo yo / familia / personas elegidas.
@@ -596,10 +606,11 @@ Familia → Cuentas. Montos con BigInt (nunca Number ni float). Montos rápidos 
 Además: revert del dictado por voz `a47c8c3` y el arreglo de `scrollIntoView` en formularios (`01f9958`).
 
 ### Pruebas
-pytest **971**, Vitest **1222**, E2E dev **107**, E2E PWA **4**. (Cambio de fecha de movimientos: `tests/test_etapa4_cuentas_fecha.py` y `src/modulos/cuentas/fechaMovimiento.test.tsx`.)
+pytest **971**, Vitest **1222**, E2E dev **107**, E2E PWA **4** antes de la hora. (Cambio de fecha de movimientos: `tests/test_etapa4_cuentas_fecha.py` y `src/modulos/cuentas/fechaMovimiento.test.tsx`.)
+Con la hora (0009): pytest **993**, Vitest **1266** (1 falla ajena a la hora: `PaginaMiFamilia` "muestra como quedaria el mes de hoy" depende del reloj real), E2E dev **109**, E2E PWA **4**. Hora: `tests/test_etapa5_cuentas_hora.py`, `src/modulos/cuentas/fechaHora.test.ts` y los casos nuevos en `fechaMovimiento.test.tsx`, `filaMovimiento.test.tsx`, `pantallas.test.tsx` y `e2e/cuentas.spec.ts`.
 
 ### Fuera de alcance por ahora
-Valorización de cripto, conversión entre monedas, enlazar gastos con cuentas, exportar CSV de cuentas y cola offline para cuentas.
+Valorización de cripto, conversión entre monedas, enlazar gastos con cuentas ("fuente de pago": analizada, irá en la migración **0010**), exportar CSV de cuentas y cola offline para cuentas.
 
 ## Pendientes
 ### Antes del merge de `modulo-cuentas` a `main`

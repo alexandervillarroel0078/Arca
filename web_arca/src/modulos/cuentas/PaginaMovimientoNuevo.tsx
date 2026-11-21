@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAviso } from "../../core/Aviso";
 import Encabezado, { AccionFija } from "../../core/Encabezado";
-import { hoyISO } from "../../core/formato";
+import { ahoraLaPaz, hoyLaPazISO } from "../../core/formato";
 import { Boton, Campo, Cargando, ErrorCaja, Vacio, claseInput, useCarga } from "../../core/ui";
 import { nuevoUuid } from "../../core/uuid";
 import { listarMiembros } from "../familia/api";
@@ -11,6 +11,7 @@ import {
   type MovimientoCuenta, type Persona, type PersonaTipo, type TipoMovimiento,
 } from "./api";
 import { AvisoNegativo, AvisoNota, NOMBRE_MOVIMIENTO, useManejoError } from "./componentes";
+import { erroresFechaHora, normalizarHora } from "./fechaHora";
 import { aMonto, errorDeMonto, formatear, formatearTexto, abs, esNegativo, type Moneda } from "./montos";
 import { cuentasRegistrables, destinosDeTraspaso } from "./permisos";
 import { guardarUltimo, leerUltimo } from "./recordar";
@@ -38,7 +39,8 @@ export default function PaginaMovimientoNuevo() {
   const [monto, setMonto] = useState("");
   const [comision, setComision] = useState("");
   const [saldoReal, setSaldoReal] = useState("");
-  const [fecha, setFecha] = useState(hoyISO());
+  const [fecha, setFecha] = useState(hoyLaPazISO()); // "hoy" en La Paz, como el servidor
+  const [hora, setHora] = useState(""); // vacía: si la fecha es hoy, el servidor pone la hora actual
   const [personaTipo, setPersonaTipo] = useState<PersonaTipo>("sin_identificar");
   const [miembroId, setMiembroId] = useState<number | null>(null);
   const [otra, setOtra] = useState("");
@@ -89,7 +91,10 @@ export default function PaginaMovimientoNuevo() {
   const diferencia = tipo === "ajuste" && saldoActual !== null && real !== null ? real - saldoActual : null;
 
   // ---- errores
+  const fechaHora = erroresFechaHora(fecha, hora, ahoraLaPaz());
   const errores: Record<string, string | null> = {
+    fecha: fechaHora.fecha,
+    hora: fechaHora.hora,
     cuenta: cuenta ? null : "Elige la cuenta",
     destino: tipo === "traspaso" && !destino ? "Elige la cuenta de destino" : null,
     monto: tipo === "ajuste" ? null : errorDeMonto(monto, moneda),
@@ -121,7 +126,7 @@ export default function PaginaMovimientoNuevo() {
       mostrarPrimerError();
       return;
     }
-    const comun = { fecha, nota: nota.trim() || undefined, uuid_cliente: uuid.current, ...persona() };
+    const comun = { fecha, hora: normalizarHora(hora) || undefined, nota: nota.trim() || undefined, uuid_cliente: uuid.current, ...persona() };
     setOcupado(true);
     try {
       let r: MovimientoCuenta;
@@ -299,9 +304,24 @@ export default function PaginaMovimientoNuevo() {
         )}
       </fieldset>
 
-      <Campo etiqueta="Fecha">
-        <input className={claseInput} type="date" max={hoyISO()} value={fecha} onChange={(e) => setFecha(e.target.value)} />
-      </Campo>
+      <div>
+        <div className="grid grid-cols-2 gap-2">
+          <Campo etiqueta="Fecha" error={mostrar("fecha")}>
+            <input className={claseInput} type="date" max={hoyLaPazISO()} value={fecha} onChange={(e) => setFecha(e.target.value)} aria-invalid={!!mostrar("fecha")} />
+          </Campo>
+          <Campo etiqueta="Hora (opcional)" error={mostrar("hora")}>
+            <input
+              className={claseInput}
+              type="time"
+              value={hora}
+              onChange={(e) => setHora(e.target.value)}
+              aria-invalid={!!mostrar("hora")}
+              aria-describedby="ayuda-hora"
+            />
+          </Campo>
+        </div>
+        <p id="ayuda-hora" className="mt-1 text-xs text-stone-600">Hora de La Paz. Si la dejas vacía y la fecha es hoy, se guarda la hora actual.</p>
+      </div>
 
       <div>
         <label htmlFor="nota-movimiento" className="block text-sm font-semibold text-stone-600 mb-1.5">Nota (opcional)</label>

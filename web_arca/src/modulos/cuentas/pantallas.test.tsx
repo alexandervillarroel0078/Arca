@@ -1,8 +1,9 @@
 // Pantallas de Cuentas con la API simulada: permisos en la interfaz, saldo negativo, aviso de nota, el servidor manda.
-import { screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ErrorApi } from "../../core/api";
+import { hoyLaPazISO } from "../../core/formato";
 import { admin, renderPantalla } from "../../test/ayudas";
 import { cuentaDe, mov } from "../../test/cuentas";
 import type { Yo } from "../auth/api";
@@ -278,6 +279,56 @@ describe("Nuevo movimiento", () => {
     await userEvent.type(screen.getByLabelText("Nombre de la otra persona"), "tía");
     await userEvent.click(await screen.findByRole("button", { name: "Tía Rosa" }));
     expect(screen.getByLabelText("Nombre de la otra persona")).toHaveValue("Tía Rosa");
+  });
+
+  it("fecha y hora lado a lado: la hora es opcional y vacía; sin hora no se envía (el servidor pone la actual)", async () => {
+    await abrir();
+    const hora = screen.getByLabelText("Hora (opcional)");
+    expect(hora).toHaveAttribute("type", "time");
+    expect(hora).toHaveValue("");
+    expect(hora).toHaveAttribute("aria-describedby", "ayuda-hora");
+    expect(screen.getByText(/Si la dejas vacía y la fecha es hoy, se guarda la hora actual/)).toBeInTheDocument();
+    expect(screen.getByLabelText("Fecha")).toHaveValue(hoyLaPazISO());
+    m.registrarDeposito.mockResolvedValue(mov({ id: 11 }));
+    await userEvent.type(screen.getByLabelText(/^Monto \(/), "5");
+    await userEvent.click(screen.getByRole("button", { name: /^Guardar/ }));
+    await waitFor(() => expect(m.registrarDeposito).toHaveBeenCalled());
+    const cuerpo = m.registrarDeposito.mock.calls[0][1];
+    expect(cuerpo.fecha).toBe(hoyLaPazISO());
+    expect(cuerpo.hora).toBeUndefined();
+  });
+
+  it("con hora, la envía como HH:MM", async () => {
+    await abrir();
+    m.registrarDeposito.mockResolvedValue(mov({ id: 12 }));
+    fireEvent.change(screen.getByLabelText("Fecha"), { target: { value: "2026-11-01" } });
+    fireEvent.change(screen.getByLabelText("Hora (opcional)"), { target: { value: "08:30" } });
+    await userEvent.type(screen.getByLabelText(/^Monto \(/), "5");
+    await userEvent.click(screen.getByRole("button", { name: /^Guardar/ }));
+    await waitFor(() => expect(m.registrarDeposito).toHaveBeenCalledWith(1, expect.objectContaining({ fecha: "2026-11-01", hora: "08:30" })));
+  });
+
+  describe("«hoy» y «ahora» son de La Paz, no del aparato", () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ["Date"] });
+      vi.setSystemTime(new Date("2026-11-21T03:30:00Z")); // 23:30 del 20 en La Paz; en UTC ya es el 21
+    });
+    afterEach(() => vi.useRealTimers());
+
+    it("la fecha inicial y el máximo son el día de La Paz", async () => {
+      await abrir();
+      expect(screen.getByLabelText("Fecha")).toHaveValue("2026-11-20");
+      expect(screen.getByLabelText("Fecha")).toHaveAttribute("max", "2026-11-20");
+    });
+
+    it("una hora futura de hoy (La Paz) da error y no llama al servidor", async () => {
+      await abrir();
+      fireEvent.change(screen.getByLabelText("Hora (opcional)"), { target: { value: "23:45" } });
+      await userEvent.type(screen.getByLabelText(/^Monto \(/), "5");
+      await userEvent.click(screen.getByRole("button", { name: /^Guardar/ }));
+      expect(await screen.findByText("La hora no puede ser posterior a la hora actual")).toBeInTheDocument();
+      expect(m.registrarDeposito).not.toHaveBeenCalled();
+    });
   });
 
   it("el rechazo del servidor (403) se muestra, refresca las cuentas y deja la pantalla con datos nuevos", async () => {

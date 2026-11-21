@@ -69,16 +69,17 @@ export default function PaginaCuentaDetalle() {
     setPedidoFecha({
       detalle: `${NOMBRE_MOVIMIENTO[m.tipo]} · ${formatearTexto(m.monto, m.moneda)}`,
       fecha: m.fecha,
-      ejecutar: async (fecha) => {
+      hora: m.hora,
+      ejecutar: async (fecha, hora) => {
         try {
-          await cambiarFechaMovimientoCuenta(m, fecha);
+          await cambiarFechaMovimientoCuenta(m, fecha, hora);
         } catch (e) {
           alError(e);
           // 403/404/409: la pantalla ya se refrescó con los datos del servidor; el diálogo (con la versión vieja) se cierra
           if (e instanceof ErrorApi && [403, 404, 409].includes(e.estado)) return;
           throw e; // 422 u otro: se muestra en el diálogo y se puede corregir
         }
-        avisar("Fecha cambiada");
+        avisar("Fecha y hora cambiadas");
         recargar();
       },
     });

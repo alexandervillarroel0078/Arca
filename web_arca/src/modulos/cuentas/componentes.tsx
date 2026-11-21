@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAviso } from "../../core/Aviso";
 import { ErrorApi } from "../../core/api";
-import { fechaCorta } from "../../core/formato";
+import { ahoraLaPaz, fechaCorta } from "../../core/formato";
 import MenuFila, { type AccionMenu } from "../../core/MenuFila";
 import { Tarjeta } from "../../core/ui";
 import { useUsuarioOpcional } from "../auth/AuthContext";
@@ -112,14 +112,14 @@ export function accionesMovimiento(
 ): AccionMenu[] {
   const out: AccionMenu[] = [];
   if (h.alHistorial) out.push({ texto: "Historial", alAccionar: () => h.alHistorial!(m) });
-  if (h.alCambiarFecha && puedeCambiarFecha(m)) out.push({ texto: "Cambiar fecha", alAccionar: () => h.alCambiarFecha!(m) });
+  if (h.alCambiarFecha && puedeCambiarFecha(m)) out.push({ texto: "Cambiar fecha y hora", alAccionar: () => h.alCambiarFecha!(m) });
   if (h.alAnular && m.puede_registrar && !m.anulado) out.push({ texto: "Anular", alAccionar: () => h.alAnular!(m), peligro: true });
   if (h.alReactivar && m.puede_registrar && m.anulado) out.push({ texto: "Reactivar", alAccionar: () => h.alReactivar!(m) });
   return out;
 }
 
-// Columnas compartidas por la cabecera y las filas (que queden alineadas).
-const COL_FECHA = "w-12 shrink-0";
+// Columnas compartidas por la cabecera y las filas (que queden alineadas). La fecha cabe "30 nov 23:59" en una línea.
+const COL_FECHA = "w-[4.5rem] shrink-0";
 const COL_MENU = "w-11 shrink-0";
 
 /** Cabecera de columnas, solo visual: los lectores de pantalla leen cada fila completa. */
@@ -135,7 +135,7 @@ export function CabeceraMovimientos({ conMenu = false }: { conMenu?: boolean }) 
 }
 
 /**
- * Una fila de movimiento en una línea: fecha · tipo · monto · "…". El tipo se trunca con "…" (el monto nunca se parte ni se
+ * Una fila de movimiento en una línea: fecha y hora ("Hoy 14:30"; solo la fecha si no tiene hora) · tipo · monto · "…". El tipo se trunca con "…" (el monto nunca se parte ni se
  * corta); una segunda línea pequeña solo si hay algo que mostrar. `cuentaRef`: se está viendo ESA cuenta (se muestra el efecto
  * sobre ella y no su nombre). Sin manejadores (lista global) no hay menu.
  */
@@ -158,7 +158,9 @@ export function FilaMovimiento({
   return (
     <li data-testid="fila-movimiento" data-tipo={m.tipo} data-anulado={m.anulado || undefined} className={m.anulado ? "text-stone-500" : ""}>
       <div className="flex items-center gap-2 min-h-[52px]">
-        <span className={`${COL_FECHA} monto whitespace-nowrap text-sm text-stone-600`}>{fechaCorta(m.fecha)}</span>
+        <span data-testid="fecha-movimiento" className={`${COL_FECHA} monto whitespace-nowrap text-xs text-stone-600`}>
+          {fechaCorta(m.fecha, { hoy: ahoraLaPaz().fecha })}{m.hora ? ` ${m.hora}` : ""}
+        </span>
         {/* truncado A PROPOSITO: la prueba visual lo acepta solo con esta marca; el texto completo queda en `title` y en el DOM */}
         <p className={`flex-1 min-w-0 truncate break-words font-semibold ${tachado}`} title={titulo} data-truncado="a-proposito">
           {titulo}
@@ -173,7 +175,7 @@ export function FilaMovimiento({
         )}
       </div>
       {(m.anulado || detalles.length > 0) && (
-        <p data-testid="detalle-movimiento" className={`-mt-1.5 pb-2 pl-14 text-xs text-stone-600 break-words ${conMenu ? "pr-11" : ""}`}>
+        <p data-testid="detalle-movimiento" className={`-mt-1.5 pb-2 pl-20 text-xs text-stone-600 break-words ${conMenu ? "pr-11" : ""}`}>
           {m.anulado && (
             <span className="font-semibold text-red-700">
               Anulado{m.motivo_anulacion ? ` · ${m.motivo_anulacion}` : ""}{detalles.length > 0 ? " · " : ""}

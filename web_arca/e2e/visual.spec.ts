@@ -419,7 +419,7 @@ test.describe("Prueba visual a 390px", () => {
 
     // el menú «…» de una fila (captura sin volver arriba, para que se vea el menú abierto)
     await filas.filter({ hasText: "Venta del terreno" }).getByRole("button", { name: /^Acciones de / }).click();
-    await expect(page.getByRole("menuitem")).toHaveText(["Historial", "Cambiar fecha", "Anular"]);
+    await expect(page.getByRole("menuitem")).toHaveText(["Historial", "Cambiar fecha y hora", "Anular"]);
     await page.waitForTimeout(250);
     await page.screenshot({ path: join(CARPETA, "38-cuenta-menu-fila-360.png") });
     await page.keyboard.press("Escape");

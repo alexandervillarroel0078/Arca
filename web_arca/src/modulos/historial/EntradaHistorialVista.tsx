@@ -16,7 +16,7 @@ export const ACCIONES: Record<string, string> = {
 };
 
 const CAMPOS: Record<string, string> = {
-  tipo: "Tipo", monto: "Monto", fecha: "Fecha", categoria: "Categoría", nota: "Nota", beneficiario: "Beneficiario",
+  tipo: "Tipo", monto: "Monto", fecha: "Fecha", hora: "Hora", categoria: "Categoría", nota: "Nota", beneficiario: "Beneficiario",
   monto_consumido: "Consumido", anulado: "Anulado", nombre: "Nombre", email: "Correo", icono: "Icono",
   activa: "Activa", rol: "Rol", activo: "Activo", clave: "Clave",
   // Cuentas: los montos ya llegan con su moneda ("100.00 USD"); los nombres de cuenta los resuelve el servidor para quien lee
@@ -33,6 +33,7 @@ const CAMPOS_DINERO = new Set(["monto", "monto_consumido"]);
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
 function valorLegible(campo: string, v: unknown): string {
+  if (campo === "hora" && (v === null || v === undefined || v === "")) return "sin hora"; // movimientos de cuenta (hora de La Paz)
   if (v === null || v === undefined || v === "") return "(vacío)";
   if (typeof v === "boolean") return v ? "Si" : "No";
   if (CAMPOS_DINERO.has(campo)) return bs(Number(v));

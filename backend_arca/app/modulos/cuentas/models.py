@@ -4,11 +4,12 @@ reporte, periodo ni apoyo las lee.
 Dinero: Numeric(24,8) siempre; cuantos decimales admite cada moneda se valida en `monedas.py`. El saldo NUNCA se guarda:
 se calcula (saldo_inicial + movimientos activos). Nunca se guardan numeros completos de cuenta, claves ni frases semilla.
 """
-from datetime import date, datetime
+from datetime import date, datetime, time
 from decimal import Decimal
 
 from sqlalchemy import (
-    CheckConstraint, Date, DateTime, ForeignKey, ForeignKeyConstraint, Index, Numeric, String, UniqueConstraint, func,
+    CheckConstraint, Date, DateTime, ForeignKey, ForeignKeyConstraint, Index, Numeric, String, Time, UniqueConstraint,
+    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -100,7 +101,8 @@ class CuentaMovimiento(Anulable, Base):
     sentido: Mapped[str | None] = mapped_column(String(7), nullable=True)  # solo ajuste: entrada | salida
     saldo_previo: Mapped[Decimal | None] = mapped_column(DINERO, nullable=True)  # solo ajuste
     saldo_declarado: Mapped[Decimal | None] = mapped_column(DINERO, nullable=True)  # solo ajuste
-    fecha: Mapped[date] = mapped_column(Date)
+    fecha: Mapped[date] = mapped_column(Date)  # dia local de La Paz: la fuente de verdad (filtros, periodos, indices)
+    hora: Mapped[time | None] = mapped_column(Time, nullable=True)  # hora LOCAL de La Paz, sin zona; nula en lo antiguo
     nota: Mapped[str | None] = mapped_column(String(500), nullable=True)
     persona_tipo: Mapped[str] = mapped_column(String(15), default="sin_identificar", server_default="sin_identificar")
     persona_usuario_id: Mapped[int | None] = mapped_column(ForeignKey("usuarios.id"), nullable=True)

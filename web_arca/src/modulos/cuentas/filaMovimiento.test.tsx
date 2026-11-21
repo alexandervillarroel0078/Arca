@@ -39,6 +39,23 @@ describe("Una línea: fecha, tipo y monto", () => {
     expect(fila()).toHaveTextContent("+Bs 10.00");
   });
 
+  it("con hora: «Hoy 14:30» (hoy de La Paz) o «3 nov 09:05»; sin hora (movimientos viejos), solo la fecha", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-21T03:30:00Z")); // 23:30 del 20 en La Paz; en UTC ya es el 21
+    try {
+      const { unmount } = conAcciones(mov({ fecha: "2026-11-20", hora: "14:30" }));
+      expect(screen.getByTestId("fecha-movimiento")).toHaveTextContent(/^Hoy 14:30$/);
+      unmount();
+      const r2 = conAcciones(mov({ fecha: "2026-11-03", hora: "09:05" }));
+      expect(screen.getByTestId("fecha-movimiento")).toHaveTextContent(/^3 nov 09:05$/);
+      r2.unmount();
+      conAcciones(mov({ fecha: "2026-11-03", hora: null }));
+      expect(screen.getByTestId("fecha-movimiento")).toHaveTextContent(/^3 nov$/);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("no hay botones de texto sueltos: solo el «…» del menu", () => {
     conAcciones(mov());
     expect(within(fila()).getAllByRole("button").map((b) => b.getAttribute("aria-label"))).toEqual(["Acciones de Depósito"]);
@@ -92,9 +109,9 @@ describe("Una línea: fecha, tipo y monto", () => {
 });
 
 describe("Menu «…»: las mismas reglas de siempre", () => {
-  it("movimiento activo con permiso: Historial, Cambiar fecha y Anular (en ese orden)", async () => {
+  it("movimiento activo con permiso: Historial, Cambiar fecha y hora y Anular (en ese orden)", async () => {
     conAcciones(mov());
-    expect(await textosDelMenu()).toEqual(["Historial", "Cambiar fecha", "Anular"]);
+    expect(await textosDelMenu()).toEqual(["Historial", "Cambiar fecha y hora", "Anular"]);
   });
 
   it("anulado: Historial y Reactivar", async () => {
@@ -102,7 +119,7 @@ describe("Menu «…»: las mismas reglas de siempre", () => {
     expect(await textosDelMenu()).toEqual(["Historial", "Reactivar"]);
   });
 
-  it("ajuste: sin Cambiar fecha", async () => {
+  it("ajuste: sin Cambiar fecha y hora", async () => {
     conAcciones(mov({ tipo: "ajuste", sentido: "entrada", saldo_declarado: "10.00", saldo_previo: "0.00" }));
     expect(await textosDelMenu()).toEqual(["Historial", "Anular"]);
   });
@@ -116,7 +133,7 @@ describe("Menu «…»: las mismas reglas de siempre", () => {
     const h = { alHistorial: vi.fn(), alCambiarFecha: vi.fn(), alAnular: vi.fn() };
     const x = mov({ id: 9 });
     render(<ul><FilaMovimiento m={x} cuentaRef={1} {...h} /></ul>);
-    for (const [nombre, fn] of [["Historial", h.alHistorial], ["Cambiar fecha", h.alCambiarFecha], ["Anular", h.alAnular]] as const) {
+    for (const [nombre, fn] of [["Historial", h.alHistorial], ["Cambiar fecha y hora", h.alCambiarFecha], ["Anular", h.alAnular]] as const) {
       await userEvent.click(screen.getByRole("button", { name: /^Acciones de / }));
       await userEvent.click(screen.getByRole("menuitem", { name: nombre }));
       expect(fn).toHaveBeenCalledWith(x);
